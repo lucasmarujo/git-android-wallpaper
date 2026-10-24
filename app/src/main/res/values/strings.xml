@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name" translatable="false">Git Wallpaper</string>
+
+    <string name="login_tagline">Your GitHub contribution graph as your wallpaper, always up to date.</string>
+    <string name="login_sign_in_github">Sign in with GitHub</string>
+    <string name="login_requesting_code">Contacting GitHub…</string>
+    <string name="login_enter_code">Open github.com/login/device and enter this code:</string>
+    <string name="login_copy_and_open">Copy code and open GitHub</string>
+    <string name="login_code_clip_label">GitHub code</string>
+    <string name="login_waiting">Waiting for authorization…</string>
+    <string name="login_signing_in">Signing in…</string>
+    <string name="login_cancel">Cancel</string>
+    <string name="login_use_token">Use a personal access token</string>
+    <string name="login_token_label">Personal access token</string>
+    <string name="login_token_hint">Create one at github.com/settings/tokens with the read:user scope.</string>
+    <string name="login_sign_in_token">Sign in with token</string>
+    <string name="login_privacy">Everything runs on your phone. Your token is encrypted on the device and is only sent to GitHub.</string>
+    <string name="login_error_network">Could not reach GitHub. Check your connection and try again.</string>
+    <string name="login_error_expired">The code expired. Start again.</string>
+    <string name="login_error_access_denied">Authorization was denied on GitHub.</string>
+    <string name="login_error_device_flow_unavailable">GitHub sign-in is unavailable right now. Use a personal access token.</string>
+    <string name="login_error_invalid_token">GitHub rejected this token.</string>
+    <string name="login_error_unknown">Something went wrong. Try again.</string>
+
+    <string name="home_refresh">Refresh contributions</string>
+    <string name="home_sign_out">Sign out</string>
+    <string name="home_sign_out_title">Sign out?</string>
+    <string name="home_sign_out_body">Your current wallpaper stays, but it will stop updating.</string>
+    <string name="home_preview_description">Wallpaper preview</string>
+    <string name="home_no_contributions">Your contributions could not be loaded yet.</string>
+    <string name="home_retry">Try again</string>
+    <string name="home_stat_contributions">Contributions</string>
+    <string name="home_stat_current_streak">Current streak</string>
+    <string name="home_stat_longest_streak">Longest streak</string>
+    <string name="home_section_target">Apply to</string>
+    <string name="home_section_theme">Theme</string>
+    <string name="home_section_period">Period</string>
+    <string name="home_section_shape">Cell shape</string>
+    <string name="home_section_position">Vertical position</string>
+    <string name="home_show_stats">Show stats on the wallpaper</string>
+    <string name="home_section_auto_update">Automatic update</string>
+    <string name="home_auto_update">Update the wallpaper automatically</string>
+    <string name="home_auto_update_every">Check GitHub every</string>
+    <string name="home_last_applied">Last applied: %1$s</string>
+    <string name="home_never_applied">Not applied yet</string>
+    <string name="home_apply">Apply wallpaper</string>
+    <string name="home_applying">Applying…</string>
+    <string name="home_battery_title">Keep updates on time</string>
+    <string name="home_battery_body">Android may delay background updates. Allow Git Wallpaper to run without battery restrictions.</string>
+    <string name="home_battery_action">Open battery settings</string>
+
+    <string name="target_lock_screen">Lock</string>
+    <string name="target_home_screen">Home</string>
+    <string name="target_both">Both</string>
+
+    <string name="theme_github_dark">Dark</string>
+    <string name="theme_github_light">Light</string>
+    <string name="theme_amoled">AMOLED</string>
+    <string name="theme_ocean">Ocean</string>
+    <string name="theme_sunset">Sunset</string>
+
+    <string name="period_three_months">3 months</string>
+    <string name="period_six_months">6 months</string>
+    <string name="period_twelve_months">12 months</string>
+
+    <string name="shape_rounded_square">Square</string>
+    <string name="shape_circle">Circle</string>
+
+    <string name="interval_thirty_minutes">30 min</string>
+    <string name="interval_one_hour">1 h</string>
+    <string name="interval_three_hours">3 h</string>
+    <string name="interval_six_hours">6 h</string>
+    <string name="interval_twelve_hours">12 h</string>
+
+    <string name="message_applied">Wallpaper applied</string>
+    <string name="message_refreshed">Contributions updated</string>
+    <string name="message_network_error">Could not reach GitHub. Try again.</string>
+    <string name="message_github_error">GitHub returned an error. Try again later.</string>
+    <string name="message_wallpaper_error">This device did not allow the wallpaper change.</string>
+    <string name="message_session_expired">Your session expired. Sign in again.</string>
+
+    <string name="wallpaper_login" translatable="false">\@%1$s</string>
+    <string name="wallpaper_period_three_months">in the last 3 months</string>
+    <string name="wallpaper_period_six_months">in the last 6 months</string>
+    <string name="wallpaper_period_twelve_months">in the last 12 months</string>
+    <string name="wallpaper_total_contributions">{count, plural, =0 {No contributions} one {# contribution} other {# contributions}} {period}</string>
+    <string name="wallpaper_days">{count, plural, =0 {0 days} one {# day} other {# days}}</string>
+    <string name="wallpaper_streaks">Current streak %1$s · Longest %2$s</string>
+</resources>
