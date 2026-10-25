@@ -57,6 +57,10 @@
     <string name="home_battery_title">Atualização automática garantida</string>
     <string name="home_battery_body">O Android pode pausar apps em segundo plano. Abra as configurações de bateria e marque o Git Wallpaper como \"Não otimizar\" (ou \"Sem restrições\") para o wallpaper continuar se atualizando sozinho.</string>
     <string name="home_battery_action">Abrir configurações de bateria</string>
+    <string name="home_section_widget">Widget na tela inicial</string>
+    <string name="home_widget_body">Mostre seu gráfico de contribuições na tela inicial. Redimensione do tamanho que quiser: ele segue o tema, a cor e o período escolhidos aqui.</string>
+    <string name="home_widget_add">Adicionar widget</string>
+    <string name="home_widget_system_hint">Você também pode tocar e segurar um espaço vazio da tela inicial, abrir Widgets e escolher o Git Wallpaper.</string>
     <string name="privacy_policy">Política de privacidade</string>
 
     <string name="adjust_hint">Faça pinça para dar zoom e arraste para mover o gráfico</string>
@@ -89,6 +93,7 @@
     <string name="message_github_error">O GitHub retornou um erro. Tente mais tarde.</string>
     <string name="message_wallpaper_error">Este aparelho não permitiu trocar o wallpaper.</string>
     <string name="message_session_expired">Sua sessão expirou. Entre de novo.</string>
+    <string name="message_widget_unavailable">Seu launcher não permite adicionar widgets pelo app. Adicione pela lista de widgets da tela inicial.</string>
 
     <string name="wallpaper_days">{count, plural, =0 {0 dias} one {# dia} other {# dias}}</string>
     <string name="wallpaper_streaks">Sequência atual %1$s · Recorde %2$s</string>
@@ -97,4 +102,9 @@
     <string name="wallpaper_total_highlight">{count, plural, =0 {Nenhuma contribuição} one {# contribuição} other {# contribuições}}</string>
     <string name="wallpaper_total_suffix_year">em %1$d</string>
     <string name="wallpaper_total_suffix_last_12_months">nos últimos 12 meses</string>
+
+    <string name="widget_description">Seu gráfico de contribuições do GitHub, do tamanho que você quiser.</string>
+    <string name="widget_content_description">Gráfico de contribuições do GitHub</string>
+    <string name="widget_loading">Carregando…</string>
+    <string name="widget_empty">Abra o Git Wallpaper para carregar suas contribuições</string>
 </resources>

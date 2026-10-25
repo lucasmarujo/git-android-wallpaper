@@ -20,7 +20,10 @@ import com.lucasmarujo.gitwallpaper.domain.ContributionStats
 import com.lucasmarujo.gitwallpaper.domain.WallpaperFraming
 import com.lucasmarujo.gitwallpaper.domain.WallpaperSettings
 import com.lucasmarujo.gitwallpaper.util.formatMessage
+import java.time.DayOfWeek
 import java.time.LocalDate
+import java.time.temporal.ChronoUnit
+import java.time.temporal.TemporalAdjusters
 import kotlin.math.min
 
 class ContributionWallpaperRenderer(private val resources: Resources) {
@@ -61,6 +64,85 @@ class ContributionWallpaperRenderer(private val resources: Resources) {
         return bitmap
     }
 
+    fun renderWidget(
+        calendar: ContributionCalendar,
+        settings: WallpaperSettings,
+        size: ScreenSize,
+        density: Float,
+        today: LocalDate,
+    ): Bitmap {
+        val palette = WallpaperPalette.of(settings.theme).withCommitColor(settings.commitColor)
+        val grid = DayGrid.from(calendar.days, settings.period, today)
+        val firstWeekStart = grid.startDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY))
+        val weekCount = weekIndex(firstWeekStart, grid.cells.last().date) + 1
+        val layout = WidgetLayout.calculate(
+            width = size.width,
+            height = size.height,
+            density = density,
+            weekCount = weekCount,
+            dayCount = grid.cells.size,
+            showHeader = settings.showStats,
+        )
+        val bitmap = createBitmap(size.width, size.height)
+        val canvas = Canvas(bitmap)
+        val cornerRadius = min(
+            resources.getDimension(R.dimen.widget_corner_radius) / resources.displayMetrics.density * density,
+            min(size.width, size.height) / 2f,
+        )
+        val backgroundPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = palette.background }
+        canvas.drawRoundRect(0f, 0f, size.width.toFloat(), size.height.toFloat(), cornerRadius, cornerRadius, backgroundPaint)
+        val painter = CellPainter(palette, settings.cellShape, layout.cellSize, layout.cellGap)
+        when (layout.style) {
+            WidgetGridStyle.WEEK_COLUMNS -> drawWeekColumns(canvas, grid, layout, painter, firstWeekStart, weekCount)
+            WidgetGridStyle.DAY_ROWS -> drawDayRows(canvas, grid, layout, painter)
+        }
+        layout.header?.let { header ->
+            drawTitle(
+                canvas = canvas,
+                centerX = header.centerX,
+                baseline = header.baseline,
+                textSize = header.textSize,
+                maxTextWidth = header.maxTextWidth,
+                stats = ContributionStats.from(calendar.days, grid.startDate),
+                period = settings.period,
+                today = grid.today,
+                palette = palette,
+            )
+        }
+        return bitmap
+    }
+
+    private fun drawWeekColumns(
+        canvas: Canvas,
+        grid: DayGrid,
+        layout: WidgetLayout,
+        painter: CellPainter,
+        firstWeekStart: LocalDate,
+        weekCount: Int,
+    ) {
+        val firstWeek = WidgetLayout.firstVisible(weekCount, weekIndex(firstWeekStart, grid.today), layout.visibleCells)
+        grid.cells.forEach { cell ->
+            val column = weekIndex(firstWeekStart, cell.date) - firstWeek
+            if (column in 0 until layout.columns) {
+                val row = cell.date.dayOfWeek.value % WidgetLayout.DAYS_PER_WEEK
+                painter.draw(canvas, cell, layout.cellLeft(column), layout.cellTop(row))
+            }
+        }
+    }
+
+    private fun drawDayRows(canvas: Canvas, grid: DayGrid, layout: WidgetLayout, painter: CellPainter) {
+        val todayIndex = ChronoUnit.DAYS.between(grid.startDate, grid.today).toInt()
+        val firstDay = WidgetLayout.firstVisible(grid.cells.size, todayIndex, layout.visibleCells)
+        repeat(layout.visibleCells) { slot ->
+            val left = layout.cellLeft(slot % layout.columns)
+            val top = layout.cellTop(slot / layout.columns)
+            painter.draw(canvas, grid.cells[firstDay + slot], left, top)
+        }
+    }
+
+    private fun weekIndex(firstWeekStart: LocalDate, date: LocalDate): Int =
+        (ChronoUnit.DAYS.between(firstWeekStart, date) / WidgetLayout.DAYS_PER_WEEK).toInt()
+
     private fun framingMatrix(framing: WallpaperFraming, size: ScreenSize): Matrix {
         val coerced = framing.coerced()
         return Matrix().apply {
@@ -76,32 +158,43 @@ class ContributionWallpaperRenderer(private val resources: Resources) {
         palette: WallpaperPalette,
         cellShape: CellShape,
     ) {
-        val fillPaint = Paint(Paint.ANTI_ALIAS_FLAG)
-        val ringPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            style = Paint.Style.STROKE
-            color = palette.accent
-            strokeWidth = layout.cellGap * TODAY_RING_WIDTH_RATIO
-        }
-        val ringOffset = layout.cellGap * TODAY_RING_OFFSET_RATIO
-        val cornerRadius = layout.cellSize * CORNER_RADIUS_RATIO
-        val bounds = RectF()
+        val painter = CellPainter(palette, cellShape, layout.cellSize, layout.cellGap)
         grid.cells.forEachIndexed { index, cell ->
-            val left = layout.cellLeft(index)
-            val top = layout.cellTop(index)
-            bounds.set(left, top, left + layout.cellSize, top + layout.cellSize)
-            fillPaint.color = if (cell.state == DayState.FUTURE) palette.future else palette.colorFor(cell.level)
-            canvas.drawCell(bounds, cellShape, cornerRadius, fillPaint)
-            if (cell.state == DayState.TODAY) {
-                bounds.inset(-ringOffset, -ringOffset)
-                canvas.drawCell(bounds, cellShape, cornerRadius + ringOffset, ringPaint)
-            }
+            painter.draw(canvas, cell, layout.cellLeft(index), layout.cellTop(index))
         }
     }
 
-    private fun Canvas.drawCell(bounds: RectF, cellShape: CellShape, cornerRadius: Float, paint: Paint) {
-        when (cellShape) {
-            CellShape.ROUNDED_SQUARE -> drawRoundRect(bounds, cornerRadius, cornerRadius, paint)
-            CellShape.CIRCLE -> drawCircle(bounds.centerX(), bounds.centerY(), bounds.width() / 2f, paint)
+    private class CellPainter(
+        private val palette: WallpaperPalette,
+        private val cellShape: CellShape,
+        private val cellSize: Float,
+        cellGap: Float,
+    ) {
+        private val fillPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+        private val ringPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            style = Paint.Style.STROKE
+            color = palette.accent
+            strokeWidth = cellGap * TODAY_RING_WIDTH_RATIO
+        }
+        private val ringOffset = cellGap * TODAY_RING_OFFSET_RATIO
+        private val cornerRadius = cellSize * CORNER_RADIUS_RATIO
+        private val bounds = RectF()
+
+        fun draw(canvas: Canvas, cell: DayCell, left: Float, top: Float) {
+            bounds.set(left, top, left + cellSize, top + cellSize)
+            fillPaint.color = if (cell.state == DayState.FUTURE) palette.future else palette.colorFor(cell.level)
+            canvas.drawCell(cornerRadius, fillPaint)
+            if (cell.state == DayState.TODAY) {
+                bounds.inset(-ringOffset, -ringOffset)
+                canvas.drawCell(cornerRadius + ringOffset, ringPaint)
+            }
+        }
+
+        private fun Canvas.drawCell(cornerRadius: Float, paint: Paint) {
+            when (cellShape) {
+                CellShape.ROUNDED_SQUARE -> drawRoundRect(bounds, cornerRadius, cornerRadius, paint)
+                CellShape.CIRCLE -> drawCircle(bounds.centerX(), bounds.centerY(), bounds.width() / 2f, paint)
+            }
         }
     }
 
@@ -116,7 +209,17 @@ class ContributionWallpaperRenderer(private val resources: Resources) {
         avatar: Bitmap?,
     ) {
         val stats = ContributionStats.from(calendar.days, grid.startDate)
-        drawTitle(canvas, statsLayout, maxTextWidth, stats, period, grid.today, palette)
+        drawTitle(
+            canvas = canvas,
+            centerX = statsLayout.centerX,
+            baseline = statsLayout.titleBaseline,
+            textSize = statsLayout.titleTextSize,
+            maxTextWidth = maxTextWidth,
+            stats = stats,
+            period = period,
+            today = grid.today,
+            palette = palette,
+        )
 
         val streakLine = resources.getString(
             R.string.wallpaper_streaks,
@@ -133,7 +236,9 @@ class ContributionWallpaperRenderer(private val resources: Resources) {
 
     private fun drawTitle(
         canvas: Canvas,
-        statsLayout: StatsLayout,
+        centerX: Float,
+        baseline: Float,
+        textSize: Float,
         maxTextWidth: Float,
         stats: ContributionStats,
         period: ContributionPeriod,
@@ -148,8 +253,8 @@ class ContributionWallpaperRenderer(private val resources: Resources) {
             ContributionPeriod.CURRENT_YEAR -> resources.getString(R.string.wallpaper_total_suffix_year, today.year)
             ContributionPeriod.LAST_12_MONTHS -> resources.getString(R.string.wallpaper_total_suffix_last_12_months)
         }
-        val highlightPaint = textPaint(palette.accent, statsLayout.titleTextSize, BOLD_TYPEFACE)
-        val suffixPaint = textPaint(palette.secondaryText, statsLayout.titleTextSize, Typeface.DEFAULT)
+        val highlightPaint = textPaint(palette.accent, textSize, BOLD_TYPEFACE)
+        val suffixPaint = textPaint(palette.secondaryText, textSize, Typeface.DEFAULT)
         val naturalWidth = highlightPaint.measureText(highlight) +
             suffixPaint.measureText(WORD_SEPARATOR) +
             suffixPaint.measureText(suffix)
@@ -158,9 +263,9 @@ class ContributionWallpaperRenderer(private val resources: Resources) {
         val highlightWidth = highlightPaint.measureText(highlight)
         val separatorWidth = suffixPaint.measureText(WORD_SEPARATOR)
         val totalWidth = highlightWidth + separatorWidth + suffixPaint.measureText(suffix)
-        val startX = statsLayout.centerX - totalWidth / 2f
-        canvas.drawText(highlight, startX, statsLayout.titleBaseline, highlightPaint)
-        canvas.drawText(suffix, startX + highlightWidth + separatorWidth, statsLayout.titleBaseline, suffixPaint)
+        val startX = centerX - totalWidth / 2f
+        canvas.drawText(highlight, startX, baseline, highlightPaint)
+        canvas.drawText(suffix, startX + highlightWidth + separatorWidth, baseline, suffixPaint)
     }
 
     private fun drawUserRow(

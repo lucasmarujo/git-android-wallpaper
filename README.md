@@ -15,7 +15,7 @@
 
 </div>
 
-Git Wallpaper is a native Android app that draws your GitHub contribution graph as a wallpaper for the lock screen, the home screen, or both, and keeps it in sync with your commits in the background. Everything runs on the device: there is no backend, no analytics and no ads. The app talks only to GitHub.
+Git Wallpaper is a native Android app that draws your GitHub contribution graph as a wallpaper for the lock screen, the home screen, or both, and as a home screen widget you can resize to any size. Both stay in sync with your commits in the background. Everything runs on the device: there is no backend, no analytics and no ads. The app talks only to GitHub.
 
 <table>
   <tr>
@@ -27,6 +27,11 @@ Git Wallpaper is a native Android app that draws your GitHub contribution graph 
     <td align="center"><img src="docs/images/adjust-framing.png" alt="Full-screen framing editor" width="220" /><br /><sub>Pinch to zoom, drag to position</sub></td>
     <td align="center"><img src="docs/images/commit-color.png" alt="RGB commit color picker" width="220" /><br /><sub>Any commit color</sub></td>
     <td align="center"><img src="docs/images/sign-in.png" alt="GitHub device flow sign-in" width="220" /><br /><sub>Sign in with GitHub</sub></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="docs/images/widget-strip.png" alt="Home screen widget at 4 by 1 with GitHub's week columns" width="220" /><br /><sub>Widget 4×1: GitHub's week columns</sub></td>
+    <td align="center"><img src="docs/images/widget-medium.png" alt="Home screen widget at 4 by 2 with the wallpaper day grid" width="220" /><br /><sub>Widget 4×2: the wallpaper grid</sub></td>
+    <td align="center"><img src="docs/images/widget-tall.png" alt="Home screen widget stretched to 4 by 4" width="220" /><br /><sub>Widget stretched to 4×4</sub></td>
   </tr>
 </table>
 
@@ -65,6 +70,17 @@ Git Wallpaper is a native Android app that draws your GitHub contribution graph 
 - **Gestures:** pinch to zoom (0.5× to 2.5×) and drag to reposition the graph. **Reset** restores the default framing.
 - **The framing persists.** It is saved and reused by every automatic update, so the wallpaper never jumps back to the default position.
 
+### Home screen widget (new in 1.2)
+
+- **Add it your way.** Tap **Add widget** in the app and confirm the launcher's dialog, or touch and hold the home screen, open **Widgets** and drag **Git Wallpaper** wherever you like.
+- **Any size.** The widget resizes freely in both directions, from a single cell to the whole screen, and the graph never wraps:
+  - **short and wide** (about one launcher row, the default 4×1): GitHub's familiar graph, one column per week. Stretch it sideways to see more weeks, always ending at the current one;
+  - **stretched vertically:** the same grid as the wallpaper, one square per day from left to right and top to bottom, with the number of columns chosen to fill the widget.
+  - Very small widgets show the most recent days that still fit at a readable size.
+- **Same look as your wallpaper.** It follows the theme, commit color, period, cell shape and stats you picked in the app. A header with the total contributions appears when there is room and stats are on.
+- **Always fresh.** The same background job that updates the wallpaper redraws every widget, even if you never applied the wallpaper. Tapping the widget opens the app.
+- **Native corners.** On Android 12 and later it uses the launcher's widget corner radius.
+
 ### Personalization
 
 | Setting | Options |
@@ -74,13 +90,15 @@ Git Wallpaper is a native Android app that draws your GitHub contribution graph 
 | Commit color | The theme's colors, or any color from an RGB picker with live preview and hex code. The four contribution levels are derived from the chosen color, while the theme keeps the background and text. |
 | Period | This year, or the last 12 months |
 | Cell shape | Rounded squares or circles |
-| Stats footer | On or off |
+| Stats footer | On or off (also shows the total on the widget) |
+| Home screen widget | Any size, added from the app or from the system widget list |
 | Automatic update | On or off, checking GitHub every 30 min, 1 h, 3 h, 6 h or 12 h |
 
 ### Hands-off updates
 
 - **Background updates through WorkManager.** There is one unique periodic job, with no network constraint and exponential backoff.
 - **When it redraws:** after a new contribution, and at the turn of each day so the "today" ring moves, even offline using the cached calendar.
+- **Widgets included.** Each run also redraws the home screen widgets. Updates are scheduled while the wallpaper is applied or at least one widget is on the home screen, and they never set a wallpaper you did not apply.
 - **It keeps running** after a reboot or an app update.
 - **No redundant redraws.** Each run compares a SHA-256 fingerprint of everything that affects the pixels (calendar, settings, framing, color, screen size, locale and date) and skips identical renders.
 - **Battery-optimization shortcut.** A built-in shortcut opens the system settings so Android does not defer updates. The app does not request the exemption directly, in line with Google Play policy.
@@ -99,9 +117,10 @@ The app is available in English and Brazilian Portuguese, with per-app language 
 1. **Sign in** with GitHub. Open the verification link, enter the code shown in the app and authorize it, on the phone or on any other device.
 2. **Pick your style:** where to apply it, theme, commit color, period, cell shape and whether to show stats. The preview updates as you change options.
 3. **Tap Apply wallpaper**, adjust the zoom and position on the lock screen preview, and confirm.
-4. **That's it.** The app checks GitHub on the interval you chose and redraws the wallpaper whenever something changed. You do not need to open it again.
+4. **Want it on the home screen too?** Tap **Add widget**, or add it from the system widget list, and resize it as you like.
+5. **That's it.** The app checks GitHub on the interval you chose and redraws the wallpaper and the widgets whenever something changed. You do not need to open it again.
 
-Under the hood, each update reads your contribution calendar through the GitHub GraphQL API (`viewer { login avatarUrl contributionsCollection { contributionCalendar } }`), renders a bitmap with Android's `Canvas`, and applies it with `WallpaperManager.setBitmap` using `FLAG_LOCK` and/or `FLAG_SYSTEM`.
+Under the hood, each update reads your contribution calendar through the GitHub GraphQL API (`viewer { login avatarUrl contributionsCollection { contributionCalendar } }`), renders a bitmap with Android's `Canvas`, and applies it with `WallpaperManager.setBitmap` using `FLAG_LOCK` and/or `FLAG_SYSTEM`. Widgets are drawn by the same renderer at each widget's own size and delivered through `AppWidgetManager` with `RemoteViews`.
 
 ## Installation
 
@@ -180,7 +199,7 @@ The build has no OAuth Client ID configured, or GitHub rejected the Device Flow 
 
 ## Architecture
 
-A single `app` module, organized in layers with manual dependency injection through `AppContainer`. The same renderer produces the in-app preview and the real wallpaper, so what you see is what gets applied.
+A single `app` module, organized in layers with manual dependency injection through `AppContainer`. The same renderer produces the in-app preview, the real wallpaper and the home screen widget, so what you see is what gets applied.
 
 ```mermaid
 flowchart LR
@@ -199,7 +218,16 @@ flowchart LR
         Renderer[ContributionWallpaperRenderer<br/>Canvas]
         Applier[SystemWallpaperApplier<br/>WallpaperManager]
     end
+    subgraph Widget["widget"]
+        Provider[ContributionWidgetProvider<br/>AppWidgetProvider]
+        WidgetUpd[ContributionWidgetUpdater<br/>RemoteViews]
+    end
     Worker[WallpaperUpdateWorker<br/>WorkManager] --> Updater
+    Worker --> WidgetUpd
+    Provider --> WidgetUpd
+    HomeVM --> WidgetUpd
+    WidgetUpd --> Contrib
+    WidgetUpd --> Renderer
     LoginVM --> Auth --> Session
     HomeVM --> Settings
     HomeVM --> Contrib
@@ -214,8 +242,9 @@ flowchart LR
 app/src/main/java/com/lucasmarujo/gitwallpaper
 ├── domain/      Pure models and rules: calendar, stats, settings, framing, periods, themes
 ├── data/        GitHub GraphQL, avatar cache, Device Flow, encrypted session, DataStore
-├── wallpaper/   Day grid, layout and safe zones, Canvas renderer, palettes, fingerprint, applier
-├── work/        WorkManager worker, factory and scheduler
+├── wallpaper/   Day grid, wallpaper and widget layouts, Canvas renderer, palettes, fingerprint, applier
+├── widget/      Home screen widget provider and RemoteViews updater
+├── work/        WorkManager worker, factory, scheduler and the auto-update rule
 └── ui/          Compose screens (login, home, framing editor, color picker) and theme
 ```
 
@@ -263,7 +292,7 @@ Google Play distribution uses Play App Signing: the local keystore is the upload
 
 ## Testing
 
-The project has 190 unit tests that run on the JVM, using Robolectric for Android APIs and native graphics.
+The project has 233 unit tests that run on the JVM, using Robolectric for Android APIs and native graphics.
 
 ```bash
 ./gradlew testDebugUnitTest    # unit and Robolectric tests
@@ -274,10 +303,16 @@ The tests cover:
 
 - **Domain:** stats and streaks, the day grid (current year, leap years, last 12 months, GitHub's timezone ahead of the device), vertical layout and safe zones, framing limits, fingerprints.
 - **Rendering with real pixels:** bitmap size, theme backgrounds, colors per contribution level, future days, the today ring, circles versus squares, the stats footer, the avatar, custom commit colors, zoom and position.
+- **Widget:**
+  - the layout at any size and density: GitHub's week columns when short, the wallpaper's day grid when stretched vertically, no wrapping, and the current week always visible;
+  - widget rendering: rounded corners, colors, the today ring and the header;
+  - real `RemoteViews` updates: each widget at its own size, the empty state, opening the app on tap, and a bounded bitmap for huge widgets;
+  - pinning from the app, and the provider metadata (resizable in both directions from one cell).
 - **Data:** GraphQL parsing and errors, Device Flow polling, token encryption and session lifecycle, avatar cache, settings persistence and migration of stored values.
 - **Orchestration:**
-  - the updater: apply, skip when unchanged, force, a new day online and offline, cache fallback, revoked tokens, wallpaper failures, framing kept by automatic updates;
-  - the worker's result mapping;
+  - the updater: apply, skip when unchanged, force, a new day online and offline, cache fallback, revoked tokens, wallpaper failures, framing kept by automatic updates, no wallpaper set before the first apply;
+  - the worker's result mapping and widget redraws;
+  - when automatic updates are scheduled (applied wallpaper, widgets, or neither);
   - unique scheduling in WorkManager.
 - **UI (Compose):** sign-in states, open and copy link actions, settings, the RGB color picker, the framing editor's gestures (pinch, drag, reset, cancel) and the status bar appearance.
 
@@ -291,13 +326,12 @@ The tests cover:
 Pushing a tag that matches `v*` also builds a signed release APK and publishes it as a GitHub Release with generated notes. That job needs the `SIGNING_KEYSTORE_BASE64`, `SIGNING_STORE_PASSWORD`, `SIGNING_KEY_ALIAS` and `SIGNING_KEY_PASSWORD` repository secrets.
 
 ```bash
-git tag v1.1.0
-git push origin v1.1.0
+git tag v1.2.0
+git push origin v1.2.0
 ```
 
 ## Roadmap
 
-- Home screen widget that reuses the same renderer.
 - Foldable support, with a separate render per display.
 - Custom backgrounds, and a theme that follows the system's light or dark mode.
 - Public release on Google Play after the closed testing period.

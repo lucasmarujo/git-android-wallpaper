@@ -10,6 +10,7 @@ import com.lucasmarujo.gitwallpaper.domain.UpdateResult
 import com.lucasmarujo.gitwallpaper.domain.WallpaperTarget
 import com.lucasmarujo.gitwallpaper.wallpaper.WallpaperApplier
 import com.lucasmarujo.gitwallpaper.wallpaper.WallpaperUpdater
+import com.lucasmarujo.gitwallpaper.widget.WidgetUpdater
 import com.lucasmarujo.gitwallpaper.work.WallpaperScheduler
 import java.security.GeneralSecurityException
 import java.time.Clock
@@ -90,6 +91,24 @@ class MutableClock(var instant: Instant, private val zone: ZoneId = ZoneOffset.U
     override fun withZone(zone: ZoneId): Clock = MutableClock(instant, zone)
 
     override fun instant(): Instant = instant
+}
+
+class FakeWidgetUpdater(var widgetCount: Int = 0) : WidgetUpdater {
+    val updatedIds: MutableList<List<Int>> = CopyOnWriteArrayList()
+    private val updateAllCalls = AtomicInteger()
+
+    val updateAllCount: Int
+        get() = updateAllCalls.get()
+
+    override fun hasWidgets(): Boolean = widgetCount > 0
+
+    override suspend fun updateAll() {
+        updateAllCalls.incrementAndGet()
+    }
+
+    override suspend fun update(appWidgetIds: IntArray) {
+        updatedIds += appWidgetIds.toList()
+    }
 }
 
 class FakeWallpaperUpdater(var result: UpdateResult = UpdateResult.Applied) : WallpaperUpdater {

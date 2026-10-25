@@ -1,5 +1,6 @@
 package com.lucasmarujo.gitwallpaper
 
+import android.appwidget.AppWidgetManager
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -21,8 +22,14 @@ import com.lucasmarujo.gitwallpaper.wallpaper.DisplayScreenSizeProvider
 import com.lucasmarujo.gitwallpaper.wallpaper.ScreenSizeProvider
 import com.lucasmarujo.gitwallpaper.wallpaper.SystemWallpaperApplier
 import com.lucasmarujo.gitwallpaper.wallpaper.WallpaperUpdater
+import com.lucasmarujo.gitwallpaper.widget.ContributionWidgetUpdater
+import com.lucasmarujo.gitwallpaper.widget.WidgetUpdater
+import com.lucasmarujo.gitwallpaper.work.AutoUpdateSync
 import com.lucasmarujo.gitwallpaper.work.WallpaperScheduler
 import com.lucasmarujo.gitwallpaper.work.WorkManagerWallpaperScheduler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import okhttp3.OkHttpClient
 import java.io.File
 import java.time.Clock
@@ -36,6 +43,8 @@ private val Context.updateStatusDataStore: DataStore<Preferences> by preferences
 class AppContainer(private val context: Context) {
 
     val clock: Clock = Clock.systemDefaultZone()
+
+    val backgroundScope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
     private val httpClient: OkHttpClient by lazy {
         OkHttpClient.Builder()
@@ -76,6 +85,7 @@ class AppContainer(private val context: Context) {
             contributionRepository = contributionRepository,
             updateStatusRepository = updateStatusRepository,
             wallpaperScheduler = wallpaperScheduler,
+            widgetUpdater = widgetUpdater,
         )
     }
 
@@ -97,6 +107,26 @@ class AppContainer(private val context: Context) {
             applier = SystemWallpaperApplier(context),
             screenSizeProvider = screenSizeProvider,
             clock = clock,
+        )
+    }
+
+    val widgetUpdater: WidgetUpdater by lazy {
+        ContributionWidgetUpdater(
+            context = context,
+            appWidgetManager = AppWidgetManager.getInstance(context),
+            contributionRepository = contributionRepository,
+            settingsRepository = settingsRepository,
+            renderer = wallpaperRenderer,
+            clock = clock,
+        )
+    }
+
+    val autoUpdateSync: AutoUpdateSync by lazy {
+        AutoUpdateSync(
+            settingsRepository = settingsRepository,
+            updateStatusRepository = updateStatusRepository,
+            widgetUpdater = widgetUpdater,
+            wallpaperScheduler = wallpaperScheduler,
         )
     }
 

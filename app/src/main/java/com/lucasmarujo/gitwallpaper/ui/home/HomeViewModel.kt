@@ -25,7 +25,8 @@ import com.lucasmarujo.gitwallpaper.wallpaper.ContributionWallpaperRenderer
 import com.lucasmarujo.gitwallpaper.wallpaper.DayGrid
 import com.lucasmarujo.gitwallpaper.wallpaper.ScreenSize
 import com.lucasmarujo.gitwallpaper.wallpaper.WallpaperUpdater
-import com.lucasmarujo.gitwallpaper.work.WallpaperScheduler
+import com.lucasmarujo.gitwallpaper.widget.WidgetUpdater
+import com.lucasmarujo.gitwallpaper.work.AutoUpdateSync
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -53,7 +54,8 @@ class HomeViewModel(
     private val settingsRepository: SettingsRepository,
     private val updateStatusRepository: UpdateStatusRepository,
     private val wallpaperUpdater: WallpaperUpdater,
-    private val wallpaperScheduler: WallpaperScheduler,
+    private val autoUpdateSync: AutoUpdateSync,
+    private val widgetUpdater: WidgetUpdater,
     private val authRepository: AuthRepository,
     private val avatarSource: AvatarSource,
     private val renderer: ContributionWallpaperRenderer,
@@ -137,13 +139,14 @@ class HomeViewModel(
         viewModelScope.launch {
             refreshContributions(notify = false)
             actionState.update { it.copy(initialRefreshFinished = true) }
-            syncSchedule(settingsRepository.current())
+            autoUpdateSync.sync()
         }
     }
 
     fun updateSettings(transform: (WallpaperSettings) -> WallpaperSettings) {
         viewModelScope.launch {
-            syncSchedule(settingsRepository.update(transform))
+            autoUpdateSync.sync(settingsRepository.update(transform))
+            widgetUpdater.updateAll()
         }
     }
 
@@ -166,9 +169,10 @@ class HomeViewModel(
             } finally {
                 actionState.update { it.copy(isApplying = false, isAdjusting = false) }
             }
+            widgetUpdater.updateAll()
             when (result) {
                 UpdateResult.Applied, UpdateResult.Unchanged -> {
-                    syncSchedule(settingsRepository.current())
+                    autoUpdateSync.sync()
                     _messages.send(HomeMessage.APPLIED)
                 }
                 is UpdateResult.Failure -> result.error.toMessage()?.let { _messages.send(it) }
@@ -192,20 +196,13 @@ class HomeViewModel(
         } finally {
             actionState.update { it.copy(isRefreshing = false) }
         }
+        widgetUpdater.updateAll()
         if (!notify) return
         val message = when (result) {
             is RefreshResult.Success -> HomeMessage.REFRESHED
             is RefreshResult.Failure -> result.error.toMessage()
         }
         message?.let { _messages.send(it) }
-    }
-
-    private suspend fun syncSchedule(settings: WallpaperSettings) {
-        when {
-            !settings.autoUpdate -> wallpaperScheduler.cancel()
-            updateStatusRepository.current().lastAppliedAtMillis != null ->
-                wallpaperScheduler.schedule(settings.updateInterval)
-        }
     }
 
     private fun renderPreview(
@@ -242,7 +239,8 @@ class HomeViewModel(
                     settingsRepository = container.settingsRepository,
                     updateStatusRepository = container.updateStatusRepository,
                     wallpaperUpdater = container.wallpaperUpdater,
-                    wallpaperScheduler = container.wallpaperScheduler,
+                    autoUpdateSync = container.autoUpdateSync,
+                    widgetUpdater = container.widgetUpdater,
                     authRepository = container.authRepository,
                     avatarSource = container.avatarSource,
                     renderer = container.wallpaperRenderer,

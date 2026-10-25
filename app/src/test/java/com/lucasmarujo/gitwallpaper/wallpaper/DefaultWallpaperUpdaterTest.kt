@@ -61,10 +61,10 @@ class DefaultWallpaperUpdaterTest {
     private lateinit var updateStatusRepository: UpdateStatusRepository
 
     @Test
-    fun `first update renders, applies and records the status`() = runTest {
+    fun `applying renders, applies and records the status`() = runTest {
         val updater = updater()
 
-        val result = updater.update(force = false)
+        val result = updater.update(force = true)
 
         assertEquals(UpdateResult.Applied, result)
         assertEquals(
@@ -77,9 +77,23 @@ class DefaultWallpaperUpdaterTest {
     }
 
     @Test
+    fun `automatic updates never set a wallpaper that was not applied yet`() = runTest {
+        val updater = updater()
+
+        val result = updater.update(force = false)
+
+        assertEquals(UpdateResult.Unchanged, result)
+        assertTrue(applier.applied.isEmpty())
+        assertEquals(TestCalendars.calendar(), contributionRepository.cachedCalendar())
+        val status = updateStatusRepository.current()
+        assertNull(status.lastAppliedAtMillis)
+        assertEquals(clock.millis(), status.lastCheckedAtMillis)
+    }
+
+    @Test
     fun `unchanged contributions do not reapply the wallpaper`() = runTest {
         val updater = updater()
-        updater.update(force = false)
+        updater.update(force = true)
 
         val result = updater.update(force = false)
 
@@ -90,7 +104,7 @@ class DefaultWallpaperUpdaterTest {
     @Test
     fun `forced updates always reapply`() = runTest {
         val updater = updater()
-        updater.update(force = false)
+        updater.update(force = true)
 
         val result = updater.update(force = true)
 
@@ -101,7 +115,7 @@ class DefaultWallpaperUpdaterTest {
     @Test
     fun `new contributions reapply the wallpaper`() = runTest {
         val updater = updater()
-        updater.update(force = false)
+        updater.update(force = true)
         source.handler = { TestCalendars.calendar(counts = List(371) { 4 }) }
 
         val result = updater.update(force = false)
@@ -113,7 +127,7 @@ class DefaultWallpaperUpdaterTest {
     @Test
     fun `a new day reapplies the wallpaper to move the highlight`() = runTest {
         val updater = updater()
-        updater.update(force = false)
+        updater.update(force = true)
         clock.instant = clock.instant.plus(Duration.ofDays(1))
 
         val result = updater.update(force = false)
@@ -125,7 +139,7 @@ class DefaultWallpaperUpdaterTest {
     @Test
     fun `offline background updates redraw the new day from the cache and ask for a retry`() = runTest {
         val updater = updater()
-        updater.update(force = false)
+        updater.update(force = true)
         source.handler = { throw GitHubException.Network(IOException("offline")) }
         clock.instant = clock.instant.plus(Duration.ofDays(1))
 
@@ -138,7 +152,7 @@ class DefaultWallpaperUpdaterTest {
     @Test
     fun `offline background updates without changes keep the current wallpaper`() = runTest {
         val updater = updater()
-        updater.update(force = false)
+        updater.update(force = true)
         source.handler = { throw GitHubException.Network(IOException("offline")) }
 
         val result = updater.update(force = false)
@@ -173,7 +187,7 @@ class DefaultWallpaperUpdaterTest {
         val updater = updater()
         settingsRepository.update { it.copy(target = WallpaperTarget.BOTH) }
 
-        updater.update(force = false)
+        updater.update(force = true)
 
         assertEquals(WallpaperTarget.BOTH, applier.applied.single().target)
     }
@@ -181,7 +195,7 @@ class DefaultWallpaperUpdaterTest {
     @Test
     fun `a new framing reapplies the wallpaper on the next automatic update`() = runTest {
         val updater = updater()
-        updater.update(force = false)
+        updater.update(force = true)
         settingsRepository.update { it.copy(framing = WallpaperFraming(zoom = 1.4f)) }
 
         val result = updater.update(force = false)
@@ -197,6 +211,7 @@ class DefaultWallpaperUpdaterTest {
         val updater = updater(applier = { bitmap, _ -> applied = bitmap.copy(Bitmap.Config.ARGB_8888, false) })
         val framed = WallpaperSettings(framing = WallpaperFraming(zoom = 1.4f, offsetY = 0.1f))
         settingsRepository.update { framed }
+        updateStatusRepository.markApplied("previous", 0L)
 
         updater.update(force = false)
 
@@ -214,7 +229,7 @@ class DefaultWallpaperUpdaterTest {
         source.handler = { TestCalendars.calendar().copy(avatarUrl = avatarUrl) }
         val updater = updater()
 
-        updater.update(force = false)
+        updater.update(force = true)
         updater.update(force = false)
 
         assertEquals(listOf<String?>(avatarUrl), avatarSource.requestedUrls)
@@ -247,7 +262,7 @@ class DefaultWallpaperUpdaterTest {
         val updater = updater()
         applier.failure = IOException("disk full")
 
-        val result = updater.update(force = false)
+        val result = updater.update(force = true)
 
         assertEquals(UpdateResult.Failure(SyncError.WALLPAPER), result)
         assertNull(updateStatusRepository.current().lastAppliedAtMillis)

@@ -13,10 +13,12 @@ import com.lucasmarujo.gitwallpaper.data.settings.SettingsRepository
 import com.lucasmarujo.gitwallpaper.data.settings.UpdateStatusRepository
 import com.lucasmarujo.gitwallpaper.domain.UpdateInterval
 import com.lucasmarujo.gitwallpaper.domain.WallpaperFraming
+import com.lucasmarujo.gitwallpaper.domain.WallpaperTheme
 import com.lucasmarujo.gitwallpaper.testing.FakeAvatarSource
 import com.lucasmarujo.gitwallpaper.testing.FakeContributionsSource
 import com.lucasmarujo.gitwallpaper.testing.FakeSecretCipher
 import com.lucasmarujo.gitwallpaper.testing.FakeWallpaperScheduler
+import com.lucasmarujo.gitwallpaper.testing.FakeWidgetUpdater
 import com.lucasmarujo.gitwallpaper.testing.MainDispatcherRule
 import com.lucasmarujo.gitwallpaper.testing.RecordingWallpaperApplier
 import com.lucasmarujo.gitwallpaper.testing.TestCalendars
@@ -24,6 +26,7 @@ import com.lucasmarujo.gitwallpaper.testing.preferencesDataStore
 import com.lucasmarujo.gitwallpaper.wallpaper.ContributionWallpaperRenderer
 import com.lucasmarujo.gitwallpaper.wallpaper.DefaultWallpaperUpdater
 import com.lucasmarujo.gitwallpaper.wallpaper.ScreenSize
+import com.lucasmarujo.gitwallpaper.work.AutoUpdateSync
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
@@ -65,6 +68,7 @@ class HomeViewModelTest {
     private val applier = RecordingWallpaperApplier()
     private val scheduler = FakeWallpaperScheduler()
     private val avatarSource = FakeAvatarSource()
+    private val widgetUpdater = FakeWidgetUpdater()
     private lateinit var sessionRepository: SessionRepository
     private lateinit var settingsRepository: SettingsRepository
     private lateinit var updateStatusRepository: UpdateStatusRepository
@@ -167,9 +171,36 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun `disabling automatic updates cancels the schedule`() = runTest(mainDispatcherRule.testDispatcher) {
+    fun `automatic updates are scheduled for home screen widgets before the first apply`() =
+        runTest(mainDispatcherRule.testDispatcher) {
+            widgetUpdater.widgetCount = 1
+            val viewModel = viewModel()
+            awaitInitialLoad(viewModel)
+
+            awaitUntil { scheduler.scheduledIntervals.isNotEmpty() }
+
+            assertEquals(listOf(UpdateInterval.ONE_HOUR), scheduler.scheduledIntervals)
+            assertTrue(applier.applied.isEmpty())
+        }
+
+    @Test
+    fun `loading contributions and changing settings redraw the widgets`() = runTest(mainDispatcherRule.testDispatcher) {
         val viewModel = viewModel()
         awaitInitialLoad(viewModel)
+        awaitUntil { widgetUpdater.updateAllCount == 1 }
+
+        viewModel.updateSettings { it.copy(theme = WallpaperTheme.OCEAN) }
+        awaitUntil { widgetUpdater.updateAllCount == 2 }
+
+        assertEquals(WallpaperTheme.OCEAN, settingsRepository.current().theme)
+    }
+
+    @Test
+    fun `disabling automatic updates cancels the schedule`() = runTest(mainDispatcherRule.testDispatcher) {
+        widgetUpdater.widgetCount = 1
+        val viewModel = viewModel()
+        awaitInitialLoad(viewModel)
+        awaitUntil { scheduler.scheduledIntervals.isNotEmpty() }
 
         viewModel.updateSettings { it.copy(autoUpdate = false) }
         awaitUntil { scheduler.cancelCount > 0 }
@@ -260,7 +291,8 @@ class HomeViewModelTest {
                 clock = clock,
                 ioDispatcher = dispatcher,
             ),
-            wallpaperScheduler = scheduler,
+            autoUpdateSync = AutoUpdateSync(settingsRepository, updateStatusRepository, widgetUpdater, scheduler),
+            widgetUpdater = widgetUpdater,
             authRepository = AuthRepository(
                 deviceFlowClient = DeviceFlowClient(OkHttpClient(), clientId = "client"),
                 contributionsSource = source,
@@ -268,6 +300,7 @@ class HomeViewModelTest {
                 contributionRepository = contributionRepository,
                 updateStatusRepository = updateStatusRepository,
                 wallpaperScheduler = scheduler,
+                widgetUpdater = widgetUpdater,
             ),
             avatarSource = avatarSource,
             renderer = renderer,

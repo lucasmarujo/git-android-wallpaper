@@ -13,6 +13,7 @@ import com.lucasmarujo.gitwallpaper.domain.SyncError
 import com.lucasmarujo.gitwallpaper.domain.UpdateResult
 import com.lucasmarujo.gitwallpaper.testing.FakeWallpaperScheduler
 import com.lucasmarujo.gitwallpaper.testing.FakeWallpaperUpdater
+import com.lucasmarujo.gitwallpaper.testing.FakeWidgetUpdater
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -25,6 +26,7 @@ class WallpaperUpdateWorkerTest {
     private val context = ApplicationProvider.getApplicationContext<Context>()
     private val updater = FakeWallpaperUpdater()
     private val scheduler = FakeWallpaperScheduler()
+    private val widgetUpdater = FakeWidgetUpdater()
 
     @Test
     fun `applied and unchanged updates succeed without forcing`() = runTest {
@@ -71,6 +73,24 @@ class WallpaperUpdateWorkerTest {
     }
 
     @Test
+    fun `every run redraws the home screen widgets`() = runTest {
+        val results = listOf(
+            UpdateResult.Applied,
+            UpdateResult.Unchanged,
+            UpdateResult.Failure(SyncError.NETWORK),
+            UpdateResult.Failure(SyncError.NOT_SIGNED_IN),
+            UpdateResult.Failure(SyncError.WALLPAPER),
+        )
+        results.forEach { result ->
+            updater.result = result
+
+            worker().doWork()
+        }
+
+        assertEquals(results.size, widgetUpdater.updateAllCount)
+    }
+
+    @Test
     fun `application factory creates the update worker`() {
         val application = ApplicationProvider.getApplicationContext<GitWallpaperApplication>()
         val factory = application.workManagerConfiguration.workerFactory
@@ -106,7 +126,7 @@ class WallpaperUpdateWorkerTest {
                         appContext: Context,
                         workerClassName: String,
                         workerParameters: WorkerParameters,
-                    ): ListenableWorker = WallpaperUpdateWorker(appContext, workerParameters, updater, scheduler)
+                    ): ListenableWorker = WallpaperUpdateWorker(appContext, workerParameters, updater, scheduler, widgetUpdater)
                 },
             )
             .build()

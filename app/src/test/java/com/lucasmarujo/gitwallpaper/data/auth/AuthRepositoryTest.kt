@@ -7,6 +7,7 @@ import com.lucasmarujo.gitwallpaper.domain.UpdateStatus
 import com.lucasmarujo.gitwallpaper.testing.FakeContributionsSource
 import com.lucasmarujo.gitwallpaper.testing.FakeSecretCipher
 import com.lucasmarujo.gitwallpaper.testing.FakeWallpaperScheduler
+import com.lucasmarujo.gitwallpaper.testing.FakeWidgetUpdater
 import com.lucasmarujo.gitwallpaper.testing.TestCalendars
 import com.lucasmarujo.gitwallpaper.testing.preferencesDataStore
 import kotlinx.coroutines.test.TestScope
@@ -25,6 +26,7 @@ class AuthRepositoryTest {
 
     private val source = FakeContributionsSource()
     private val scheduler = FakeWallpaperScheduler()
+    private val widgetUpdater = FakeWidgetUpdater()
     private lateinit var sessionRepository: SessionRepository
     private lateinit var contributionRepository: ContributionRepository
     private lateinit var updateStatusRepository: UpdateStatusRepository
@@ -40,6 +42,7 @@ class AuthRepositoryTest {
         assertEquals(listOf("gho_token"), source.requestedTokens)
         assertEquals(Session(login = "mona", token = "gho_token"), sessionRepository.currentSession())
         assertEquals(calendar, contributionRepository.cachedCalendar())
+        assertEquals(1, widgetUpdater.updateAllCount)
     }
 
     @Test
@@ -52,6 +55,7 @@ class AuthRepositoryTest {
         assertEquals(GitHubException.Unauthorized::class, exception!!::class)
         assertNull(sessionRepository.currentSession())
         assertNull(contributionRepository.cachedCalendar())
+        assertEquals(0, widgetUpdater.updateAllCount)
     }
 
     @Test
@@ -66,6 +70,7 @@ class AuthRepositoryTest {
         assertNull(contributionRepository.cachedCalendar())
         assertEquals(UpdateStatus(), updateStatusRepository.current())
         assertEquals(1, scheduler.cancelCount)
+        assertEquals(2, widgetUpdater.updateAllCount)
     }
 
     @Test
@@ -89,6 +94,7 @@ class AuthRepositoryTest {
             contributionRepository = contributionRepository,
             updateStatusRepository = updateStatusRepository,
             wallpaperScheduler = scheduler,
+            widgetUpdater = widgetUpdater,
         )
     }
 }

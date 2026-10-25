@@ -18,6 +18,7 @@ class WallpaperWorkerFactory(private val container: AppContainer) : WorkerFactor
             params = workerParameters,
             wallpaperUpdater = container.wallpaperUpdater,
             wallpaperScheduler = container.wallpaperScheduler,
+            widgetUpdater = container.widgetUpdater,
         )
         else -> null
     }

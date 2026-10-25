@@ -2,13 +2,16 @@ package com.lucasmarujo.gitwallpaper.ui
 
 import android.Manifest
 import android.app.Application
+import android.appwidget.AppWidgetManager
 import android.content.ClipboardManager
+import android.content.ComponentName
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.provider.Settings
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.lucasmarujo.gitwallpaper.BuildConfig
+import com.lucasmarujo.gitwallpaper.widget.ContributionWidgetProvider
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -47,6 +50,26 @@ class ContextExtensionsTest {
         val clip = requireNotNull(application.getSystemService(ClipboardManager::class.java).primaryClip)
         assertEquals("https://github.com/login/device", clip.getItemAt(0).text)
         assertEquals("GitHub link", clip.description.label)
+    }
+
+    @Test
+    fun `the widget is pinned through the launcher when it supports it`() {
+        val appWidgetManager = AppWidgetManager.getInstance(application)
+        shadowOf(appWidgetManager).setRequestPinAppWidgetSupported(true)
+
+        assertTrue(application.canPinContributionWidget())
+        assertTrue(application.requestPinContributionWidget())
+
+        val provider = ComponentName(application, ContributionWidgetProvider::class.java)
+        assertEquals(1, appWidgetManager.getAppWidgetIds(provider).size)
+    }
+
+    @Test
+    fun `pinning is unavailable when the launcher does not support it`() {
+        shadowOf(AppWidgetManager.getInstance(application)).setRequestPinAppWidgetSupported(false)
+
+        assertFalse(application.canPinContributionWidget())
+        assertFalse(application.requestPinContributionWidget())
     }
 
     @Test

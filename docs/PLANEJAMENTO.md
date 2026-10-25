@@ -26,6 +26,7 @@ Restrições do produto:
 | F8 | Pré-visualização | Mesmo renderizador em escala reduzida, recalculado a cada ajuste |
 | F9 | Sair da conta | Limpa sessão, cache e status, e cancela o agendamento |
 | F10 | Ajustar zoom e posição | Prévia em tela cheia da tela de bloqueio com pinça e arrastar; o enquadramento é salvo nas configurações e aplicado pelo renderizador em toda atualização |
+| F11 | Widget redimensionável na tela inicial | `AppWidgetProvider` com `resizeMode` horizontal e vertical a partir de 1 célula; adicionado pelo app (`requestPinAppWidget`) ou pela lista de widgets do sistema; desenhado pelo mesmo renderizador no tamanho de cada widget |
 
 ### Não funcionais
 
@@ -66,6 +67,14 @@ Camadas simples, sem framework de DI (container manual), seguindo o guia oficial
 3. O fingerprint (calendário + avatar + data de hoje + configurações visuais + tamanho da tela + idioma + versão do render) é comparado com o último aplicado.
 4. Se mudou (commit novo, virada do dia, nova versão do app): carrega o avatar (cache), renderiza o bitmap no tamanho físico da tela, aplica via `WallpaperManager`, recicla o bitmap e grava o novo status.
 5. Resultado do worker: `success` (aplicado ou sem mudanças), `retry` (rede/GitHub, mesmo depois de redesenhar do cache), `failure` + cancelamento (sessão perdida).
+6. Em toda execução o worker também redesenha os widgets a partir do cache. O agendamento existe enquanto houver wallpaper aplicado **ou** widget na tela inicial (`AutoUpdateSync`), e a atualização automática nunca aplica um wallpaper que o usuário ainda não aplicou.
+
+### Layout do widget
+
+- O gráfico nunca quebra linha. Com até ~100 dp de altura útil (uma linha do launcher, o padrão 4×1), usa a grade do GitHub: uma coluna por semana, domingo a sábado de cima para baixo, numa única faixa; esticar para os lados mostra mais semanas, sempre terminando na atual.
+- Esticado na vertical, vira a mesma grade do wallpaper: um quadrado por dia, da esquerda para a direita e de cima para baixo, com o número de colunas escolhido para maximizar o quadrado.
+- Widgets muito pequenos mostram os dias mais recentes que cabem com células de pelo menos 6 dp.
+- Cabeçalho com o total de contribuições quando há espaço e as estatísticas estão ligadas; cantos com o raio de widget do sistema no Android 12+.
 
 ### Layout do wallpaper
 
@@ -116,10 +125,10 @@ Camadas simples, sem framework de DI (container manual), seguindo o guia oficial
 - **Launchers com rolagem de wallpaper** podem ampliar a imagem na tela inicial; o recorte é enviado como dica para o sistema.
 - **Contribuições privadas** só aparecem se o usuário habilitar a opção no perfil do GitHub.
 - **Limite da API GraphQL** (5.000 pontos/h por usuário): o intervalo mínimo de 30 min consome ~2 chamadas/h, muito abaixo do limite.
+- **Widget e launchers**: alguns launchers não aceitam `requestPinAppWidget`; nesse caso o app esconde o botão e orienta a adicionar pela lista de widgets do sistema. O bitmap de cada widget é limitado a 1 milhão de pixels para ficar dentro do limite de memória do `RemoteViews`.
 
 ## 8. Próximos passos sugeridos
 
-- Widget de tela inicial com o mesmo renderizador.
 - Suporte a telas dobráveis (render separado por display).
 - Fundo personalizado pelo usuário e modo que segue o tema claro/escuro do sistema.
 - Produção na Play Store depois do teste fechado (contas pessoais exigem 12 testadores por 14 dias).

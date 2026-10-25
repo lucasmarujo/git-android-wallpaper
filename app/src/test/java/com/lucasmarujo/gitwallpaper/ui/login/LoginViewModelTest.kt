@@ -9,6 +9,7 @@ import com.lucasmarujo.gitwallpaper.data.settings.UpdateStatusRepository
 import com.lucasmarujo.gitwallpaper.testing.FakeContributionsSource
 import com.lucasmarujo.gitwallpaper.testing.FakeSecretCipher
 import com.lucasmarujo.gitwallpaper.testing.FakeWallpaperScheduler
+import com.lucasmarujo.gitwallpaper.testing.FakeWidgetUpdater
 import com.lucasmarujo.gitwallpaper.testing.MainDispatcherRule
 import com.lucasmarujo.gitwallpaper.testing.preferencesDataStore
 import kotlinx.coroutines.Dispatchers
@@ -168,6 +169,7 @@ class LoginViewModelTest {
             ),
             updateStatusRepository = UpdateStatusRepository(temporaryFolder.preferencesDataStore(backgroundScope)),
             wallpaperScheduler = FakeWallpaperScheduler(),
+            widgetUpdater = FakeWidgetUpdater(),
         )
         return LoginViewModel(authRepository)
     }

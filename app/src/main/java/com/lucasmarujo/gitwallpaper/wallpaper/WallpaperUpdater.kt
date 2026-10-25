@@ -51,7 +51,8 @@ class DefaultWallpaperUpdater(
         val today = LocalDate.now(clock)
         val fingerprint = WallpaperFingerprint.of(calendar, settings, screenSize, Locale.getDefault(), today)
         val now = clock.millis()
-        val changed = force || fingerprint != updateStatusRepository.current().fingerprint
+        val status = updateStatusRepository.current()
+        val changed = force || (status.lastAppliedAtMillis != null && fingerprint != status.fingerprint)
         if (changed) {
             val avatar = avatarSource.load(calendar.avatarUrl)
             val applied = withContext(ioDispatcher) { renderAndApply(calendar, settings, screenSize, today, avatar) }

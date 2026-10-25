@@ -36,6 +36,7 @@ class HomeScreenTest {
     private var signOuts = 0
     private var batterySettingsOpens = 0
     private var privacyPolicyOpens = 0
+    private var addWidgetClicks = 0
 
     @Test
     fun `apply is disabled until contributions are loaded`() {
@@ -149,6 +150,26 @@ class HomeScreenTest {
     }
 
     @Test
+    fun `the widget can be added from the app when the launcher supports it`() {
+        setContent(loadedState(), canPinWidget = true)
+
+        composeRule.onNodeWithTag(HomeTestTags.ADD_WIDGET_BUTTON).performScrollTo().performClick()
+
+        assertEquals(1, addWidgetClicks)
+        composeRule.onNodeWithText("Home screen widget").assertIsDisplayed()
+    }
+
+    @Test
+    fun `without launcher support only the system widget hint is shown`() {
+        setContent(loadedState(), canPinWidget = false)
+
+        composeRule.onNodeWithTag(HomeTestTags.ADD_WIDGET_BUTTON).assertDoesNotExist()
+        composeRule.onNodeWithText(
+            "You can also touch and hold an empty spot on your home screen, open Widgets and pick Git Wallpaper.",
+        ).performScrollTo().assertIsDisplayed()
+    }
+
+    @Test
     fun `privacy policy link opens the policy`() {
         setContent(loadedState())
 
@@ -164,17 +185,19 @@ class HomeScreenTest {
         stats = ContributionStats(totalContributions = 1234, currentStreak = 5, longestStreak = 1),
     )
 
-    private fun setContent(state: HomeUiState, showBatteryHint: Boolean = false) {
+    private fun setContent(state: HomeUiState, showBatteryHint: Boolean = false, canPinWidget: Boolean = false) {
         composeRule.setContent {
             GitWallpaperTheme {
                 HomeScreen(
                     uiState = state,
                     snackbarHostState = SnackbarHostState(),
                     showBatteryHint = showBatteryHint,
+                    canPinWidget = canPinWidget,
                     onSettingsChange = { transform -> settings = transform(settings) },
                     onApply = { applyClicks++ },
                     onRefresh = {},
                     onSignOut = { signOuts++ },
+                    onAddWidget = { addWidgetClicks++ },
                     onOpenBatterySettings = { batterySettingsOpens++ },
                     onOpenPrivacyPolicy = { privacyPolicyOpens++ },
                 )

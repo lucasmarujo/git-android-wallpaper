@@ -3,6 +3,7 @@ package com.lucasmarujo.gitwallpaper.data.auth
 import com.lucasmarujo.gitwallpaper.data.contributions.ContributionRepository
 import com.lucasmarujo.gitwallpaper.data.github.ContributionsSource
 import com.lucasmarujo.gitwallpaper.data.settings.UpdateStatusRepository
+import com.lucasmarujo.gitwallpaper.widget.WidgetUpdater
 import com.lucasmarujo.gitwallpaper.work.WallpaperScheduler
 
 class AuthRepository(
@@ -12,6 +13,7 @@ class AuthRepository(
     private val contributionRepository: ContributionRepository,
     private val updateStatusRepository: UpdateStatusRepository,
     private val wallpaperScheduler: WallpaperScheduler,
+    private val widgetUpdater: WidgetUpdater,
 ) {
     val isDeviceFlowAvailable: Boolean
         get() = deviceFlowClient.isConfigured
@@ -26,6 +28,7 @@ class AuthRepository(
         val calendar = contributionsSource.fetchCalendar(sanitizedToken)
         contributionRepository.save(calendar)
         sessionRepository.save(Session(login = calendar.login, token = sanitizedToken))
+        widgetUpdater.updateAll()
     }
 
     suspend fun signOut() {
@@ -33,5 +36,6 @@ class AuthRepository(
         sessionRepository.clear()
         contributionRepository.clear()
         updateStatusRepository.clear()
+        widgetUpdater.updateAll()
     }
 }

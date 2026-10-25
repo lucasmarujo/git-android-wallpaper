@@ -59,6 +59,10 @@
     <string name="home_battery_title">Keep the wallpaper updating on its own</string>
     <string name="home_battery_body">Android may pause apps in the background. Open the battery settings and set Git Wallpaper to \"Don\'t optimize\" (or \"Unrestricted\") so the wallpaper keeps updating by itself.</string>
     <string name="home_battery_action">Open battery settings</string>
+    <string name="home_section_widget">Home screen widget</string>
+    <string name="home_widget_body">Show your contribution graph on the home screen. Resize it to any size: it follows the theme, color and period chosen here.</string>
+    <string name="home_widget_add">Add widget</string>
+    <string name="home_widget_system_hint">You can also touch and hold an empty spot on your home screen, open Widgets and pick Git Wallpaper.</string>
     <string name="privacy_policy">Privacy policy</string>
 
     <string name="adjust_hint">Pinch to zoom and drag to move your graph</string>
@@ -91,6 +95,7 @@
     <string name="message_github_error">GitHub returned an error. Try again later.</string>
     <string name="message_wallpaper_error">This device did not allow the wallpaper change.</string>
     <string name="message_session_expired">Your session expired. Sign in again.</string>
+    <string name="message_widget_unavailable">Your launcher can\'t add widgets from the app. Add it from the widget list on your home screen.</string>
 
     <string name="wallpaper_login" translatable="false">\@%1$s</string>
     <string name="wallpaper_days">{count, plural, =0 {0 days} one {# day} other {# days}}</string>
@@ -100,4 +105,9 @@
     <string name="wallpaper_total_highlight">{count, plural, =0 {No contributions} one {# contribution} other {# contributions}}</string>
     <string name="wallpaper_total_suffix_year">in %1$d</string>
     <string name="wallpaper_total_suffix_last_12_months">in the last 12 months</string>
+
+    <string name="widget_description">Your GitHub contribution graph, in any size.</string>
+    <string name="widget_content_description">GitHub contribution graph</string>
+    <string name="widget_loading">Loading…</string>
+    <string name="widget_empty">Open Git Wallpaper to load your contributions</string>
 </resources>

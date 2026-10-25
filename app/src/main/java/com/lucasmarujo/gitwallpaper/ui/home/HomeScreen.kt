@@ -35,6 +35,7 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
@@ -88,6 +89,7 @@ object HomeTestTags {
     const val PREVIEW = "home_preview"
     const val LAST_APPLIED = "home_last_applied"
     const val CUSTOM_COMMIT_COLOR = "home_custom_commit_color"
+    const val ADD_WIDGET_BUTTON = "home_add_widget_button"
 }
 
 private val ThemeSwatchPattern = contributionPatternOf("142", "031", "204")
@@ -99,10 +101,12 @@ fun HomeScreen(
     uiState: HomeUiState,
     snackbarHostState: SnackbarHostState,
     showBatteryHint: Boolean,
+    canPinWidget: Boolean,
     onSettingsChange: ((WallpaperSettings) -> WallpaperSettings) -> Unit,
     onApply: () -> Unit,
     onRefresh: () -> Unit,
     onSignOut: () -> Unit,
+    onAddWidget: () -> Unit,
     onOpenBatterySettings: () -> Unit,
     onOpenPrivacyPolicy: () -> Unit,
     modifier: Modifier = Modifier,
@@ -171,6 +175,7 @@ fun HomeScreen(
                     onSelect = { target -> onSettingsChange { it.copy(target = target) } },
                 )
             }
+            WidgetCard(canPinWidget = canPinWidget, onAddWidget = onAddWidget)
             SettingsSection(R.string.home_section_theme) {
                 ThemeSelector(
                     selected = uiState.settings.theme,
@@ -384,6 +389,42 @@ private fun BatteryHintCard(onOpenBatterySettings: () -> Unit) {
             TextButton(onClick = onOpenBatterySettings) {
                 Text(stringResource(R.string.home_battery_action))
             }
+        }
+    }
+}
+
+@Composable
+private fun WidgetCard(canPinWidget: Boolean, onAddWidget: () -> Unit) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Text(
+                text = stringResource(R.string.home_section_widget),
+                style = MaterialTheme.typography.titleSmall,
+                color = MaterialTheme.colorScheme.primary,
+            )
+            Text(
+                text = stringResource(R.string.home_widget_body),
+                style = MaterialTheme.typography.bodyMedium,
+            )
+            if (canPinWidget) {
+                OutlinedButton(
+                    onClick = onAddWidget,
+                    modifier = Modifier.testTag(HomeTestTags.ADD_WIDGET_BUTTON),
+                ) {
+                    Text(stringResource(R.string.home_widget_add))
+                }
+            }
+            Text(
+                text = stringResource(R.string.home_widget_system_hint),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
         }
     }
 }
