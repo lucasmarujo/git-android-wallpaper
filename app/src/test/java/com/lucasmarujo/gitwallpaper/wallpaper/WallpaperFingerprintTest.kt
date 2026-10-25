@@ -2,6 +2,7 @@ package com.lucasmarujo.gitwallpaper.wallpaper
 
 import com.lucasmarujo.gitwallpaper.domain.CellShape
 import com.lucasmarujo.gitwallpaper.domain.ContributionPeriod
+import com.lucasmarujo.gitwallpaper.domain.WallpaperFraming
 import com.lucasmarujo.gitwallpaper.domain.WallpaperSettings
 import com.lucasmarujo.gitwallpaper.domain.WallpaperTarget
 import com.lucasmarujo.gitwallpaper.domain.WallpaperTheme
@@ -56,10 +57,14 @@ class WallpaperFingerprintTest {
 
         listOf(
             settings.copy(theme = WallpaperTheme.OCEAN),
+            settings.copy(commitColor = 0xFFFF0000.toInt()),
             settings.copy(target = WallpaperTarget.BOTH),
             settings.copy(showStats = false),
             settings.copy(period = ContributionPeriod.LAST_12_MONTHS),
             settings.copy(cellShape = CellShape.CIRCLE),
+            settings.copy(framing = WallpaperFraming(zoom = 1.3f)),
+            settings.copy(framing = WallpaperFraming(offsetX = 0.1f)),
+            settings.copy(framing = WallpaperFraming(offsetY = -0.1f)),
         ).forEach { changed ->
             assertNotEquals(changed.toString(), base, WallpaperFingerprint.of(calendar, changed, size, locale, TODAY))
         }

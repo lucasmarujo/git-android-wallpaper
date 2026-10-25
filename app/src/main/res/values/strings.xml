@@ -5,7 +5,11 @@
     <string name="login_tagline">Your GitHub contribution graph as your wallpaper, always up to date.</string>
     <string name="login_sign_in_github">Sign in with GitHub</string>
     <string name="login_requesting_code">Contacting GitHub…</string>
-    <string name="login_enter_code">Open github.com/login/device and enter this code:</string>
+    <string name="login_enter_code">Open this link and enter the code below:</string>
+    <string name="login_open_link">Open link</string>
+    <string name="login_copy_link">Copy link</string>
+    <string name="login_link_copied">Link copied</string>
+    <string name="login_link_clip_label">GitHub link</string>
     <string name="login_copy_and_open">Copy code and open GitHub</string>
     <string name="login_code_clip_label">GitHub code</string>
     <string name="login_waiting">Waiting for authorization…</string>
@@ -35,6 +39,13 @@
     <string name="home_stat_longest_streak">Longest streak</string>
     <string name="home_section_target">Apply to</string>
     <string name="home_section_theme">Theme</string>
+    <string name="home_section_commit_color">Commit color</string>
+    <string name="commit_color_theme">Theme colors</string>
+    <string name="commit_color_custom">Custom</string>
+    <string name="commit_color_red">Red</string>
+    <string name="commit_color_green">Green</string>
+    <string name="commit_color_blue">Blue</string>
+    <string name="commit_color_confirm">Use color</string>
     <string name="home_section_period">Period</string>
     <string name="home_section_shape">Cell shape</string>
     <string name="home_show_stats">Show stats on the wallpaper</string>
@@ -49,6 +60,10 @@
     <string name="home_battery_body">Android may pause apps in the background. Open the battery settings and set Git Wallpaper to \"Don\'t optimize\" (or \"Unrestricted\") so the wallpaper keeps updating by itself.</string>
     <string name="home_battery_action">Open battery settings</string>
     <string name="privacy_policy">Privacy policy</string>
+
+    <string name="adjust_hint">Pinch to zoom and drag to move your graph</string>
+    <string name="adjust_reset">Reset</string>
+    <string name="adjust_apply">Apply</string>
 
     <string name="target_lock_screen">Lock</string>
     <string name="target_home_screen">Home</string>

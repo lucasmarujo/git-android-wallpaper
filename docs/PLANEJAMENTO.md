@@ -22,9 +22,10 @@ Restrições do produto:
 | F4 | Gerar o wallpaper | Grade vertical com um quadrado por dia, renderizada em `Canvas` na resolução física da tela |
 | F5 | Aplicar em bloqueio/início/ambas | `WallpaperManager.setBitmap` com `FLAG_LOCK` / `FLAG_SYSTEM` |
 | F6 | Atualizar automaticamente, sem abrir o app | `PeriodicWorkRequest` único (30 min a 12 h), sem exigir rede, + atalho para liberar a otimização de bateria |
-| F7 | Personalização | Tema, período (este ano / últimos 12 meses), formato e estatísticas |
+| F7 | Personalização | Tema, cor dos commits (RGB), período (este ano / últimos 12 meses), formato e estatísticas |
 | F8 | Pré-visualização | Mesmo renderizador em escala reduzida, recalculado a cada ajuste |
 | F9 | Sair da conta | Limpa sessão, cache e status, e cancela o agendamento |
+| F10 | Ajustar zoom e posição | Prévia em tela cheia da tela de bloqueio com pinça e arrastar; o enquadramento é salvo nas configurações e aplicado pelo renderizador em toda atualização |
 
 ### Não funcionais
 
@@ -120,5 +121,5 @@ Camadas simples, sem framework de DI (container manual), seguindo o guia oficial
 
 - Widget de tela inicial com o mesmo renderizador.
 - Suporte a telas dobráveis (render separado por display).
-- Temas personalizados pelo usuário e modo que segue o tema claro/escuro do sistema.
+- Fundo personalizado pelo usuário e modo que segue o tema claro/escuro do sistema.
 - Produção na Play Store depois do teste fechado (contas pessoais exigem 12 testadores por 14 dias).

@@ -12,6 +12,7 @@ import com.lucasmarujo.gitwallpaper.data.github.GitHubException
 import com.lucasmarujo.gitwallpaper.data.settings.SettingsRepository
 import com.lucasmarujo.gitwallpaper.data.settings.UpdateStatusRepository
 import com.lucasmarujo.gitwallpaper.domain.UpdateInterval
+import com.lucasmarujo.gitwallpaper.domain.WallpaperFraming
 import com.lucasmarujo.gitwallpaper.testing.FakeAvatarSource
 import com.lucasmarujo.gitwallpaper.testing.FakeContributionsSource
 import com.lucasmarujo.gitwallpaper.testing.FakeSecretCipher
@@ -86,12 +87,57 @@ class HomeViewModelTest {
         val viewModel = viewModel()
         awaitInitialLoad(viewModel)
 
-        viewModel.applyWallpaper()
+        viewModel.applyWallpaper(WallpaperFraming())
 
         assertEquals(HomeMessage.APPLIED, viewModel.messages.first())
         assertEquals(1, applier.applied.size)
         assertEquals(setOf(UpdateInterval.ONE_HOUR), scheduler.scheduledIntervals.toSet())
         assertNotNull(updateStatusRepository.current().lastAppliedAtMillis)
+    }
+
+    @Test
+    fun `tapping apply opens the adjustment with a full size preview`() = runTest(mainDispatcherRule.testDispatcher) {
+        val viewModel = viewModel()
+        awaitInitialLoad(viewModel)
+
+        viewModel.startAdjusting()
+
+        val state = viewModel.uiState.first { it.isAdjusting && it.adjustmentPreview != null }
+        val preview = requireNotNull(state.adjustmentPreview)
+        assertEquals(ADJUSTMENT_SIZE.width, preview.width)
+        assertEquals(ADJUSTMENT_SIZE.height, preview.height)
+        assertTrue(applier.applied.isEmpty())
+    }
+
+    @Test
+    fun `applying from the adjustment saves the framing and closes it`() = runTest(mainDispatcherRule.testDispatcher) {
+        val viewModel = viewModel()
+        awaitInitialLoad(viewModel)
+        val framing = WallpaperFraming(zoom = 1.6f, offsetX = 0.05f, offsetY = -0.1f)
+        viewModel.startAdjusting()
+        viewModel.uiState.first { it.isAdjusting }
+
+        viewModel.applyWallpaper(framing)
+
+        assertEquals(HomeMessage.APPLIED, viewModel.messages.first())
+        assertEquals(framing, settingsRepository.current().framing)
+        assertEquals(1, applier.applied.size)
+        val state = viewModel.uiState.first { !it.isAdjusting && !it.isApplying && it.adjustmentPreview == null }
+        assertEquals(framing, state.settings.framing)
+    }
+
+    @Test
+    fun `cancelling the adjustment keeps the wallpaper and the framing`() = runTest(mainDispatcherRule.testDispatcher) {
+        val viewModel = viewModel()
+        awaitInitialLoad(viewModel)
+        viewModel.startAdjusting()
+        viewModel.uiState.first { it.isAdjusting }
+
+        viewModel.cancelAdjusting()
+
+        assertFalse(viewModel.uiState.first { !it.isAdjusting }.isAdjusting)
+        assertTrue(applier.applied.isEmpty())
+        assertEquals(WallpaperFraming(), settingsRepository.current().framing)
     }
 
     @Test
@@ -110,7 +156,7 @@ class HomeViewModelTest {
     fun `changing the interval reschedules after the wallpaper was applied`() = runTest(mainDispatcherRule.testDispatcher) {
         val viewModel = viewModel()
         awaitInitialLoad(viewModel)
-        viewModel.applyWallpaper()
+        viewModel.applyWallpaper(WallpaperFraming())
         viewModel.messages.first()
 
         viewModel.updateSettings { it.copy(updateInterval = UpdateInterval.SIX_HOURS) }
@@ -137,11 +183,13 @@ class HomeViewModelTest {
         applier.failure = IOException("disk full")
         val viewModel = viewModel()
         awaitInitialLoad(viewModel)
+        viewModel.startAdjusting()
 
-        viewModel.applyWallpaper()
+        viewModel.applyWallpaper(WallpaperFraming())
 
         assertEquals(HomeMessage.WALLPAPER_ERROR, viewModel.messages.first())
         assertTrue(scheduler.scheduledIntervals.isEmpty())
+        assertFalse(viewModel.uiState.first { !it.isApplying }.isAdjusting)
     }
 
     @Test
@@ -224,6 +272,7 @@ class HomeViewModelTest {
             avatarSource = avatarSource,
             renderer = renderer,
             previewSize = ScreenSize(108, 240),
+            adjustmentSize = ADJUSTMENT_SIZE,
             clock = clock,
             renderDispatcher = dispatcher,
         )
@@ -231,6 +280,7 @@ class HomeViewModelTest {
 
     private companion object {
         const val TOKEN = "gho_home"
+        val ADJUSTMENT_SIZE = ScreenSize(270, 600)
         const val AWAIT_TIMEOUT_MILLIS = 5_000L
         const val POLL_INTERVAL_MILLIS = 10L
         const val SETTLE_MILLIS = 300L

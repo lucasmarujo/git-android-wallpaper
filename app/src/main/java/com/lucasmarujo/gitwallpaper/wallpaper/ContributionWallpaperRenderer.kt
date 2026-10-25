@@ -11,11 +11,13 @@ import android.graphics.Shader
 import android.graphics.Typeface
 import androidx.annotation.ColorInt
 import androidx.core.graphics.createBitmap
+import androidx.core.graphics.withMatrix
 import com.lucasmarujo.gitwallpaper.R
 import com.lucasmarujo.gitwallpaper.domain.CellShape
 import com.lucasmarujo.gitwallpaper.domain.ContributionCalendar
 import com.lucasmarujo.gitwallpaper.domain.ContributionPeriod
 import com.lucasmarujo.gitwallpaper.domain.ContributionStats
+import com.lucasmarujo.gitwallpaper.domain.WallpaperFraming
 import com.lucasmarujo.gitwallpaper.domain.WallpaperSettings
 import com.lucasmarujo.gitwallpaper.util.formatMessage
 import java.time.LocalDate
@@ -30,7 +32,7 @@ class ContributionWallpaperRenderer(private val resources: Resources) {
         today: LocalDate,
         avatar: Bitmap?,
     ): Bitmap {
-        val palette = WallpaperPalette.of(settings.theme)
+        val palette = WallpaperPalette.of(settings.theme).withCommitColor(settings.commitColor)
         val grid = DayGrid.from(calendar.days, settings.period, today)
         val layout = WallpaperLayout.calculate(
             width = size.width,
@@ -41,20 +43,30 @@ class ContributionWallpaperRenderer(private val resources: Resources) {
         val bitmap = createBitmap(size.width, size.height)
         val canvas = Canvas(bitmap)
         canvas.drawColor(palette.background)
-        drawCells(canvas, grid, layout, palette, settings.cellShape)
-        layout.stats?.let { statsLayout ->
-            drawStats(
-                canvas = canvas,
-                statsLayout = statsLayout,
-                maxTextWidth = size.width * MAX_TEXT_WIDTH_RATIO,
-                calendar = calendar,
-                grid = grid,
-                period = settings.period,
-                palette = palette,
-                avatar = avatar,
-            )
+        canvas.withMatrix(framingMatrix(settings.framing, size)) {
+            drawCells(this, grid, layout, palette, settings.cellShape)
+            layout.stats?.let { statsLayout ->
+                drawStats(
+                    canvas = this,
+                    statsLayout = statsLayout,
+                    maxTextWidth = size.width * MAX_TEXT_WIDTH_RATIO,
+                    calendar = calendar,
+                    grid = grid,
+                    period = settings.period,
+                    palette = palette,
+                    avatar = avatar,
+                )
+            }
         }
         return bitmap
+    }
+
+    private fun framingMatrix(framing: WallpaperFraming, size: ScreenSize): Matrix {
+        val coerced = framing.coerced()
+        return Matrix().apply {
+            setScale(coerced.zoom, coerced.zoom, size.width / 2f, size.height / 2f)
+            postTranslate(coerced.offsetX * size.width, coerced.offsetY * size.height)
+        }
     }
 
     private fun drawCells(

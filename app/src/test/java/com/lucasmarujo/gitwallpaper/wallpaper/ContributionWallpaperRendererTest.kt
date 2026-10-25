@@ -8,6 +8,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.lucasmarujo.gitwallpaper.domain.CellShape
 import com.lucasmarujo.gitwallpaper.domain.ContributionLevel
+import com.lucasmarujo.gitwallpaper.domain.WallpaperFraming
 import com.lucasmarujo.gitwallpaper.domain.WallpaperSettings
 import com.lucasmarujo.gitwallpaper.domain.WallpaperTheme
 import com.lucasmarujo.gitwallpaper.testing.TestCalendars
@@ -119,6 +120,66 @@ class ContributionWallpaperRendererTest {
 
         assertTrue(countPixels(withAvatar, Color.RED, top, bottom) > 0)
         assertEquals(0, countPixels(withoutAvatar, Color.RED, top, bottom))
+    }
+
+    @Test
+    fun `custom commit color paints the busiest days and keeps the theme background`() {
+        val commitColor = 0xFF8A2BE2.toInt()
+        val settings = WallpaperSettings(theme = WallpaperTheme.OCEAN, commitColor = commitColor)
+        val level = ContributionLevel.FOURTH_QUARTILE
+        val index = grid(settings).cells.indexOfFirst { it.state == DayState.PAST && it.level == level }
+        val (x, y) = cellPoint(settings, index, 0.5f, 0.5f)
+
+        val bitmap = render(settings)
+
+        assertEquals(commitColor, bitmap.getPixel(x, y))
+        assertEquals(WallpaperPalette.of(WallpaperTheme.OCEAN).background, bitmap.getPixel(2, 2))
+    }
+
+    @Test
+    fun `framing moves the graph to the chosen position`() {
+        val settings = WallpaperSettings()
+        val framed = settings.copy(framing = WallpaperFraming(offsetX = 0.1f, offsetY = -0.2f))
+        val palette = WallpaperPalette.of(settings.theme)
+        val level = ContributionLevel.FOURTH_QUARTILE
+        val index = grid(settings).cells.indexOfFirst { it.state == DayState.PAST && it.level == level }
+        val (x, y) = cellPoint(settings, index, 0.5f, 0.5f)
+
+        val movedX = x + (size.width * 0.1f).roundToInt()
+        val movedY = y - (size.height * 0.2f).roundToInt()
+
+        assertEquals(palette.colorFor(level), render(framed).getPixel(movedX, movedY))
+    }
+
+    @Test
+    fun `framing zooms the graph around the screen center`() {
+        val settings = WallpaperSettings()
+        val zoom = 1.5f
+        val framed = settings.copy(framing = WallpaperFraming(zoom = zoom))
+        val palette = WallpaperPalette.of(settings.theme)
+        val level = ContributionLevel.FOURTH_QUARTILE
+        val index = grid(settings).cells.indexOfFirst { it.state == DayState.PAST && it.level == level }
+        val (x, y) = cellPoint(settings, index, 0.5f, 0.5f)
+        val centerX = size.width / 2f
+        val centerY = size.height / 2f
+
+        val zoomedX = (centerX + (x - centerX) * zoom).roundToInt()
+        val zoomedY = (centerY + (y - centerY) * zoom).roundToInt()
+
+        val bitmap = render(framed)
+        val outsideZoomedGrid = (centerX + (layoutFor(settings).gridLeft - centerX) * zoom - 2f).roundToInt()
+        assertEquals(palette.colorFor(level), bitmap.getPixel(zoomedX, zoomedY))
+        assertEquals(palette.background, bitmap.getPixel(outsideZoomedGrid, zoomedY))
+    }
+
+    @Test
+    fun `framing keeps the background filling the whole screen`() {
+        val settings = WallpaperSettings(framing = WallpaperFraming(zoom = WallpaperFraming.MIN_ZOOM, offsetY = 0.5f))
+        val bitmap = render(settings)
+        val background = WallpaperPalette.of(settings.theme).background
+
+        assertEquals(background, bitmap.getPixel(2, 2))
+        assertEquals(background, bitmap.getPixel(size.width - 2, size.height - 2))
     }
 
     private fun render(settings: WallpaperSettings): Bitmap = renderer.render(calendar, settings, size, TODAY, null)

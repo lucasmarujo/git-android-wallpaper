@@ -26,9 +26,13 @@ object WallpaperFingerprint {
             append(today).append(SEPARATOR)
             append(settings.target).append(SEPARATOR)
             append(settings.theme).append(SEPARATOR)
+            append(settings.commitColor).append(SEPARATOR)
             append(settings.period).append(SEPARATOR)
             append(settings.cellShape).append(SEPARATOR)
             append(settings.showStats).append(SEPARATOR)
+            append(settings.framing.zoom).append(SEPARATOR)
+            append(settings.framing.offsetX).append(SEPARATOR)
+            append(settings.framing.offsetY).append(SEPARATOR)
             append(size.width).append('x').append(size.height).append(SEPARATOR)
             append(locale.toLanguageTag())
             calendar.days.forEach { day ->

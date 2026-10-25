@@ -6,11 +6,11 @@ Tudo roda no celular. Não há servidor, backend nem serviço em nuvem do app: e
 
 ## Como funciona
 
-1. Toque em **Entrar com GitHub**. O app mostra um código; toque em **Copiar código e abrir o GitHub**, cole o código e autorize.
-2. Escolha onde aplicar (bloqueio, início ou ambas), o tema, o período (este ano ou últimos 12 meses) e o formato dos quadrados.
-3. Toque em **Aplicar wallpaper**. Se o app mostrar o aviso de bateria, toque em **Abrir configurações de bateria** e marque o Git Wallpaper como "Não otimizar" (ou "Sem restrições").
+1. Toque em **Entrar com GitHub**. O app mostra o link e um código; toque em **Copiar código e abrir o GitHub**, cole o código e autorize. Se preferir autorizar em outro aparelho, use **Abrir link** ou **Copiar link**.
+2. Escolha onde aplicar (bloqueio, início ou ambas), o tema, a cor dos commits (do tema ou qualquer cor no seletor RGB), o período (este ano ou últimos 12 meses) e o formato dos quadrados.
+3. Toque em **Aplicar wallpaper**. Abre uma prévia em tela cheia da tela de bloqueio: faça pinça para dar zoom e arraste para posicionar o gráfico, depois toque em **Aplicar**. Se o app mostrar o aviso de bateria, toque em **Abrir configurações de bateria** e marque o Git Wallpaper como "Não otimizar" (ou "Sem restrições").
 
-Pronto: você não precisa mais abrir o app. Ele verifica o GitHub sozinho no intervalo escolhido (30 min a 12 h), redesenha o wallpaper quando entra um commit novo e também na virada do dia (mesmo sem internet, usando o cache), e continua agendado depois de reiniciar o celular ou atualizar o app.
+Pronto: você não precisa mais abrir o app. O zoom e a posição escolhidos ficam salvos e são usados em todas as atualizações. Ele verifica o GitHub sozinho no intervalo escolhido (30 min a 12 h), redesenha o wallpaper quando entra um commit novo e também na virada do dia (mesmo sem internet, usando o cache), e continua agendado depois de reiniciar o celular ou atualizar o app.
 
 ## Instalação
 
@@ -24,6 +24,8 @@ Requisitos: Android 8.0 (API 26) ou superior.
 - Wallpaper vertical gerado no aparelho, na resolução real da tela: um quadrado por dia do ano (ou dos últimos 12 meses), com o dia de hoje destacado por um anel, dias futuros esmaecidos e o rodapé com o total de contribuições, as sequências, o seu avatar e o @usuário.
 - Layout pensado para a tela de bloqueio: o conteúdo fica entre o relógio/data e o ícone de desbloqueio/atalhos, já compensando o zoom de ~1,1× que o Android aplica ao wallpaper. O número de colunas se adapta à proporção da tela.
 - 5 temas: Escuro (GitHub), Claro, AMOLED, Oceano e Pôr do sol. Quadrados arredondados ou círculos.
+- Cor dos commits personalizada: seletor RGB com prévia; o tema continua definindo o fundo e os textos, e os quatro níveis de contribuição são derivados da cor escolhida.
+- Ajuste de enquadramento: prévia em tela cheia simulando a tela de bloqueio (com relógio), pinça para zoom (0,5× a 2,5×) e arrastar para posicionar; o ajuste é salvo e aplicado também nas atualizações automáticas.
 - Atualização automática com WorkManager: periódica, com backoff exponencial, funciona offline para a virada do dia, sobrevive a reinício e a atualização do app, e evita trocas desnecessárias comparando um fingerprint SHA-256 do que seria desenhado.
 - Atalho para as configurações de otimização de bateria, para o Android não adiar as atualizações (sem pedir a isenção direta, seguindo a política da Google Play).
 - Interface em português (pt-BR) e inglês.

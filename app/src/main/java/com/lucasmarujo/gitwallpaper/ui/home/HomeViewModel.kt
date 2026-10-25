@@ -19,6 +19,7 @@ import com.lucasmarujo.gitwallpaper.domain.ContributionCalendar
 import com.lucasmarujo.gitwallpaper.domain.ContributionStats
 import com.lucasmarujo.gitwallpaper.domain.SyncError
 import com.lucasmarujo.gitwallpaper.domain.UpdateResult
+import com.lucasmarujo.gitwallpaper.domain.WallpaperFraming
 import com.lucasmarujo.gitwallpaper.domain.WallpaperSettings
 import com.lucasmarujo.gitwallpaper.wallpaper.ContributionWallpaperRenderer
 import com.lucasmarujo.gitwallpaper.wallpaper.DayGrid
@@ -34,6 +35,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -55,11 +58,13 @@ class HomeViewModel(
     private val avatarSource: AvatarSource,
     private val renderer: ContributionWallpaperRenderer,
     private val previewSize: ScreenSize,
+    private val adjustmentSize: ScreenSize,
     private val clock: Clock,
     private val renderDispatcher: CoroutineDispatcher = Dispatchers.Default,
 ) : ViewModel() {
 
     private data class ActionState(
+        val isAdjusting: Boolean = false,
         val isApplying: Boolean = false,
         val isRefreshing: Boolean = false,
         val initialRefreshFinished: Boolean = false,
@@ -82,13 +87,32 @@ class HomeViewModel(
             }
         }.onStart { emit(null) }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val adjustmentPreview: Flow<ImageBitmap?> = combine(
+        contributionRepository.calendar,
+        settingsRepository.settings.map { it.copy(framing = WallpaperFraming()) },
+        actionState.map { it.isAdjusting },
+    ) { calendar, settings, isAdjusting ->
+        calendar?.takeIf { isAdjusting }?.let { it to settings }
+    }.distinctUntilChanged().mapLatest { input ->
+        input?.let { (calendar, settings) ->
+            val avatar = avatarSource.load(calendar.avatarUrl)
+            withContext(renderDispatcher) {
+                renderer.render(calendar, settings, adjustmentSize, LocalDate.now(clock), avatar).asImageBitmap()
+            }
+        }
+    }.onStart { emit(null) }
+
+    private val actionStateWithAdjustment: Flow<Pair<ActionState, ImageBitmap?>> =
+        combine(actionState, adjustmentPreview, ::Pair)
+
     val uiState: StateFlow<HomeUiState> = combine(
         settingsRepository.settings,
         contributionRepository.calendar,
         preview,
         updateStatusRepository.status,
-        actionState,
-    ) { settings, calendar, renderedPreview, status, actions ->
+        actionStateWithAdjustment,
+    ) { settings, calendar, renderedPreview, status, (actions, adjustment) ->
         HomeUiState(
             login = login,
             settings = settings,
@@ -98,6 +122,8 @@ class HomeViewModel(
             hasCalendar = calendar != null,
             isLoadingCalendar = calendar == null && (actions.isRefreshing || !actions.initialRefreshFinished),
             lastAppliedAtMillis = status.lastAppliedAtMillis,
+            isAdjusting = actions.isAdjusting,
+            adjustmentPreview = adjustment,
             isApplying = actions.isApplying,
             isRefreshing = actions.isRefreshing,
         )
@@ -121,14 +147,24 @@ class HomeViewModel(
         }
     }
 
-    fun applyWallpaper() {
+    fun startAdjusting() {
+        actionState.update { it.copy(isAdjusting = true) }
+    }
+
+    fun cancelAdjusting() {
+        if (actionState.value.isApplying) return
+        actionState.update { it.copy(isAdjusting = false) }
+    }
+
+    fun applyWallpaper(framing: WallpaperFraming) {
         if (actionState.value.isApplying) return
         actionState.update { it.copy(isApplying = true) }
         viewModelScope.launch {
             val result = try {
+                settingsRepository.update { it.copy(framing = framing.coerced()) }
                 wallpaperUpdater.update(force = true)
             } finally {
-                actionState.update { it.copy(isApplying = false) }
+                actionState.update { it.copy(isApplying = false, isAdjusting = false) }
             }
             when (result) {
                 UpdateResult.Applied, UpdateResult.Unchanged -> {
@@ -211,6 +247,7 @@ class HomeViewModel(
                     avatarSource = container.avatarSource,
                     renderer = container.wallpaperRenderer,
                     previewSize = container.screenSizeProvider.screenSize().scaled(PREVIEW_SCALE),
+                    adjustmentSize = container.screenSizeProvider.screenSize(),
                     clock = container.clock,
                 )
             }

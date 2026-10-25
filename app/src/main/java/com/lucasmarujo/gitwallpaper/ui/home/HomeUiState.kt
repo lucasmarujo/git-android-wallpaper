@@ -13,6 +13,8 @@ data class HomeUiState(
     val hasCalendar: Boolean = false,
     val isLoadingCalendar: Boolean = true,
     val lastAppliedAtMillis: Long? = null,
+    val isAdjusting: Boolean = false,
+    val adjustmentPreview: ImageBitmap? = null,
     val isApplying: Boolean = false,
     val isRefreshing: Boolean = false,
 ) {

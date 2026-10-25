@@ -1,6 +1,7 @@
 package com.lucasmarujo.gitwallpaper.wallpaper
 
 import androidx.annotation.ColorInt
+import androidx.core.graphics.ColorUtils
 import com.lucasmarujo.gitwallpaper.domain.ContributionLevel
 import com.lucasmarujo.gitwallpaper.domain.WallpaperTheme
 
@@ -25,7 +26,24 @@ data class WallpaperPalette(
         ContributionLevel.FOURTH_QUARTILE -> level4
     }
 
+    fun withCommitColor(@ColorInt commitColor: Int?): WallpaperPalette {
+        if (commitColor == null) return this
+        val opaque = commitColor or OPAQUE_ALPHA
+        return copy(
+            level1 = ColorUtils.blendARGB(empty, opaque, FIRST_QUARTILE_RATIO),
+            level2 = ColorUtils.blendARGB(empty, opaque, SECOND_QUARTILE_RATIO),
+            level3 = ColorUtils.blendARGB(empty, opaque, THIRD_QUARTILE_RATIO),
+            level4 = opaque,
+            accent = opaque,
+        )
+    }
+
     companion object {
+        private const val OPAQUE_ALPHA = 0xFF000000.toInt()
+        private const val FIRST_QUARTILE_RATIO = 0.3f
+        private const val SECOND_QUARTILE_RATIO = 0.55f
+        private const val THIRD_QUARTILE_RATIO = 0.8f
+
         fun of(theme: WallpaperTheme): WallpaperPalette = when (theme) {
             WallpaperTheme.GITHUB_DARK -> GITHUB_DARK
             WallpaperTheme.GITHUB_LIGHT -> GITHUB_LIGHT

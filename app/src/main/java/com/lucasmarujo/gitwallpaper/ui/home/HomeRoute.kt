@@ -39,17 +39,25 @@ fun HomeRoute(container: AppContainer, login: String) {
         }
     }
 
-    HomeScreen(
-        uiState = uiState,
-        snackbarHostState = snackbarHostState,
-        showBatteryHint = uiState.settings.autoUpdate && !isIgnoringBatteryOptimizations,
-        onSettingsChange = viewModel::updateSettings,
-        onApply = viewModel::applyWallpaper,
-        onRefresh = viewModel::refresh,
-        onSignOut = viewModel::signOut,
-        onOpenBatterySettings = context::openBatteryOptimizationSettings,
-        onOpenPrivacyPolicy = context::openPrivacyPolicy,
-    )
+    if (uiState.isAdjusting) {
+        WallpaperAdjustScreen(
+            uiState = uiState,
+            onApply = viewModel::applyWallpaper,
+            onCancel = viewModel::cancelAdjusting,
+        )
+    } else {
+        HomeScreen(
+            uiState = uiState,
+            snackbarHostState = snackbarHostState,
+            showBatteryHint = uiState.settings.autoUpdate && !isIgnoringBatteryOptimizations,
+            onSettingsChange = viewModel::updateSettings,
+            onApply = viewModel::startAdjusting,
+            onRefresh = viewModel::refresh,
+            onSignOut = viewModel::signOut,
+            onOpenBatterySettings = context::openBatteryOptimizationSettings,
+            onOpenPrivacyPolicy = context::openPrivacyPolicy,
+        )
+    }
 }
 
 private const val HOME_VIEW_MODEL_KEY_PREFIX = "home-"

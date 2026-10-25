@@ -18,6 +18,7 @@ fun LoginRoute(container: AppContainer) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val clipLabel = stringResource(R.string.login_code_clip_label)
+    val linkClipLabel = stringResource(R.string.login_link_clip_label)
     LoginScreen(
         uiState = uiState,
         isDeviceFlowAvailable = viewModel.isDeviceFlowAvailable,
@@ -26,6 +27,8 @@ fun LoginRoute(container: AppContainer) {
             context.copyToClipboard(clipLabel, userCode)
             context.openUrl(verificationUri)
         },
+        onOpenLink = context::openUrl,
+        onCopyLink = { verificationUri -> context.copyToClipboard(linkClipLabel, verificationUri) },
         onCancel = viewModel::cancel,
         onSignInWithToken = viewModel::signInWithToken,
         onOpenPrivacyPolicy = context::openPrivacyPolicy,

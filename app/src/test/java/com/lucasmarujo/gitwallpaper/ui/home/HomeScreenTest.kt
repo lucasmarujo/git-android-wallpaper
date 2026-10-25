@@ -10,6 +10,9 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
+import androidx.compose.ui.test.performSemanticsAction
+import androidx.compose.ui.semantics.SemanticsActions
+import androidx.compose.ui.test.assertTextEquals
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.lucasmarujo.gitwallpaper.domain.ContributionStats
 import com.lucasmarujo.gitwallpaper.domain.WallpaperSettings
@@ -17,6 +20,7 @@ import com.lucasmarujo.gitwallpaper.domain.WallpaperTarget
 import com.lucasmarujo.gitwallpaper.domain.WallpaperTheme
 import com.lucasmarujo.gitwallpaper.ui.theme.GitWallpaperTheme
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -70,6 +74,51 @@ class HomeScreenTest {
 
         assertEquals(WallpaperTarget.BOTH, settings.target)
         assertEquals(WallpaperTheme.OCEAN, settings.theme)
+    }
+
+    @Test
+    fun `a custom commit color can be picked with the rgb sliders`() {
+        setContent(loadedState())
+
+        composeRule.onNodeWithTag(HomeTestTags.CUSTOM_COMMIT_COLOR).performScrollTo().performClick()
+        composeRule.onNodeWithTag(CommitColorTestTags.RED_SLIDER).performSemanticsAction(SemanticsActions.SetProgress) { it(255f) }
+        composeRule.onNodeWithTag(CommitColorTestTags.GREEN_SLIDER).performSemanticsAction(SemanticsActions.SetProgress) { it(0f) }
+        composeRule.onNodeWithTag(CommitColorTestTags.BLUE_SLIDER).performSemanticsAction(SemanticsActions.SetProgress) { it(128f) }
+        composeRule.onNodeWithTag(CommitColorTestTags.HEX).assertTextEquals("#FF0080")
+        composeRule.onNodeWithText("Use color").performClick()
+
+        assertEquals(0xFFFF0080.toInt(), settings.commitColor)
+        composeRule.onNodeWithText("Use color").assertDoesNotExist()
+    }
+
+    @Test
+    fun `cancelling the color picker keeps the theme colors`() {
+        setContent(loadedState())
+
+        composeRule.onNodeWithTag(HomeTestTags.CUSTOM_COMMIT_COLOR).performScrollTo().performClick()
+        composeRule.onNodeWithTag(CommitColorTestTags.RED_SLIDER).performSemanticsAction(SemanticsActions.SetProgress) { it(10f) }
+        composeRule.onNodeWithText("Cancel").performClick()
+
+        assertNull(settings.commitColor)
+    }
+
+    @Test
+    fun `the picker starts from the saved custom color`() {
+        setContent(loadedState().copy(settings = WallpaperSettings(commitColor = 0xFF123456.toInt())))
+
+        composeRule.onNodeWithTag(HomeTestTags.CUSTOM_COMMIT_COLOR).performScrollTo().performClick()
+
+        composeRule.onNodeWithTag(CommitColorTestTags.HEX).assertTextEquals("#123456")
+    }
+
+    @Test
+    fun `theme colors clear the custom commit color`() {
+        settings = WallpaperSettings(commitColor = 0xFF123456.toInt())
+        setContent(loadedState().copy(settings = settings))
+
+        composeRule.onNodeWithText("Theme colors").performScrollTo().performClick()
+
+        assertNull(settings.commitColor)
     }
 
     @Test

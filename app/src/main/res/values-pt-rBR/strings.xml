@@ -3,7 +3,11 @@
     <string name="login_tagline">Seu gráfico de contribuições do GitHub como papel de parede, sempre atualizado.</string>
     <string name="login_sign_in_github">Entrar com GitHub</string>
     <string name="login_requesting_code">Conectando ao GitHub…</string>
-    <string name="login_enter_code">Abra github.com/login/device e digite este código:</string>
+    <string name="login_enter_code">Abra este link e digite o código abaixo:</string>
+    <string name="login_open_link">Abrir link</string>
+    <string name="login_copy_link">Copiar link</string>
+    <string name="login_link_copied">Link copiado</string>
+    <string name="login_link_clip_label">Link do GitHub</string>
     <string name="login_copy_and_open">Copiar código e abrir o GitHub</string>
     <string name="login_code_clip_label">Código do GitHub</string>
     <string name="login_waiting">Aguardando autorização…</string>
@@ -33,6 +37,13 @@
     <string name="home_stat_longest_streak">Maior sequência</string>
     <string name="home_section_target">Aplicar em</string>
     <string name="home_section_theme">Tema</string>
+    <string name="home_section_commit_color">Cor dos commits</string>
+    <string name="commit_color_theme">Cores do tema</string>
+    <string name="commit_color_custom">Personalizada</string>
+    <string name="commit_color_red">Vermelho</string>
+    <string name="commit_color_green">Verde</string>
+    <string name="commit_color_blue">Azul</string>
+    <string name="commit_color_confirm">Usar cor</string>
     <string name="home_section_period">Período</string>
     <string name="home_section_shape">Formato</string>
     <string name="home_show_stats">Mostrar estatísticas no wallpaper</string>
@@ -47,6 +58,10 @@
     <string name="home_battery_body">O Android pode pausar apps em segundo plano. Abra as configurações de bateria e marque o Git Wallpaper como \"Não otimizar\" (ou \"Sem restrições\") para o wallpaper continuar se atualizando sozinho.</string>
     <string name="home_battery_action">Abrir configurações de bateria</string>
     <string name="privacy_policy">Política de privacidade</string>
+
+    <string name="adjust_hint">Faça pinça para dar zoom e arraste para mover o gráfico</string>
+    <string name="adjust_reset">Restaurar</string>
+    <string name="adjust_apply">Aplicar</string>
 
     <string name="target_lock_screen">Bloqueio</string>
     <string name="target_home_screen">Início</string>

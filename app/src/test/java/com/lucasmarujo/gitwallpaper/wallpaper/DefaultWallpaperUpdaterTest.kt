@@ -1,6 +1,7 @@
 package com.lucasmarujo.gitwallpaper.wallpaper
 
 import android.content.Context
+import android.graphics.Bitmap
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.lucasmarujo.gitwallpaper.data.auth.Session
@@ -11,6 +12,8 @@ import com.lucasmarujo.gitwallpaper.data.settings.SettingsRepository
 import com.lucasmarujo.gitwallpaper.data.settings.UpdateStatusRepository
 import com.lucasmarujo.gitwallpaper.domain.SyncError
 import com.lucasmarujo.gitwallpaper.domain.UpdateResult
+import com.lucasmarujo.gitwallpaper.domain.WallpaperFraming
+import com.lucasmarujo.gitwallpaper.domain.WallpaperSettings
 import com.lucasmarujo.gitwallpaper.domain.WallpaperTarget
 import com.lucasmarujo.gitwallpaper.testing.FakeAvatarSource
 import com.lucasmarujo.gitwallpaper.testing.FakeContributionsSource
@@ -24,6 +27,7 @@ import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
@@ -31,9 +35,11 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import org.junit.runner.RunWith
+import org.robolectric.annotation.GraphicsMode
 import java.io.IOException
 import java.time.Duration
 import java.time.Instant
+import java.time.LocalDate
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(AndroidJUnit4::class)
@@ -173,6 +179,36 @@ class DefaultWallpaperUpdaterTest {
     }
 
     @Test
+    fun `a new framing reapplies the wallpaper on the next automatic update`() = runTest {
+        val updater = updater()
+        updater.update(force = false)
+        settingsRepository.update { it.copy(framing = WallpaperFraming(zoom = 1.4f)) }
+
+        val result = updater.update(force = false)
+
+        assertEquals(UpdateResult.Applied, result)
+        assertEquals(2, applier.applied.size)
+    }
+
+    @Test
+    @GraphicsMode(GraphicsMode.Mode.NATIVE)
+    fun `automatic updates draw the saved framing`() = runTest {
+        var applied: Bitmap? = null
+        val updater = updater(applier = { bitmap, _ -> applied = bitmap.copy(Bitmap.Config.ARGB_8888, false) })
+        val framed = WallpaperSettings(framing = WallpaperFraming(zoom = 1.4f, offsetY = 0.1f))
+        settingsRepository.update { framed }
+
+        updater.update(force = false)
+
+        val renderer = ContributionWallpaperRenderer(context.resources)
+        val today = LocalDate.now(clock)
+        val expected = renderer.render(TestCalendars.calendar(), framed, screenSize, today, null)
+        val unframed = renderer.render(TestCalendars.calendar(), WallpaperSettings(), screenSize, today, null)
+        assertTrue(expected.sameAs(applied))
+        assertFalse(unframed.sameAs(applied))
+    }
+
+    @Test
     fun `the avatar of the calendar is loaded only when redrawing`() = runTest {
         val avatarUrl = "https://avatars.githubusercontent.com/u/1?v=4"
         source.handler = { TestCalendars.calendar().copy(avatarUrl = avatarUrl) }
@@ -225,7 +261,10 @@ class DefaultWallpaperUpdaterTest {
         assertEquals(UpdateResult.Failure(SyncError.WALLPAPER), updater.update(force = true))
     }
 
-    private suspend fun TestScope.updater(signedIn: Boolean = true): DefaultWallpaperUpdater {
+    private suspend fun TestScope.updater(
+        signedIn: Boolean = true,
+        applier: WallpaperApplier = this@DefaultWallpaperUpdaterTest.applier,
+    ): DefaultWallpaperUpdater {
         sessionRepository = SessionRepository(temporaryFolder.preferencesDataStore(backgroundScope), FakeSecretCipher())
         if (signedIn) sessionRepository.save(Session(login = "octocat", token = "gho_token"))
         contributionRepository = ContributionRepository(

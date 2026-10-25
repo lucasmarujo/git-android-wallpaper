@@ -6,10 +6,13 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
+import androidx.datastore.preferences.core.floatPreferencesKey
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.lucasmarujo.gitwallpaper.domain.CellShape
 import com.lucasmarujo.gitwallpaper.domain.ContributionPeriod
 import com.lucasmarujo.gitwallpaper.domain.UpdateInterval
+import com.lucasmarujo.gitwallpaper.domain.WallpaperFraming
 import com.lucasmarujo.gitwallpaper.domain.WallpaperSettings
 import com.lucasmarujo.gitwallpaper.domain.WallpaperTarget
 import com.lucasmarujo.gitwallpaper.domain.WallpaperTheme
@@ -39,9 +42,15 @@ class SettingsRepository(private val dataStore: DataStore<Preferences>) {
         return WallpaperSettings(
             target = this[TARGET].toEnum(defaults.target),
             theme = this[THEME].toEnum(defaults.theme),
+            commitColor = this[COMMIT_COLOR] ?: defaults.commitColor,
             period = this[PERIOD].toEnum(defaults.period),
             cellShape = this[CELL_SHAPE].toEnum(defaults.cellShape),
             showStats = this[SHOW_STATS] ?: defaults.showStats,
+            framing = WallpaperFraming(
+                zoom = this[FRAMING_ZOOM] ?: defaults.framing.zoom,
+                offsetX = this[FRAMING_OFFSET_X] ?: defaults.framing.offsetX,
+                offsetY = this[FRAMING_OFFSET_Y] ?: defaults.framing.offsetY,
+            ).coerced(),
             autoUpdate = this[AUTO_UPDATE] ?: defaults.autoUpdate,
             updateInterval = this[UPDATE_INTERVAL].toEnum(defaults.updateInterval),
         )
@@ -50,9 +59,15 @@ class SettingsRepository(private val dataStore: DataStore<Preferences>) {
     private fun MutablePreferences.write(settings: WallpaperSettings) {
         this[TARGET] = settings.target.name
         this[THEME] = settings.theme.name
+        val commitColor = settings.commitColor
+        if (commitColor != null) this[COMMIT_COLOR] = commitColor else remove(COMMIT_COLOR)
         this[PERIOD] = settings.period.name
         this[CELL_SHAPE] = settings.cellShape.name
         this[SHOW_STATS] = settings.showStats
+        val framing = settings.framing.coerced()
+        this[FRAMING_ZOOM] = framing.zoom
+        this[FRAMING_OFFSET_X] = framing.offsetX
+        this[FRAMING_OFFSET_Y] = framing.offsetY
         this[AUTO_UPDATE] = settings.autoUpdate
         this[UPDATE_INTERVAL] = settings.updateInterval.name
     }
@@ -63,9 +78,13 @@ class SettingsRepository(private val dataStore: DataStore<Preferences>) {
     private companion object {
         val TARGET = stringPreferencesKey("target")
         val THEME = stringPreferencesKey("theme")
+        val COMMIT_COLOR = intPreferencesKey("commit_color")
         val PERIOD = stringPreferencesKey("period")
         val CELL_SHAPE = stringPreferencesKey("cell_shape")
         val SHOW_STATS = booleanPreferencesKey("show_stats")
+        val FRAMING_ZOOM = floatPreferencesKey("framing_zoom")
+        val FRAMING_OFFSET_X = floatPreferencesKey("framing_offset_x")
+        val FRAMING_OFFSET_Y = floatPreferencesKey("framing_offset_y")
         val AUTO_UPDATE = booleanPreferencesKey("auto_update")
         val UPDATE_INTERVAL = stringPreferencesKey("update_interval")
     }

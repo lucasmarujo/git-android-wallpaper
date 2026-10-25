@@ -2,6 +2,7 @@ package com.lucasmarujo.gitwallpaper.ui
 
 import android.Manifest
 import android.app.Application
+import android.content.ClipboardManager
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.provider.Settings
@@ -37,6 +38,15 @@ class ContextExtensionsTest {
         assertEquals(Intent.ACTION_VIEW, intent.action)
         assertEquals(PRIVACY_POLICY_URL, intent.dataString)
         assertTrue(PRIVACY_POLICY_URL.startsWith("https://"))
+    }
+
+    @Test
+    fun `copied links are placed on the clipboard`() {
+        application.copyToClipboard("GitHub link", "https://github.com/login/device")
+
+        val clip = requireNotNull(application.getSystemService(ClipboardManager::class.java).primaryClip)
+        assertEquals("https://github.com/login/device", clip.getItemAt(0).text)
+        assertEquals("GitHub link", clip.description.label)
     }
 
     @Test

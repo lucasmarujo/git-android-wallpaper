@@ -51,10 +51,12 @@ import com.lucasmarujo.gitwallpaper.wallpaper.WallpaperPalette
 
 object LoginTestTags {
     const val USER_CODE = "login_user_code"
+    const val VERIFICATION_URI = "login_verification_uri"
     const val TOKEN_FIELD = "login_token_field"
 }
 
 private val LogoPattern = contributionPatternOf("1024310", "2413042", "0342134", "3104243")
+private const val HTTPS_SCHEME_PREFIX = "https://"
 
 @Composable
 fun LoginScreen(
@@ -62,6 +64,8 @@ fun LoginScreen(
     isDeviceFlowAvailable: Boolean,
     onStartDeviceFlow: () -> Unit,
     onOpenVerification: (userCode: String, verificationUri: String) -> Unit,
+    onOpenLink: (String) -> Unit,
+    onCopyLink: (String) -> Unit,
     onCancel: () -> Unit,
     onSignInWithToken: (String) -> Unit,
     onOpenPrivacyPolicy: () -> Unit,
@@ -100,7 +104,13 @@ fun LoginScreen(
             )
             Spacer(Modifier.height(8.dp))
             when (uiState) {
-                is LoginUiState.AwaitingAuthorization -> DeviceCodeCard(uiState, onOpenVerification, onCancel)
+                is LoginUiState.AwaitingAuthorization -> DeviceCodeCard(
+                    state = uiState,
+                    onOpenVerification = onOpenVerification,
+                    onOpenLink = onOpenLink,
+                    onCopyLink = onCopyLink,
+                    onCancel = onCancel,
+                )
                 LoginUiState.RequestingCode -> ProgressMessage(R.string.login_requesting_code)
                 LoginUiState.SigningIn -> ProgressMessage(R.string.login_signing_in)
                 LoginUiState.Idle, is LoginUiState.Error -> {
@@ -145,8 +155,11 @@ fun LoginScreen(
 private fun DeviceCodeCard(
     state: LoginUiState.AwaitingAuthorization,
     onOpenVerification: (userCode: String, verificationUri: String) -> Unit,
+    onOpenLink: (String) -> Unit,
+    onCopyLink: (String) -> Unit,
     onCancel: () -> Unit,
 ) {
+    var linkCopied by remember(state.verificationUri) { mutableStateOf(false) }
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh),
@@ -161,6 +174,34 @@ private fun DeviceCodeCard(
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center,
             )
+            Text(
+                text = state.verificationUri.removePrefix(HTTPS_SCHEME_PREFIX),
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.primary,
+                fontFamily = FontFamily.Monospace,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.testTag(LoginTestTags.VERIFICATION_URI),
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                OutlinedButton(
+                    onClick = { onOpenLink(state.verificationUri) },
+                    modifier = Modifier.weight(1f),
+                ) {
+                    Text(stringResource(R.string.login_open_link))
+                }
+                OutlinedButton(
+                    onClick = {
+                        onCopyLink(state.verificationUri)
+                        linkCopied = true
+                    },
+                    modifier = Modifier.weight(1f),
+                ) {
+                    Text(stringResource(if (linkCopied) R.string.login_link_copied else R.string.login_copy_link))
+                }
+            }
             Text(
                 text = state.userCode,
                 style = MaterialTheme.typography.headlineLarge,

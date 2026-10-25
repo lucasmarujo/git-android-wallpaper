@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
@@ -86,6 +87,7 @@ object HomeTestTags {
     const val APPLY_BUTTON = "home_apply_button"
     const val PREVIEW = "home_preview"
     const val LAST_APPLIED = "home_last_applied"
+    const val CUSTOM_COMMIT_COLOR = "home_custom_commit_color"
 }
 
 private val ThemeSwatchPattern = contributionPatternOf("142", "031", "204")
@@ -106,6 +108,7 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
 ) {
     var showSignOutDialog by rememberSaveable { mutableStateOf(false) }
+    var showCommitColorDialog by rememberSaveable { mutableStateOf(false) }
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -171,7 +174,15 @@ fun HomeScreen(
             SettingsSection(R.string.home_section_theme) {
                 ThemeSelector(
                     selected = uiState.settings.theme,
+                    commitColor = uiState.settings.commitColor,
                     onSelect = { theme -> onSettingsChange { it.copy(theme = theme) } },
+                )
+            }
+            SettingsSection(R.string.home_section_commit_color) {
+                CommitColorSelector(
+                    settings = uiState.settings,
+                    onUseThemeColors = { onSettingsChange { it.copy(commitColor = null) } },
+                    onPickCustomColor = { showCommitColorDialog = true },
                 )
             }
             SettingsSection(R.string.home_section_period) {
@@ -215,6 +226,17 @@ fun HomeScreen(
                 Text(stringResource(R.string.privacy_policy))
             }
         }
+    }
+    if (showCommitColorDialog) {
+        CommitColorDialog(
+            theme = uiState.settings.theme,
+            initialColor = uiState.settings.commitColor ?: WallpaperPalette.of(uiState.settings.theme).level4,
+            onConfirm = { color ->
+                showCommitColorDialog = false
+                onSettingsChange { it.copy(commitColor = color) }
+            },
+            onDismiss = { showCommitColorDialog = false },
+        )
     }
     if (showSignOutDialog) {
         AlertDialog(
@@ -405,7 +427,7 @@ private fun <T> ChoiceRow(
 }
 
 @Composable
-private fun ThemeSelector(selected: WallpaperTheme, onSelect: (WallpaperTheme) -> Unit) {
+private fun ThemeSelector(selected: WallpaperTheme, commitColor: Int?, onSelect: (WallpaperTheme) -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -413,7 +435,7 @@ private fun ThemeSelector(selected: WallpaperTheme, onSelect: (WallpaperTheme) -
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         WallpaperTheme.entries.forEach { theme ->
-            val palette = WallpaperPalette.of(theme)
+            val palette = WallpaperPalette.of(theme).withCommitColor(commitColor)
             val isSelected = theme == selected
             val swatchShape = RoundedCornerShape(14.dp)
             Column(
@@ -449,6 +471,37 @@ private fun ThemeSelector(selected: WallpaperTheme, onSelect: (WallpaperTheme) -
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun CommitColorSelector(
+    settings: WallpaperSettings,
+    onUseThemeColors: () -> Unit,
+    onPickCustomColor: () -> Unit,
+) {
+    val commitColor = settings.commitColor
+    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        FilterChip(
+            selected = commitColor == null,
+            onClick = onUseThemeColors,
+            label = { Text(stringResource(R.string.commit_color_theme)) },
+        )
+        FilterChip(
+            selected = commitColor != null,
+            onClick = onPickCustomColor,
+            label = { Text(stringResource(R.string.commit_color_custom)) },
+            leadingIcon = {
+                Box(
+                    modifier = Modifier
+                        .size(18.dp)
+                        .clip(CircleShape)
+                        .background(Color(commitColor ?: WallpaperPalette.of(settings.theme).level4))
+                        .border(1.dp, MaterialTheme.colorScheme.outlineVariant, CircleShape),
+                )
+            },
+            modifier = Modifier.testTag(HomeTestTags.CUSTOM_COMMIT_COLOR),
+        )
     }
 }
 
