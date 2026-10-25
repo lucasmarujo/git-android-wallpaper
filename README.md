@@ -11,6 +11,7 @@
 ![Kotlin 2.4](https://img.shields.io/badge/Kotlin-2.4-7F52FF?logo=kotlin&logoColor=white)
 ![Jetpack Compose](https://img.shields.io/badge/Jetpack%20Compose-Material%203-4285F4?logo=jetpackcompose&logoColor=white)
 ![Google Play: closed testing](https://img.shields.io/badge/Google%20Play-closed%20testing-414141?logo=googleplay&logoColor=white)
+[![License: MIT](https://img.shields.io/badge/License-MIT-39D353.svg)](LICENSE)
 
 </div>
 
@@ -310,9 +311,11 @@ Issues and pull requests are welcome.
 3. Add or update tests for every change.
 4. Make sure `./gradlew testDebugUnitTest lintDebug` passes before opening the pull request.
 
+By contributing, you agree that your contributions are licensed under the [MIT License](LICENSE).
+
 ## License
 
-This repository does not include a license yet. Please open an issue before reusing the code.
+Git Wallpaper is open source software released under the [MIT License](LICENSE). Copyright (c) 2026 Lucas Marujo.
 
 ## Disclaimer
 
