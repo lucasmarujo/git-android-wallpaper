@@ -64,6 +64,7 @@ fun LoginScreen(
     onOpenVerification: (userCode: String, verificationUri: String) -> Unit,
     onCancel: () -> Unit,
     onSignInWithToken: (String) -> Unit,
+    onOpenPrivacyPolicy: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val isBusy = uiState is LoginUiState.RequestingCode ||
@@ -133,6 +134,9 @@ fun LoginScreen(
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center,
             )
+            TextButton(onClick = onOpenPrivacyPolicy) {
+                Text(stringResource(R.string.privacy_policy))
+            }
         }
     }
 }

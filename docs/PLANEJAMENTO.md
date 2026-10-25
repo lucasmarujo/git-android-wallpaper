@@ -21,7 +21,7 @@ Restrições do produto:
 | F3 | Ler o gráfico de contribuições | GraphQL `viewer { login avatarUrl contributionsCollection.contributionCalendar }` |
 | F4 | Gerar o wallpaper | Grade vertical com um quadrado por dia, renderizada em `Canvas` na resolução física da tela |
 | F5 | Aplicar em bloqueio/início/ambas | `WallpaperManager.setBitmap` com `FLAG_LOCK` / `FLAG_SYSTEM` |
-| F6 | Atualizar automaticamente, sem abrir o app | `PeriodicWorkRequest` único (30 min a 12 h), sem exigir rede, + isenção de otimização de bateria |
+| F6 | Atualizar automaticamente, sem abrir o app | `PeriodicWorkRequest` único (30 min a 12 h), sem exigir rede, + atalho para liberar a otimização de bateria |
 | F7 | Personalização | Tema, período (este ano / últimos 12 meses), formato e estatísticas |
 | F8 | Pré-visualização | Mesmo renderizador em escala reduzida, recalculado a cada ajuste |
 | F9 | Sair da conta | Limpa sessão, cache e status, e cancela o agendamento |
@@ -81,7 +81,7 @@ Camadas simples, sem framework de DI (container manual), seguindo o guia oficial
 | OAuth Device Flow | OAuth web com redirect; scraping do perfil | Não precisa de client secret nem servidor; funciona 100% no aparelho |
 | Wallpaper estático (`setBitmap`) | Live Wallpaper | Única forma confiável de mirar só a tela de bloqueio em todas as versões |
 | Grade vertical por dia | Grade semanal horizontal do GitHub | Aproveita o formato retrato do celular com quadrados bem maiores |
-| Isenção de bateria pedida pelo app | Só orientar o usuário | Garante que o Android não adie as atualizações (App Standby/Doze) |
+| Atalho para as configurações de bateria | Pedido direto de isenção (`REQUEST_IGNORE_BATTERY_OPTIMIZATIONS`) | O pedido direto é restrito pela política da Google Play para esse tipo de app |
 | WorkManager periódico | AlarmManager exato | Respeita bateria, sobrevive a reboot, não exige permissão de alarme exato |
 | DataStore Preferences | SharedPreferences, Room | API assíncrona com Flow; volume de dados pequeno |
 | Keystore + AES-GCM próprio | `EncryptedSharedPreferences` | A biblioteca `security-crypto` foi descontinuada |
@@ -102,13 +102,16 @@ Camadas simples, sem framework de DI (container manual), seguindo o guia oficial
 ## 6. Entrega e CI/CD
 
 - `.github/workflows/android.yml`: testes + lint + APK debug em todo push/PR; em tags `v*`, gera APK release assinado (R8 + shrink de recursos) e publica no GitHub Releases.
-- Chave de assinatura fora do repositório (`keystore.properties` local e secrets no GitHub).
+- Chave de assinatura fora do repositório (`keystore.properties` local e secrets no GitHub). Na Google Play, essa chave é a chave de upload e o Google gerencia a chave de assinatura do app (Play App Signing).
+- Google Play: pacote `dev.marujo.gitwallpaper` na conta Alt Software, distribuído primeiro em teste fechado via AAB (`./gradlew bundleRelease`).
+- Política de privacidade em `docs/privacy/index.md`, publicada pelo GitHub Pages em https://lucasmarujo.github.io/git-android-wallpaper/privacy/ e linkada no login e na tela principal.
 
 ## 7. Riscos conhecidos
 
-- **Fabricantes agressivos com bateria** (Xiaomi, Samsung, Huawei) podem atrasar o WorkManager; o app pede a isenção de otimização de bateria logo após o primeiro "Aplicar". Se o usuário **forçar a parada** do app nas configurações, o Android cancela os agendamentos até o app ser aberto de novo (regra do sistema).
+- **Fabricantes agressivos com bateria** (Xiaomi, Samsung, Huawei) podem atrasar o WorkManager; o app mostra um aviso com atalho para as configurações de otimização de bateria enquanto o app não estiver liberado. Se o usuário **forçar a parada** do app nas configurações, o Android cancela os agendamentos até o app ser aberto de novo (regra do sistema).
 - **Zoom do wallpaper**: as zonas seguras assumem o zoom padrão do AOSP (1,1×); em aparelhos sem zoom o conteúdo fica só um pouco mais compacto.
-- **Política da Play Store**: o pedido direto de isenção de bateria (`REQUEST_IGNORE_BATTERY_OPTIMIZATIONS`) é restrito na Play Store; para publicar lá, troque pelo atalho para as configurações. A distribuição atual é via GitHub Releases.
+- **Política da Play Store**: o pedido direto de isenção de bateria (`REQUEST_IGNORE_BATTERY_OPTIMIZATIONS`) é restrito na Play Store, por isso o app só abre as configurações e o usuário libera manualmente.
+- **Acesso para revisão**: o login exige uma conta GitHub; as instruções de acesso da Play orientam o revisor a usar a própria conta gratuita.
 - **Launchers com rolagem de wallpaper** podem ampliar a imagem na tela inicial; o recorte é enviado como dica para o sistema.
 - **Contribuições privadas** só aparecem se o usuário habilitar a opção no perfil do GitHub.
 - **Limite da API GraphQL** (5.000 pontos/h por usuário): o intervalo mínimo de 30 min consome ~2 chamadas/h, muito abaixo do limite.
@@ -118,4 +121,4 @@ Camadas simples, sem framework de DI (container manual), seguindo o guia oficial
 - Widget de tela inicial com o mesmo renderizador.
 - Suporte a telas dobráveis (render separado por display).
 - Temas personalizados pelo usuário e modo que segue o tema claro/escuro do sistema.
-- Publicação na Play Store (política de privacidade, ícones em alta, screenshots).
+- Produção na Play Store depois do teste fechado (contas pessoais exigem 12 testadores por 14 dias).

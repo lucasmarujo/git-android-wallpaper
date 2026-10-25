@@ -21,7 +21,7 @@ android {
     compileSdk = 37
 
     defaultConfig {
-        applicationId = "com.lucasmarujo.gitwallpaper"
+        applicationId = "dev.marujo.gitwallpaper"
         minSdk = 26
         targetSdk = 36
         versionCode = 1

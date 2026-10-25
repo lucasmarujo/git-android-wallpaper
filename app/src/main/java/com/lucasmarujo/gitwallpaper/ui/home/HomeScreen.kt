@@ -102,6 +102,7 @@ fun HomeScreen(
     onRefresh: () -> Unit,
     onSignOut: () -> Unit,
     onOpenBatterySettings: () -> Unit,
+    onOpenPrivacyPolicy: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var showSignOutDialog by rememberSaveable { mutableStateOf(false) }
@@ -207,6 +208,12 @@ fun HomeScreen(
                 )
             }
             LastAppliedText(uiState.lastAppliedAtMillis)
+            TextButton(
+                onClick = onOpenPrivacyPolicy,
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+            ) {
+                Text(stringResource(R.string.privacy_policy))
+            }
         }
     }
     if (showSignOutDialog) {

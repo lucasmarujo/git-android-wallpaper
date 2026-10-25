@@ -8,13 +8,13 @@ Tudo roda no celular. Não há servidor, backend nem serviço em nuvem do app: e
 
 1. Toque em **Entrar com GitHub**. O app mostra um código; toque em **Copiar código e abrir o GitHub**, cole o código e autorize.
 2. Escolha onde aplicar (bloqueio, início ou ambas), o tema, o período (este ano ou últimos 12 meses) e o formato dos quadrados.
-3. Toque em **Aplicar wallpaper** e aceite o pedido do Android para o app rodar em segundo plano.
+3. Toque em **Aplicar wallpaper**. Se o app mostrar o aviso de bateria, toque em **Abrir configurações de bateria** e marque o Git Wallpaper como "Não otimizar" (ou "Sem restrições").
 
 Pronto: você não precisa mais abrir o app. Ele verifica o GitHub sozinho no intervalo escolhido (30 min a 12 h), redesenha o wallpaper quando entra um commit novo e também na virada do dia (mesmo sem internet, usando o cache), e continua agendado depois de reiniciar o celular ou atualizar o app.
 
 ## Instalação
 
-Baixe o APK mais recente em [Releases](../../releases) direto no celular e instale (será preciso permitir instalação de fontes desconhecidas).
+Pela Google Play (teste fechado, pacote `dev.marujo.gitwallpaper`) ou baixando o APK mais recente em [Releases](../../releases) direto no celular (será preciso permitir instalação de fontes desconhecidas).
 
 Requisitos: Android 8.0 (API 26) ou superior.
 
@@ -25,7 +25,7 @@ Requisitos: Android 8.0 (API 26) ou superior.
 - Layout pensado para a tela de bloqueio: o conteúdo fica entre o relógio/data e o ícone de desbloqueio/atalhos, já compensando o zoom de ~1,1× que o Android aplica ao wallpaper. O número de colunas se adapta à proporção da tela.
 - 5 temas: Escuro (GitHub), Claro, AMOLED, Oceano e Pôr do sol. Quadrados arredondados ou círculos.
 - Atualização automática com WorkManager: periódica, com backoff exponencial, funciona offline para a virada do dia, sobrevive a reinício e a atualização do app, e evita trocas desnecessárias comparando um fingerprint SHA-256 do que seria desenhado.
-- Pedido de isenção de otimização de bateria em um toque, para o Android não adiar as atualizações.
+- Atalho para as configurações de otimização de bateria, para o Android não adiar as atualizações (sem pedir a isenção direta, seguindo a política da Google Play).
 - Interface em português (pt-BR) e inglês.
 
 ## Privacidade e segurança
@@ -34,6 +34,7 @@ Requisitos: Android 8.0 (API 26) ou superior.
 - Escopo mínimo: `read:user`.
 - Backup do app desativado, tráfego em texto claro proibido.
 - Para incluir contribuições de repositórios privados no gráfico, ative **Private contributions** no seu perfil do GitHub.
+- [Política de privacidade](https://lucasmarujo.github.io/git-android-wallpaper/privacy/) (fonte em `docs/privacy/index.md`, publicada pelo GitHub Pages).
 
 ## Desenvolvimento
 

@@ -46,8 +46,9 @@
     <string name="home_apply">Apply wallpaper</string>
     <string name="home_applying">Applying…</string>
     <string name="home_battery_title">Keep the wallpaper updating on its own</string>
-    <string name="home_battery_body">Android may pause apps in the background. Allow Git Wallpaper to run without battery restrictions so the wallpaper keeps updating by itself.</string>
-    <string name="home_battery_action">Allow background updates</string>
+    <string name="home_battery_body">Android may pause apps in the background. Open the battery settings and set Git Wallpaper to \"Don\'t optimize\" (or \"Unrestricted\") so the wallpaper keeps updating by itself.</string>
+    <string name="home_battery_action">Open battery settings</string>
+    <string name="privacy_policy">Privacy policy</string>
 
     <string name="target_lock_screen">Lock</string>
     <string name="target_home_screen">Home</string>

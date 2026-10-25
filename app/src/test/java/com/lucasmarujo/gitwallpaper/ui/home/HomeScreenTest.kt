@@ -30,6 +30,8 @@ class HomeScreenTest {
     private var settings = WallpaperSettings()
     private var applyClicks = 0
     private var signOuts = 0
+    private var batterySettingsOpens = 0
+    private var privacyPolicyOpens = 0
 
     @Test
     fun `apply is disabled until contributions are loaded`() {
@@ -81,6 +83,31 @@ class HomeScreenTest {
         assertEquals(1, signOuts)
     }
 
+    @Test
+    fun `battery hint opens the battery settings`() {
+        setContent(loadedState(), showBatteryHint = true)
+
+        composeRule.onNodeWithText("Open battery settings").performScrollTo().performClick()
+
+        assertEquals(1, batterySettingsOpens)
+    }
+
+    @Test
+    fun `battery hint is hidden when not needed`() {
+        setContent(loadedState())
+
+        composeRule.onNodeWithText("Open battery settings").assertDoesNotExist()
+    }
+
+    @Test
+    fun `privacy policy link opens the policy`() {
+        setContent(loadedState())
+
+        composeRule.onNodeWithText("Privacy policy").performScrollTo().performClick()
+
+        assertEquals(1, privacyPolicyOpens)
+    }
+
     private fun loadedState() = HomeUiState(
         login = "octocat",
         hasCalendar = true,
@@ -88,18 +115,19 @@ class HomeScreenTest {
         stats = ContributionStats(totalContributions = 1234, currentStreak = 5, longestStreak = 1),
     )
 
-    private fun setContent(state: HomeUiState) {
+    private fun setContent(state: HomeUiState, showBatteryHint: Boolean = false) {
         composeRule.setContent {
             GitWallpaperTheme {
                 HomeScreen(
                     uiState = state,
                     snackbarHostState = SnackbarHostState(),
-                    showBatteryHint = false,
+                    showBatteryHint = showBatteryHint,
                     onSettingsChange = { transform -> settings = transform(settings) },
                     onApply = { applyClicks++ },
                     onRefresh = {},
                     onSignOut = { signOuts++ },
-                    onOpenBatterySettings = {},
+                    onOpenBatterySettings = { batterySettingsOpens++ },
+                    onOpenPrivacyPolicy = { privacyPolicyOpens++ },
                 )
             }
         }

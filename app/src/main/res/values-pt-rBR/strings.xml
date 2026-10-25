@@ -44,8 +44,9 @@
     <string name="home_apply">Aplicar wallpaper</string>
     <string name="home_applying">Aplicando…</string>
     <string name="home_battery_title">Atualização automática garantida</string>
-    <string name="home_battery_body">O Android pode pausar apps em segundo plano. Permita que o Git Wallpaper rode sem restrições de bateria para o wallpaper continuar se atualizando sozinho.</string>
-    <string name="home_battery_action">Permitir atualização em segundo plano</string>
+    <string name="home_battery_body">O Android pode pausar apps em segundo plano. Abra as configurações de bateria e marque o Git Wallpaper como \"Não otimizar\" (ou \"Sem restrições\") para o wallpaper continuar se atualizando sozinho.</string>
+    <string name="home_battery_action">Abrir configurações de bateria</string>
+    <string name="privacy_policy">Política de privacidade</string>
 
     <string name="target_lock_screen">Bloqueio</string>
     <string name="target_home_screen">Início</string>

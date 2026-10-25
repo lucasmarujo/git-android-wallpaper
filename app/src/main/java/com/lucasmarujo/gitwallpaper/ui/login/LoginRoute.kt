@@ -9,6 +9,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lucasmarujo.gitwallpaper.AppContainer
 import com.lucasmarujo.gitwallpaper.R
 import com.lucasmarujo.gitwallpaper.ui.copyToClipboard
+import com.lucasmarujo.gitwallpaper.ui.openPrivacyPolicy
 import com.lucasmarujo.gitwallpaper.ui.openUrl
 
 @Composable
@@ -27,5 +28,6 @@ fun LoginRoute(container: AppContainer) {
         },
         onCancel = viewModel::cancel,
         onSignInWithToken = viewModel::signInWithToken,
+        onOpenPrivacyPolicy = context::openPrivacyPolicy,
     )
 }

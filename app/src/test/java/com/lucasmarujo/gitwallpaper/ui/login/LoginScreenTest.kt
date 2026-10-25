@@ -24,6 +24,7 @@ class LoginScreenTest {
     private var openedVerification: Pair<String, String>? = null
     private var cancels = 0
     private val submittedTokens = mutableListOf<String>()
+    private var privacyPolicyOpens = 0
 
     @Test
     fun `idle state offers github sign in`() {
@@ -75,6 +76,15 @@ class LoginScreenTest {
         composeRule.onNodeWithText("Sign in with GitHub").assertDoesNotExist()
     }
 
+    @Test
+    fun `privacy policy link is available before signing in`() {
+        setContent(LoginUiState.Idle)
+
+        composeRule.onNodeWithText("Privacy policy").performScrollTo().performClick()
+
+        assertEquals(1, privacyPolicyOpens)
+    }
+
     private fun setContent(state: LoginUiState, isDeviceFlowAvailable: Boolean = true) {
         composeRule.setContent {
             GitWallpaperTheme {
@@ -85,6 +95,7 @@ class LoginScreenTest {
                     onOpenVerification = { code, uri -> openedVerification = code to uri },
                     onCancel = { cancels++ },
                     onSignInWithToken = { submittedTokens += it },
+                    onOpenPrivacyPolicy = { privacyPolicyOpens++ },
                 )
             }
         }
