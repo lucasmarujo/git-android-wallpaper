@@ -33,9 +33,8 @@ class SettingsRepositoryTest {
         val expected = WallpaperSettings(
             target = WallpaperTarget.BOTH,
             theme = WallpaperTheme.SUNSET,
-            period = ContributionPeriod.THREE_MONTHS,
+            period = ContributionPeriod.LAST_12_MONTHS,
             cellShape = CellShape.CIRCLE,
-            verticalPosition = 0.4f,
             showStats = false,
             autoUpdate = false,
             updateInterval = UpdateInterval.SIX_HOURS,
@@ -52,20 +51,21 @@ class SettingsRepositoryTest {
         val repository = SettingsRepository(temporaryFolder.preferencesDataStore(backgroundScope))
         repository.update { it.copy(theme = WallpaperTheme.OCEAN) }
 
-        repository.update { it.copy(period = ContributionPeriod.SIX_MONTHS) }
+        repository.update { it.copy(period = ContributionPeriod.LAST_12_MONTHS) }
 
         val current = repository.current()
         assertEquals(WallpaperTheme.OCEAN, current.theme)
-        assertEquals(ContributionPeriod.SIX_MONTHS, current.period)
+        assertEquals(ContributionPeriod.LAST_12_MONTHS, current.period)
     }
 
     @Test
-    fun `vertical position is clamped to the supported range`() = runTest {
-        val repository = SettingsRepository(temporaryFolder.preferencesDataStore(backgroundScope))
+    fun `periods saved by older versions fall back to the current year`() = runTest {
+        val dataStore = temporaryFolder.preferencesDataStore(backgroundScope)
+        dataStore.edit { it[stringPreferencesKey("period")] = "SIX_MONTHS" }
 
-        repository.update { it.copy(verticalPosition = 2f) }
+        val repository = SettingsRepository(dataStore)
 
-        assertEquals(WallpaperSettings.MAX_VERTICAL_POSITION, repository.current().verticalPosition)
+        assertEquals(ContributionPeriod.CURRENT_YEAR, repository.current().period)
     }
 
     @Test

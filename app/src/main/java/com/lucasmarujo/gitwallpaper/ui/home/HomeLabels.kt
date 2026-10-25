@@ -26,9 +26,8 @@ fun WallpaperTheme.labelRes(): Int = when (this) {
 
 @StringRes
 fun ContributionPeriod.labelRes(): Int = when (this) {
-    ContributionPeriod.THREE_MONTHS -> R.string.period_three_months
-    ContributionPeriod.SIX_MONTHS -> R.string.period_six_months
-    ContributionPeriod.TWELVE_MONTHS -> R.string.period_twelve_months
+    ContributionPeriod.CURRENT_YEAR -> R.string.period_current_year
+    ContributionPeriod.LAST_12_MONTHS -> R.string.period_last_12_months
 }
 
 @StringRes

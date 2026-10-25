@@ -37,7 +37,6 @@
     <string name="home_section_theme">Theme</string>
     <string name="home_section_period">Period</string>
     <string name="home_section_shape">Cell shape</string>
-    <string name="home_section_position">Vertical position</string>
     <string name="home_show_stats">Show stats on the wallpaper</string>
     <string name="home_section_auto_update">Automatic update</string>
     <string name="home_auto_update">Update the wallpaper automatically</string>
@@ -46,9 +45,9 @@
     <string name="home_never_applied">Not applied yet</string>
     <string name="home_apply">Apply wallpaper</string>
     <string name="home_applying">Applying…</string>
-    <string name="home_battery_title">Keep updates on time</string>
-    <string name="home_battery_body">Android may delay background updates. Allow Git Wallpaper to run without battery restrictions.</string>
-    <string name="home_battery_action">Open battery settings</string>
+    <string name="home_battery_title">Keep the wallpaper updating on its own</string>
+    <string name="home_battery_body">Android may pause apps in the background. Allow Git Wallpaper to run without battery restrictions so the wallpaper keeps updating by itself.</string>
+    <string name="home_battery_action">Allow background updates</string>
 
     <string name="target_lock_screen">Lock</string>
     <string name="target_home_screen">Home</string>
@@ -60,9 +59,6 @@
     <string name="theme_ocean">Ocean</string>
     <string name="theme_sunset">Sunset</string>
 
-    <string name="period_three_months">3 months</string>
-    <string name="period_six_months">6 months</string>
-    <string name="period_twelve_months">12 months</string>
 
     <string name="shape_rounded_square">Square</string>
     <string name="shape_circle">Circle</string>
@@ -81,10 +77,11 @@
     <string name="message_session_expired">Your session expired. Sign in again.</string>
 
     <string name="wallpaper_login" translatable="false">\@%1$s</string>
-    <string name="wallpaper_period_three_months">in the last 3 months</string>
-    <string name="wallpaper_period_six_months">in the last 6 months</string>
-    <string name="wallpaper_period_twelve_months">in the last 12 months</string>
-    <string name="wallpaper_total_contributions">{count, plural, =0 {No contributions} one {# contribution} other {# contributions}} {period}</string>
     <string name="wallpaper_days">{count, plural, =0 {0 days} one {# day} other {# days}}</string>
     <string name="wallpaper_streaks">Current streak %1$s · Longest %2$s</string>
+    <string name="period_current_year">This year</string>
+    <string name="period_last_12_months">Last 12 months</string>
+    <string name="wallpaper_total_highlight">{count, plural, =0 {No contributions} one {# contribution} other {# contributions}}</string>
+    <string name="wallpaper_total_suffix_year">in %1$d</string>
+    <string name="wallpaper_total_suffix_last_12_months">in the last 12 months</string>
 </resources>

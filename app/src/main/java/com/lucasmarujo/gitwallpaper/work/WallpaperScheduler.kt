@@ -1,9 +1,7 @@
 package com.lucasmarujo.gitwallpaper.work
 
 import androidx.work.BackoffPolicy
-import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.lucasmarujo.gitwallpaper.domain.UpdateInterval
@@ -19,11 +17,6 @@ class WorkManagerWallpaperScheduler(private val workManager: WorkManager) : Wall
 
     override fun schedule(interval: UpdateInterval) {
         val request = PeriodicWorkRequestBuilder<WallpaperUpdateWorker>(interval.minutes, TimeUnit.MINUTES)
-            .setConstraints(
-                Constraints.Builder()
-                    .setRequiredNetworkType(NetworkType.CONNECTED)
-                    .build(),
-            )
             .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, BACKOFF_DELAY_MINUTES, TimeUnit.MINUTES)
             .build()
         workManager.enqueueUniquePeriodicWork(UNIQUE_WORK_NAME, ExistingPeriodicWorkPolicy.UPDATE, request)

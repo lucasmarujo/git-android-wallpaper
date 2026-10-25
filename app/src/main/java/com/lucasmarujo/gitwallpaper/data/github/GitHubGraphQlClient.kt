@@ -60,6 +60,7 @@ class GitHubGraphQlClient(
             query {
               viewer {
                 login
+                avatarUrl(size: 160)
                 contributionsCollection {
                   contributionCalendar {
                     totalContributions

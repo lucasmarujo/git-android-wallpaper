@@ -2,11 +2,12 @@ package com.lucasmarujo.gitwallpaper.wallpaper
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.Color
+import androidx.core.graphics.createBitmap
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.lucasmarujo.gitwallpaper.domain.CellShape
 import com.lucasmarujo.gitwallpaper.domain.ContributionLevel
-import com.lucasmarujo.gitwallpaper.domain.ContributionPeriod
 import com.lucasmarujo.gitwallpaper.domain.WallpaperSettings
 import com.lucasmarujo.gitwallpaper.domain.WallpaperTheme
 import com.lucasmarujo.gitwallpaper.testing.TestCalendars
@@ -24,7 +25,7 @@ class ContributionWallpaperRendererTest {
 
     private val renderer = ContributionWallpaperRenderer(ApplicationProvider.getApplicationContext<Context>().resources)
     private val calendar = TestCalendars.calendar(endDate = TODAY)
-    private val size = ScreenSize(540, 1200)
+    private val size = ScreenSize(1080, 2340)
 
     @Test
     fun `bitmap matches the requested screen size`() {
@@ -44,83 +45,107 @@ class ContributionWallpaperRendererTest {
     }
 
     @Test
-    fun `cells are painted with the color of their contribution level`() {
-        val settings = WallpaperSettings(theme = WallpaperTheme.GITHUB_DARK)
+    fun `past days are painted with the color of their contribution level`() {
+        val settings = WallpaperSettings()
         val bitmap = render(settings)
         val palette = WallpaperPalette.of(settings.theme)
+        val grid = grid(settings)
 
         ContributionLevel.entries.forEach { level ->
-            val (x, y) = cellPoint(settings, level, fractionX = 0.5f, fractionY = 0.5f)
+            val index = grid.cells.indexOfFirst { it.state == DayState.PAST && it.level == level }
+            val (x, y) = cellPoint(settings, index, 0.5f, 0.5f)
             assertEquals(level.name, palette.colorFor(level), bitmap.getPixel(x, y))
         }
     }
 
     @Test
-    fun `circle cells leave their corners with the background color`() {
-        val square = WallpaperSettings(cellShape = CellShape.ROUNDED_SQUARE, period = ContributionPeriod.THREE_MONTHS)
-        val circle = square.copy(cellShape = CellShape.CIRCLE)
-        val palette = WallpaperPalette.of(square.theme)
-        val level = ContributionLevel.FOURTH_QUARTILE
-        val largeSize = ScreenSize(1080, 2400)
+    fun `future days are dimmed`() {
+        val settings = WallpaperSettings()
+        val index = grid(settings).cells.indexOfFirst { it.state == DayState.FUTURE }
 
-        val (squareX, squareY) = cellPoint(square, level, CORNER_FRACTION, CORNER_FRACTION, largeSize)
-        val (circleX, circleY) = cellPoint(circle, level, CORNER_FRACTION, CORNER_FRACTION, largeSize)
+        val (x, y) = cellPoint(settings, index, 0.5f, 0.5f)
 
-        assertEquals(palette.colorFor(level), render(square, largeSize).getPixel(squareX, squareY))
-        assertEquals(palette.background, render(circle, largeSize).getPixel(circleX, circleY))
+        assertEquals(WallpaperPalette.of(settings.theme).future, render(settings).getPixel(x, y))
     }
 
     @Test
-    fun `stats text is drawn only when enabled`() {
-        val withStats = WallpaperSettings(showStats = true)
-        val withoutStats = withStats.copy(showStats = false)
-        val statsLayout = requireNotNull(layoutFor(withStats).stats)
-        val background = WallpaperPalette.of(withStats.theme).background
-        val statsTop = statsLayout.top.roundToInt()
-        val statsBottom = (statsLayout.top + statsLayout.titleTextSize + 3 * statsLayout.lineHeight).roundToInt()
-        val gridBottom = layoutFor(withoutStats).bottom.roundToInt() + 1
+    fun `today is highlighted with an accent ring`() {
+        val settings = WallpaperSettings()
+        val layout = layoutFor(settings)
+        val index = grid(settings).cells.indexOfFirst { it.state == DayState.TODAY }
 
-        val pixelsWithStats = countPixelsDifferentFrom(render(withStats), background, statsTop, statsBottom)
-        val pixelsBelowGridWithoutStats =
-            countPixelsDifferentFrom(render(withoutStats), background, gridBottom, size.height)
+        val x = (layout.cellLeft(index) - layout.cellGap * 0.5f).roundToInt()
+        val y = (layout.cellTop(index) + layout.cellSize / 2f).roundToInt()
 
-        assertTrue(pixelsWithStats > 0)
-        assertEquals(0, pixelsBelowGridWithoutStats)
+        assertEquals(WallpaperPalette.of(settings.theme).accent, render(settings).getPixel(x, y))
     }
 
-    private fun render(settings: WallpaperSettings, screenSize: ScreenSize = size): Bitmap =
-        renderer.render(calendar, settings, screenSize, TODAY)
+    @Test
+    fun `circle cells leave their corners with the background color`() {
+        val square = WallpaperSettings(cellShape = CellShape.ROUNDED_SQUARE)
+        val circle = square.copy(cellShape = CellShape.CIRCLE)
+        val palette = WallpaperPalette.of(square.theme)
+        val level = ContributionLevel.FOURTH_QUARTILE
+        val index = grid(square).cells.indexOfFirst { it.state == DayState.PAST && it.level == level }
 
-    private fun layoutFor(settings: WallpaperSettings, screenSize: ScreenSize = size): WallpaperLayout =
-        WallpaperLayout.calculate(
-            width = screenSize.width,
-            height = screenSize.height,
-            weekCount = settings.period.weeks,
-            verticalPosition = settings.verticalPosition,
-            showStats = settings.showStats,
-        )
+        val (x, y) = cellPoint(square, index, CORNER_FRACTION, CORNER_FRACTION)
 
-    private fun cellPoint(
-        settings: WallpaperSettings,
-        level: ContributionLevel,
-        fractionX: Float,
-        fractionY: Float,
-        screenSize: ScreenSize = size,
-    ): Pair<Int, Int> {
-        val grid = ContributionGrid.from(calendar.days, settings.period.weeks, TODAY)
-        val layout = layoutFor(settings, screenSize)
-        val cell = grid.cells.first { it.level == level }
-        val segment = requireNotNull(layout.segmentFor(cell.column))
-        val x = layout.cellLeft(segment, cell.column) + layout.cellSize * fractionX
-        val y = layout.cellTop(segment, cell.row) + layout.cellSize * fractionY
+        assertEquals(palette.colorFor(level), render(square).getPixel(x, y))
+        assertEquals(palette.background, render(circle).getPixel(x, y))
+    }
+
+    @Test
+    fun `stats text is drawn below the grid only when enabled`() {
+        val withStats = WallpaperSettings(showStats = true)
+        val withoutStats = withStats.copy(showStats = false)
+        val background = WallpaperPalette.of(withStats.theme).background
+        val belowGridWithStats = layoutFor(withStats).let { (it.gridTop + it.gridHeight).roundToInt() + 2 }
+        val belowGridWithoutStats = layoutFor(withoutStats).let { (it.gridTop + it.gridHeight).roundToInt() + 2 }
+
+        assertTrue(countPixelsDifferentFrom(render(withStats), background, belowGridWithStats, size.height) > 0)
+        assertEquals(0, countPixelsDifferentFrom(render(withoutStats), background, belowGridWithoutStats, size.height))
+    }
+
+    @Test
+    fun `avatar is drawn next to the login when available`() {
+        val settings = WallpaperSettings()
+        val avatar = createBitmap(AVATAR_SIZE, AVATAR_SIZE).apply { eraseColor(Color.RED) }
+        val stats = requireNotNull(layoutFor(settings).stats)
+        val top = (stats.userRowCenterY - stats.avatarSize).roundToInt()
+        val bottom = (stats.userRowCenterY + stats.avatarSize).roundToInt()
+
+        val withAvatar = renderer.render(calendar, settings, size, TODAY, avatar)
+        val withoutAvatar = render(settings)
+
+        assertTrue(countPixels(withAvatar, Color.RED, top, bottom) > 0)
+        assertEquals(0, countPixels(withoutAvatar, Color.RED, top, bottom))
+    }
+
+    private fun render(settings: WallpaperSettings): Bitmap = renderer.render(calendar, settings, size, TODAY, null)
+
+    private fun grid(settings: WallpaperSettings): DayGrid = DayGrid.from(calendar.days, settings.period, TODAY)
+
+    private fun layoutFor(settings: WallpaperSettings): WallpaperLayout =
+        WallpaperLayout.calculate(size.width, size.height, grid(settings).cells.size, settings.showStats)
+
+    private fun cellPoint(settings: WallpaperSettings, index: Int, fractionX: Float, fractionY: Float): Pair<Int, Int> {
+        val layout = layoutFor(settings)
+        val x = layout.cellLeft(index) + layout.cellSize * fractionX
+        val y = layout.cellTop(index) + layout.cellSize * fractionY
         return x.roundToInt() to y.roundToInt()
     }
 
-    private fun countPixelsDifferentFrom(bitmap: Bitmap, color: Int, top: Int, bottom: Int): Int {
+    private fun countPixelsDifferentFrom(bitmap: Bitmap, color: Int, top: Int, bottom: Int): Int =
+        countMatching(bitmap, top, bottom) { it != color }
+
+    private fun countPixels(bitmap: Bitmap, color: Int, top: Int, bottom: Int): Int =
+        countMatching(bitmap, top, bottom) { it == color }
+
+    private fun countMatching(bitmap: Bitmap, top: Int, bottom: Int, predicate: (Int) -> Boolean): Int {
         var count = 0
         for (y in top.coerceAtLeast(0) until bottom.coerceAtMost(bitmap.height)) {
             for (x in 0 until bitmap.width) {
-                if (bitmap.getPixel(x, y) != color) count++
+                if (predicate(bitmap.getPixel(x, y))) count++
             }
         }
         return count
@@ -128,5 +153,6 @@ class ContributionWallpaperRendererTest {
 
     private companion object {
         const val CORNER_FRACTION = 0.105f
+        const val AVATAR_SIZE = 64
     }
 }

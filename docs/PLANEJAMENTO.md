@@ -18,11 +18,11 @@ Restrições do produto:
 |---|-----------|-------------------|
 | F1 | Login com GitHub | OAuth Device Flow (`/login/device/code` + polling em `/login/oauth/access_token`) |
 | F2 | Alternativa de login | Personal Access Token com escopo `read:user` |
-| F3 | Ler o gráfico de contribuições | GraphQL `viewer.contributionsCollection.contributionCalendar` |
-| F4 | Gerar o wallpaper | Renderização em `Canvas` na resolução física da tela |
+| F3 | Ler o gráfico de contribuições | GraphQL `viewer { login avatarUrl contributionsCollection.contributionCalendar }` |
+| F4 | Gerar o wallpaper | Grade vertical com um quadrado por dia, renderizada em `Canvas` na resolução física da tela |
 | F5 | Aplicar em bloqueio/início/ambas | `WallpaperManager.setBitmap` com `FLAG_LOCK` / `FLAG_SYSTEM` |
-| F6 | Atualizar automaticamente | `PeriodicWorkRequest` único (30 min a 12 h) com rede obrigatória |
-| F7 | Personalização | Tema, período, formato, posição vertical e estatísticas |
+| F6 | Atualizar automaticamente, sem abrir o app | `PeriodicWorkRequest` único (30 min a 12 h), sem exigir rede, + isenção de otimização de bateria |
+| F7 | Personalização | Tema, período (este ano / últimos 12 meses), formato e estatísticas |
 | F8 | Pré-visualização | Mesmo renderizador em escala reduzida, recalculado a cada ajuste |
 | F9 | Sair da conta | Limpa sessão, cache e status, e cancela o agendamento |
 
@@ -30,7 +30,7 @@ Restrições do produto:
 
 - **Segurança**: token cifrado com AES-256-GCM (chave no Android Keystore), escopo mínimo, sem backup, sem cleartext, `Session.toString()` não expõe o token.
 - **Bateria e rede**: uma única chamada GraphQL por ciclo; o wallpaper só é reescrito quando o fingerprint SHA-256 do conteúdo muda; WorkManager respeita Doze e App Standby.
-- **Robustez**: falhas de rede geram `retry` com backoff exponencial (máx. 3 tentativas por ciclo); token revogado encerra a sessão e cancela o agendamento; cache local permite aplicar offline.
+- **Robustez**: falhas de rede geram `retry` com backoff exponencial (máx. 3 tentativas por ciclo), mas antes o worker redesenha a partir do cache se o dia virou; token revogado encerra a sessão e cancela o agendamento; o job persiste a reinício e a atualização do APK (verificado no emulador).
 - **Concorrência**: um `Mutex` serializa atualizações do worker e da UI no mesmo processo.
 - **Compatibilidade**: Android 8.0+ (API 26), `targetSdk 36`.
 
@@ -46,9 +46,9 @@ Camadas simples, sem framework de DI (container manual), seguindo o guia oficial
 ┌──────────────── data ─────────┴───────────────┐   ┌──── wallpaper ────┐
 │ AuthRepository ── DeviceFlowClient (OkHttp)   │   │ DefaultWallpaper- │
 │ SessionRepository ── KeystoreSecretCipher     │◄──┤ Updater (Mutex)   │
-│ ContributionRepository ── GitHubGraphQlClient │   │ ContributionGrid  │
-│ SettingsRepository / UpdateStatusRepository   │   │ WallpaperLayout   │
-│ (DataStore Preferences)                       │   │ Renderer (Canvas) │
+│ ContributionRepository ── GitHubGraphQlClient │   │ DayGrid           │
+│ CachedAvatarRepository (disco + memória)      │   │ WallpaperLayout   │
+│ Settings/UpdateStatus (DataStore Preferences) │   │ Renderer (Canvas) │
 └───────────────────────────────────────────────┘   │ Fingerprint       │
                                                     │ WallpaperApplier  │
 ┌──────────────── work ─────────────────────────┐   └─────────▲─────────┘
@@ -60,18 +60,19 @@ Camadas simples, sem framework de DI (container manual), seguindo o guia oficial
 
 ### Fluxo de atualização
 
-1. `WallpaperUpdateWorker` dispara (periódico, com rede) e chama `WallpaperUpdater.update(force = false)`.
-2. `ContributionRepository.refresh()` lê o token da sessão e busca o calendário no GraphQL; o resultado vai para o cache.
-3. O fingerprint (calendário + configurações visuais + tamanho da tela + idioma + versão do render) é comparado com o último aplicado.
-4. Se mudou: renderiza o bitmap no tamanho físico da tela, aplica via `WallpaperManager`, recicla o bitmap e grava o novo status.
-5. Resultado do worker: `success` (aplicado ou sem mudanças), `retry` (rede/GitHub), `failure` + cancelamento (sessão perdida).
+1. `WallpaperUpdateWorker` dispara (periódico, com ou sem rede) e chama `WallpaperUpdater.update(force = false)`. O app não precisa estar aberto.
+2. `ContributionRepository.refresh()` lê o token da sessão e busca o calendário no GraphQL; o resultado vai para o cache. Sem rede, usa o calendário em cache.
+3. O fingerprint (calendário + avatar + data de hoje + configurações visuais + tamanho da tela + idioma + versão do render) é comparado com o último aplicado.
+4. Se mudou (commit novo, virada do dia, nova versão do app): carrega o avatar (cache), renderiza o bitmap no tamanho físico da tela, aplica via `WallpaperManager`, recicla o bitmap e grava o novo status.
+5. Resultado do worker: `success` (aplicado ou sem mudanças), `retry` (rede/GitHub, mesmo depois de redesenhar do cache), `failure` + cancelamento (sessão perdida).
 
 ### Layout do wallpaper
 
-- Grade semanal começando no domingo, como no GitHub.
-- 3 e 6 meses: uma linha de semanas. 12 meses: duas linhas empilhadas (27 + 26 semanas) para manter quadrados legíveis no retrato.
-- Margens laterais de 7%, área segura de 8% em cima e embaixo (relógio e atalhos da tela de bloqueio), posição vertical ajustável de 25% a 80%.
-- Rótulos de meses e bloco de estatísticas formatados com ICU `MessageFormat` (plural correto em pt-BR e inglês, inclusive para zero).
+- Grade **vertical**: um quadrado por dia, da esquerda para a direita e de cima para baixo. "Este ano" vai de 1º de janeiro a 31 de dezembro (dias futuros esmaecidos); "Últimos 12 meses" termina hoje.
+- O número de colunas (10 a 30) é escolhido para maximizar o tamanho do quadrado dentro da área disponível; em celulares 19,5:9 fica em torno de 17 colunas × 22 linhas, e telas mais largas ganham mais colunas.
+- Hoje recebe um anel na cor de destaque do tema.
+- Zonas seguras definidas na tela **visível**: o bloco fica entre 27% (abaixo do relógio e da data) e 80% da altura (acima do ícone de desbloqueio e dos atalhos), com largura máxima de 70%. Como o Android amplia o wallpaper ~1,1× na tela de bloqueio (`config_wallpaperMaxScale`), essas medidas são convertidas para coordenadas da imagem antes do desenho.
+- Rodapé: "**N contribuições** em 2026" (número e palavra na cor de destaque), sequência atual e recorde, avatar circular + @usuário. Textos formatados com ICU `MessageFormat` (plural correto em pt-BR e inglês, inclusive para zero) e reduzidos automaticamente se não couberem.
 
 ## 4. Decisões técnicas
 
@@ -79,6 +80,8 @@ Camadas simples, sem framework de DI (container manual), seguindo o guia oficial
 |---------|---------------------------|--------|
 | OAuth Device Flow | OAuth web com redirect; scraping do perfil | Não precisa de client secret nem servidor; funciona 100% no aparelho |
 | Wallpaper estático (`setBitmap`) | Live Wallpaper | Única forma confiável de mirar só a tela de bloqueio em todas as versões |
+| Grade vertical por dia | Grade semanal horizontal do GitHub | Aproveita o formato retrato do celular com quadrados bem maiores |
+| Isenção de bateria pedida pelo app | Só orientar o usuário | Garante que o Android não adie as atualizações (App Standby/Doze) |
 | WorkManager periódico | AlarmManager exato | Respeita bateria, sobrevive a reboot, não exige permissão de alarme exato |
 | DataStore Preferences | SharedPreferences, Room | API assíncrona com Flow; volume de dados pequeno |
 | Keystore + AES-GCM próprio | `EncryptedSharedPreferences` | A biblioteca `security-crypto` foi descontinuada |
@@ -87,13 +90,13 @@ Camadas simples, sem framework de DI (container manual), seguindo o guia oficial
 
 ## 5. Testes
 
-123 testes em `app/src/test` (JVM + Robolectric), rodando em CI a cada push:
+143 testes em `app/src/test` (JVM + Robolectric), rodando em CI a cada push:
 
-- **Domínio puro**: estatísticas e sequências, grade semanal e rótulos de meses, layout em todas as posições e períodos, fingerprint.
-- **Integração HTTP (MockWebServer)**: GraphQL (sucesso, 401, 5xx, erros GraphQL, conexão derrubada, enum desconhecido) e Device Flow (pending, slow_down, negado, expirado, tempo esgotado, falha de rede transitória).
-- **Persistência real (DataStore em arquivo temporário)**: sessão cifrada, corrupção de chave, configurações com valores inválidos, cache corrompido, status.
-- **Renderização com pixels reais (Robolectric Native Graphics)**: tamanho do bitmap, cor de fundo por tema, cor de cada nível, círculo vs. quadrado, estatísticas ligadas/desligadas.
-- **Orquestração**: updater (aplicar, pular sem mudança, forçar, fallback offline, sessão revogada, falha de wallpaper), worker (mapeamento de resultados e limite de tentativas), agendamento único no WorkManager.
+- **Domínio puro**: estatísticas e sequências, grade de dias (ano atual, ano bissexto, últimos 12 meses, fuso do GitHub adiantado), layout vertical (zonas seguras após o zoom, colunas adaptativas, proporção do preview), fingerprint.
+- **Integração HTTP (MockWebServer)**: GraphQL (sucesso, avatar, 401, 5xx, erros GraphQL, conexão derrubada, enum desconhecido), Device Flow (pending, slow_down, negado, expirado, tempo esgotado, falha de rede transitória) e avatar (download, cache em disco entre instâncias, URL nova, erro, imagem inválida, tamanho excessivo, host fora do CDN do GitHub).
+- **Persistência real (DataStore em arquivo temporário)**: sessão cifrada, corrupção de chave, configurações com valores inválidos ou de versões antigas, cache corrompido, status.
+- **Renderização com pixels reais (Robolectric Native Graphics)**: tamanho do bitmap, cor de fundo por tema, cor de cada nível, dias futuros, anel de hoje, círculo vs. quadrado, estatísticas ligadas/desligadas, avatar.
+- **Orquestração**: updater (aplicar, pular sem mudança, forçar, virada do dia online e offline, fallback do cache, avatar só ao redesenhar, sessão revogada, falha de wallpaper), worker (mapeamento de resultados e limite de tentativas), agendamento único no WorkManager sem exigir rede.
 - **UI**: ViewModels de login e principal e telas Compose (Robolectric).
 
 ## 6. Entrega e CI/CD
@@ -103,7 +106,9 @@ Camadas simples, sem framework de DI (container manual), seguindo o guia oficial
 
 ## 7. Riscos conhecidos
 
-- **Fabricantes agressivos com bateria** (Xiaomi, Samsung, Huawei) podem atrasar o WorkManager; o app sugere liberar a otimização de bateria.
+- **Fabricantes agressivos com bateria** (Xiaomi, Samsung, Huawei) podem atrasar o WorkManager; o app pede a isenção de otimização de bateria logo após o primeiro "Aplicar". Se o usuário **forçar a parada** do app nas configurações, o Android cancela os agendamentos até o app ser aberto de novo (regra do sistema).
+- **Zoom do wallpaper**: as zonas seguras assumem o zoom padrão do AOSP (1,1×); em aparelhos sem zoom o conteúdo fica só um pouco mais compacto.
+- **Política da Play Store**: o pedido direto de isenção de bateria (`REQUEST_IGNORE_BATTERY_OPTIMIZATIONS`) é restrito na Play Store; para publicar lá, troque pelo atalho para as configurações. A distribuição atual é via GitHub Releases.
 - **Launchers com rolagem de wallpaper** podem ampliar a imagem na tela inicial; o recorte é enviado como dica para o sistema.
 - **Contribuições privadas** só aparecem se o usuário habilitar a opção no perfil do GitHub.
 - **Limite da API GraphQL** (5.000 pontos/h por usuário): o intervalo mínimo de 30 min consome ~2 chamadas/h, muito abaixo do limite.

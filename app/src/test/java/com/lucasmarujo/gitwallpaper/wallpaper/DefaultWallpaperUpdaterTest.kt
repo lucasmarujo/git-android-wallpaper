@@ -12,8 +12,10 @@ import com.lucasmarujo.gitwallpaper.data.settings.UpdateStatusRepository
 import com.lucasmarujo.gitwallpaper.domain.SyncError
 import com.lucasmarujo.gitwallpaper.domain.UpdateResult
 import com.lucasmarujo.gitwallpaper.domain.WallpaperTarget
+import com.lucasmarujo.gitwallpaper.testing.FakeAvatarSource
 import com.lucasmarujo.gitwallpaper.testing.FakeContributionsSource
 import com.lucasmarujo.gitwallpaper.testing.FakeSecretCipher
+import com.lucasmarujo.gitwallpaper.testing.MutableClock
 import com.lucasmarujo.gitwallpaper.testing.RecordingWallpaperApplier
 import com.lucasmarujo.gitwallpaper.testing.TestCalendars
 import com.lucasmarujo.gitwallpaper.testing.preferencesDataStore
@@ -30,9 +32,8 @@ import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import org.junit.runner.RunWith
 import java.io.IOException
-import java.time.Clock
+import java.time.Duration
 import java.time.Instant
-import java.time.ZoneOffset
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(AndroidJUnit4::class)
@@ -42,10 +43,11 @@ class DefaultWallpaperUpdaterTest {
     val temporaryFolder = TemporaryFolder()
 
     private val context = ApplicationProvider.getApplicationContext<Context>()
-    private val clock = Clock.fixed(Instant.parse("2026-10-24T12:00:00Z"), ZoneOffset.UTC)
+    private val clock = MutableClock(Instant.parse("2026-10-24T12:00:00Z"))
     private val source = FakeContributionsSource()
+    private val avatarSource = FakeAvatarSource()
     private val applier = RecordingWallpaperApplier()
-    private val screenSize = ScreenSize(270, 600)
+    private val screenSize = ScreenSize(270, 585)
 
     private lateinit var sessionRepository: SessionRepository
     private lateinit var contributionRepository: ContributionRepository
@@ -103,39 +105,53 @@ class DefaultWallpaperUpdaterTest {
     }
 
     @Test
-    fun `wallpaper target follows the settings`() = runTest {
+    fun `a new day reapplies the wallpaper to move the highlight`() = runTest {
         val updater = updater()
-        settingsRepository.update { it.copy(target = WallpaperTarget.BOTH) }
-
         updater.update(force = false)
-
-        assertEquals(WallpaperTarget.BOTH, applier.applied.single().target)
-    }
-
-    @Test
-    fun `signed out users are not updated`() = runTest {
-        val updater = updater(signedIn = false)
+        clock.instant = clock.instant.plus(Duration.ofDays(1))
 
         val result = updater.update(force = false)
 
-        assertEquals(UpdateResult.Failure(SyncError.NOT_SIGNED_IN), result)
-        assertTrue(applier.applied.isEmpty())
+        assertEquals(UpdateResult.Applied, result)
+        assertEquals(2, applier.applied.size)
     }
 
     @Test
-    fun `network failures are reported for background updates`() = runTest {
+    fun `offline background updates redraw the new day from the cache and ask for a retry`() = runTest {
         val updater = updater()
-        contributionRepository.save(TestCalendars.calendar())
+        updater.update(force = false)
+        source.handler = { throw GitHubException.Network(IOException("offline")) }
+        clock.instant = clock.instant.plus(Duration.ofDays(1))
+
+        val result = updater.update(force = false)
+
+        assertEquals(UpdateResult.Failure(SyncError.NETWORK), result)
+        assertEquals(2, applier.applied.size)
+    }
+
+    @Test
+    fun `offline background updates without changes keep the current wallpaper`() = runTest {
+        val updater = updater()
+        updater.update(force = false)
         source.handler = { throw GitHubException.Network(IOException("offline")) }
 
         val result = updater.update(force = false)
 
         assertEquals(UpdateResult.Failure(SyncError.NETWORK), result)
+        assertEquals(1, applier.applied.size)
+    }
+
+    @Test
+    fun `background updates without cache report the network failure`() = runTest {
+        val updater = updater()
+        source.handler = { throw GitHubException.Network(IOException("offline")) }
+
+        assertEquals(UpdateResult.Failure(SyncError.NETWORK), updater.update(force = false))
         assertTrue(applier.applied.isEmpty())
     }
 
     @Test
-    fun `forced updates fall back to the cached calendar when offline`() = runTest {
+    fun `forced updates use the cached calendar when offline`() = runTest {
         val updater = updater()
         contributionRepository.save(TestCalendars.calendar())
         source.handler = { throw GitHubException.Network(IOException("offline")) }
@@ -147,11 +163,35 @@ class DefaultWallpaperUpdaterTest {
     }
 
     @Test
-    fun `forced updates without cache report the network failure`() = runTest {
+    fun `wallpaper target follows the settings`() = runTest {
         val updater = updater()
-        source.handler = { throw GitHubException.Network(IOException("offline")) }
+        settingsRepository.update { it.copy(target = WallpaperTarget.BOTH) }
 
-        assertEquals(UpdateResult.Failure(SyncError.NETWORK), updater.update(force = true))
+        updater.update(force = false)
+
+        assertEquals(WallpaperTarget.BOTH, applier.applied.single().target)
+    }
+
+    @Test
+    fun `the avatar of the calendar is loaded only when redrawing`() = runTest {
+        val avatarUrl = "https://avatars.githubusercontent.com/u/1?v=4"
+        source.handler = { TestCalendars.calendar().copy(avatarUrl = avatarUrl) }
+        val updater = updater()
+
+        updater.update(force = false)
+        updater.update(force = false)
+
+        assertEquals(listOf<String?>(avatarUrl), avatarSource.requestedUrls)
+    }
+
+    @Test
+    fun `signed out users are not updated`() = runTest {
+        val updater = updater(signedIn = false)
+
+        val result = updater.update(force = false)
+
+        assertEquals(UpdateResult.Failure(SyncError.NOT_SIGNED_IN), result)
+        assertTrue(applier.applied.isEmpty())
     }
 
     @Test
@@ -199,6 +239,7 @@ class DefaultWallpaperUpdaterTest {
             contributionRepository = contributionRepository,
             settingsRepository = settingsRepository,
             updateStatusRepository = updateStatusRepository,
+            avatarSource = avatarSource,
             renderer = ContributionWallpaperRenderer(context.resources),
             applier = applier,
             screenSizeProvider = { screenSize },

@@ -1,5 +1,6 @@
 package com.lucasmarujo.gitwallpaper.ui.home
 
+import android.graphics.Bitmap
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.lifecycle.ViewModel
@@ -11,6 +12,7 @@ import com.lucasmarujo.gitwallpaper.AppContainer
 import com.lucasmarujo.gitwallpaper.data.auth.AuthRepository
 import com.lucasmarujo.gitwallpaper.data.contributions.ContributionRepository
 import com.lucasmarujo.gitwallpaper.data.contributions.RefreshResult
+import com.lucasmarujo.gitwallpaper.data.github.AvatarSource
 import com.lucasmarujo.gitwallpaper.data.settings.SettingsRepository
 import com.lucasmarujo.gitwallpaper.data.settings.UpdateStatusRepository
 import com.lucasmarujo.gitwallpaper.domain.ContributionCalendar
@@ -18,8 +20,8 @@ import com.lucasmarujo.gitwallpaper.domain.ContributionStats
 import com.lucasmarujo.gitwallpaper.domain.SyncError
 import com.lucasmarujo.gitwallpaper.domain.UpdateResult
 import com.lucasmarujo.gitwallpaper.domain.WallpaperSettings
-import com.lucasmarujo.gitwallpaper.wallpaper.ContributionGrid
 import com.lucasmarujo.gitwallpaper.wallpaper.ContributionWallpaperRenderer
+import com.lucasmarujo.gitwallpaper.wallpaper.DayGrid
 import com.lucasmarujo.gitwallpaper.wallpaper.ScreenSize
 import com.lucasmarujo.gitwallpaper.wallpaper.WallpaperUpdater
 import com.lucasmarujo.gitwallpaper.work.WallpaperScheduler
@@ -50,6 +52,7 @@ class HomeViewModel(
     private val wallpaperUpdater: WallpaperUpdater,
     private val wallpaperScheduler: WallpaperScheduler,
     private val authRepository: AuthRepository,
+    private val avatarSource: AvatarSource,
     private val renderer: ContributionWallpaperRenderer,
     private val previewSize: ScreenSize,
     private val clock: Clock,
@@ -73,7 +76,10 @@ class HomeViewModel(
         combine(contributionRepository.calendar, settingsRepository.settings) { calendar, settings ->
             calendar to settings
         }.mapLatest { (calendar, settings) ->
-            calendar?.let { withContext(renderDispatcher) { renderPreview(it, settings) } }
+            calendar?.let {
+                val avatar = avatarSource.load(it.avatarUrl)
+                withContext(renderDispatcher) { renderPreview(it, settings, avatar) }
+            }
         }.onStart { emit(null) }
 
     val uiState: StateFlow<HomeUiState> = combine(
@@ -166,10 +172,14 @@ class HomeViewModel(
         }
     }
 
-    private fun renderPreview(calendar: ContributionCalendar, settings: WallpaperSettings): RenderedPreview {
+    private fun renderPreview(
+        calendar: ContributionCalendar,
+        settings: WallpaperSettings,
+        avatar: Bitmap?,
+    ): RenderedPreview {
         val today = LocalDate.now(clock)
-        val bitmap = renderer.render(calendar, settings, previewSize, today)
-        val periodStart = ContributionGrid.from(calendar.days, settings.period.weeks, today).startDate
+        val bitmap = renderer.render(calendar, settings, previewSize, today, avatar)
+        val periodStart = DayGrid.from(calendar.days, settings.period, today).startDate
         return RenderedPreview(
             image = bitmap.asImageBitmap(),
             stats = ContributionStats.from(calendar.days, periodStart),
@@ -198,6 +208,7 @@ class HomeViewModel(
                     wallpaperUpdater = container.wallpaperUpdater,
                     wallpaperScheduler = container.wallpaperScheduler,
                     authRepository = container.authRepository,
+                    avatarSource = container.avatarSource,
                     renderer = container.wallpaperRenderer,
                     previewSize = container.screenSizeProvider.screenSize().scaled(PREVIEW_SCALE),
                     clock = container.clock,

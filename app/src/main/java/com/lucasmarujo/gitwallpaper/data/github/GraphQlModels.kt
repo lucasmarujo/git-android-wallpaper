@@ -25,6 +25,7 @@ internal data class ViewerData(val viewer: ViewerDto)
 @Serializable
 internal data class ViewerDto(
     val login: String,
+    val avatarUrl: String? = null,
     val contributionsCollection: ContributionsCollectionDto,
 )
 
@@ -57,5 +58,6 @@ internal fun ViewerDto.toCalendar(): ContributionCalendar {
             .flatMap { it.contributionDays }
             .map { ContributionDay(date = it.date, count = it.contributionCount, level = it.contributionLevel) }
             .sortedBy { it.date },
+        avatarUrl = avatarUrl,
     )
 }

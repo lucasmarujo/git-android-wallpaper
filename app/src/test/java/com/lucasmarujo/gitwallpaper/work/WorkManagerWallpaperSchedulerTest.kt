@@ -34,13 +34,13 @@ class WorkManagerWallpaperSchedulerTest {
     }
 
     @Test
-    fun `schedules a unique periodic update that requires network`() {
+    fun `schedules a unique periodic update that also runs offline`() {
         scheduler.schedule(UpdateInterval.THREE_HOURS)
 
         val info = workInfos().single()
         assertEquals(WorkInfo.State.ENQUEUED, info.state)
         assertEquals(TimeUnit.HOURS.toMillis(3), info.periodicityInfo?.repeatIntervalMillis)
-        assertEquals(NetworkType.CONNECTED, info.constraints.requiredNetworkType)
+        assertEquals(NetworkType.NOT_REQUIRED, info.constraints.requiredNetworkType)
     }
 
     @Test

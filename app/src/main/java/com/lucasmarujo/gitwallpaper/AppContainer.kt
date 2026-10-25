@@ -10,6 +10,8 @@ import com.lucasmarujo.gitwallpaper.data.auth.DeviceFlowClient
 import com.lucasmarujo.gitwallpaper.data.auth.KeystoreSecretCipher
 import com.lucasmarujo.gitwallpaper.data.auth.SessionRepository
 import com.lucasmarujo.gitwallpaper.data.contributions.ContributionRepository
+import com.lucasmarujo.gitwallpaper.data.github.AvatarSource
+import com.lucasmarujo.gitwallpaper.data.github.CachedAvatarRepository
 import com.lucasmarujo.gitwallpaper.data.github.GitHubGraphQlClient
 import com.lucasmarujo.gitwallpaper.data.settings.SettingsRepository
 import com.lucasmarujo.gitwallpaper.data.settings.UpdateStatusRepository
@@ -22,6 +24,7 @@ import com.lucasmarujo.gitwallpaper.wallpaper.WallpaperUpdater
 import com.lucasmarujo.gitwallpaper.work.WallpaperScheduler
 import com.lucasmarujo.gitwallpaper.work.WorkManagerWallpaperScheduler
 import okhttp3.OkHttpClient
+import java.io.File
 import java.time.Clock
 import java.util.concurrent.TimeUnit
 
@@ -80,11 +83,16 @@ class AppContainer(private val context: Context) {
 
     val screenSizeProvider: ScreenSizeProvider by lazy { DisplayScreenSizeProvider(context) }
 
+    val avatarSource: AvatarSource by lazy {
+        CachedAvatarRepository(httpClient, File(context.noBackupFilesDir, AVATAR_CACHE_DIRECTORY))
+    }
+
     val wallpaperUpdater: WallpaperUpdater by lazy {
         DefaultWallpaperUpdater(
             contributionRepository = contributionRepository,
             settingsRepository = settingsRepository,
             updateStatusRepository = updateStatusRepository,
+            avatarSource = avatarSource,
             renderer = wallpaperRenderer,
             applier = SystemWallpaperApplier(context),
             screenSizeProvider = screenSizeProvider,
@@ -98,5 +106,6 @@ class AppContainer(private val context: Context) {
         const val CALL_TIMEOUT_SECONDS = 45L
         const val USER_AGENT_HEADER = "User-Agent"
         const val USER_AGENT = "GitWallpaper-Android/${BuildConfig.VERSION_NAME}"
+        const val AVATAR_CACHE_DIRECTORY = "avatar"
     }
 }

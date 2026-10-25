@@ -16,4 +16,5 @@ data class ContributionCalendar(
     val login: String,
     val totalContributions: Int,
     val days: List<ContributionDay>,
+    val avatarUrl: String? = null,
 )

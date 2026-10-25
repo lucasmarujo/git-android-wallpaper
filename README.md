@@ -7,10 +7,10 @@ Tudo roda no celular. Não há servidor, backend nem serviço em nuvem do app: e
 ## Como funciona
 
 1. Toque em **Entrar com GitHub**. O app mostra um código; toque em **Copiar código e abrir o GitHub**, cole o código e autorize.
-2. Escolha onde aplicar (bloqueio, início ou ambas), o tema, o período (3, 6 ou 12 meses), o formato dos quadrados e a posição.
-3. Toque em **Aplicar wallpaper**. A partir daí o app verifica o GitHub no intervalo escolhido (30 min a 12 h) e só troca o wallpaper quando algo mudou.
+2. Escolha onde aplicar (bloqueio, início ou ambas), o tema, o período (este ano ou últimos 12 meses) e o formato dos quadrados.
+3. Toque em **Aplicar wallpaper** e aceite o pedido do Android para o app rodar em segundo plano.
 
-> Dica: para atualizações pontuais, permita que o app rode sem restrição de bateria (o próprio app mostra um atalho para isso).
+Pronto: você não precisa mais abrir o app. Ele verifica o GitHub sozinho no intervalo escolhido (30 min a 12 h), redesenha o wallpaper quando entra um commit novo e também na virada do dia (mesmo sem internet, usando o cache), e continua agendado depois de reiniciar o celular ou atualizar o app.
 
 ## Instalação
 
@@ -21,10 +21,11 @@ Requisitos: Android 8.0 (API 26) ou superior.
 ## Funcionalidades
 
 - Login com GitHub via **OAuth Device Flow** (sem servidor e sem client secret) ou com **Personal Access Token** (escopo `read:user`).
-- Wallpaper gerado no aparelho, na resolução real da tela, com grade de contribuições, rótulos de meses e estatísticas (total no período, sequência atual e maior sequência).
+- Wallpaper vertical gerado no aparelho, na resolução real da tela: um quadrado por dia do ano (ou dos últimos 12 meses), com o dia de hoje destacado por um anel, dias futuros esmaecidos e o rodapé com o total de contribuições, as sequências, o seu avatar e o @usuário.
+- Layout pensado para a tela de bloqueio: o conteúdo fica entre o relógio/data e o ícone de desbloqueio/atalhos, já compensando o zoom de ~1,1× que o Android aplica ao wallpaper. O número de colunas se adapta à proporção da tela.
 - 5 temas: Escuro (GitHub), Claro, AMOLED, Oceano e Pôr do sol. Quadrados arredondados ou círculos.
-- Período de 12 meses empilhado em duas linhas para caber bem em telas de celular.
-- Atualização automática com WorkManager: exige rede, tem backoff exponencial, sobrevive a reinício do aparelho e evita trocas desnecessárias comparando um fingerprint SHA-256 do que seria desenhado.
+- Atualização automática com WorkManager: periódica, com backoff exponencial, funciona offline para a virada do dia, sobrevive a reinício e a atualização do app, e evita trocas desnecessárias comparando um fingerprint SHA-256 do que seria desenhado.
+- Pedido de isenção de otimização de bateria em um toque, para o Android não adiar as atualizações.
 - Interface em português (pt-BR) e inglês.
 
 ## Privacidade e segurança
@@ -39,7 +40,7 @@ Requisitos: Android 8.0 (API 26) ou superior.
 Stack: Kotlin 2.4, AGP 9.4, Gradle 9.8, Compose BOM 2026.09, WorkManager, DataStore, OkHttp 5, kotlinx.serialization. `compileSdk 37`, `targetSdk 36`, `minSdk 26`.
 
 ```bash
-./gradlew testDebugUnitTest   # 123 testes (JVM + Robolectric)
+./gradlew testDebugUnitTest   # 143 testes (JVM + Robolectric)
 ./gradlew lintDebug
 ./gradlew assembleDebug       # app/build/outputs/apk/debug/app-debug.apk
 ```
@@ -73,7 +74,7 @@ Detalhes completos em [docs/PLANEJAMENTO.md](docs/PLANEJAMENTO.md).
 ```
 app/src/main/java/com/lucasmarujo/gitwallpaper
 ├── domain/          modelos e regras puras (calendário, estatísticas, configurações)
-├── data/            GitHub GraphQL, Device Flow, sessão criptografada, DataStore
+├── data/            GitHub GraphQL, avatar, Device Flow, sessão criptografada, DataStore
 ├── wallpaper/       grade, layout, renderização em Canvas, fingerprint e aplicação
 ├── work/            WorkManager (worker, factory e agendamento)
 └── ui/              Compose: login, tela principal e tema

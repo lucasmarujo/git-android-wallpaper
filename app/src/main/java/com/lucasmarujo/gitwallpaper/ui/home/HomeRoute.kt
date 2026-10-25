@@ -6,6 +6,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalResources
@@ -14,7 +15,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lucasmarujo.gitwallpaper.AppContainer
 import com.lucasmarujo.gitwallpaper.ui.isIgnoringBatteryOptimizations
-import com.lucasmarujo.gitwallpaper.ui.openBatteryOptimizationSettings
+import com.lucasmarujo.gitwallpaper.ui.requestIgnoreBatteryOptimizations
 
 @Composable
 fun HomeRoute(container: AppContainer, login: String) {
@@ -27,6 +28,7 @@ fun HomeRoute(container: AppContainer, login: String) {
     val context = LocalContext.current
     val resources = LocalResources.current
     var isIgnoringBatteryOptimizations by remember { mutableStateOf(context.isIgnoringBatteryOptimizations()) }
+    val needsBatteryExemption by rememberUpdatedState(uiState.settings.autoUpdate && !isIgnoringBatteryOptimizations)
 
     LifecycleResumeEffect(context) {
         isIgnoringBatteryOptimizations = context.isIgnoringBatteryOptimizations()
@@ -34,6 +36,9 @@ fun HomeRoute(container: AppContainer, login: String) {
     }
     LaunchedEffect(viewModel, resources) {
         viewModel.messages.collect { message ->
+            if (message == HomeMessage.APPLIED && needsBatteryExemption) {
+                context.requestIgnoreBatteryOptimizations()
+            }
             snackbarHostState.showSnackbar(resources.getString(message.textRes()))
         }
     }
@@ -41,12 +46,12 @@ fun HomeRoute(container: AppContainer, login: String) {
     HomeScreen(
         uiState = uiState,
         snackbarHostState = snackbarHostState,
-        showBatteryHint = uiState.settings.autoUpdate && !isIgnoringBatteryOptimizations,
+        showBatteryHint = needsBatteryExemption,
         onSettingsChange = viewModel::updateSettings,
         onApply = viewModel::applyWallpaper,
         onRefresh = viewModel::refresh,
         onSignOut = viewModel::signOut,
-        onOpenBatterySettings = context::openBatteryOptimizationSettings,
+        onOpenBatterySettings = context::requestIgnoreBatteryOptimizations,
     )
 }
 

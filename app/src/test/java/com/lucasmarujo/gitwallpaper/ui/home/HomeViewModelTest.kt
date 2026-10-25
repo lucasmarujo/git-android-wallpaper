@@ -12,6 +12,7 @@ import com.lucasmarujo.gitwallpaper.data.github.GitHubException
 import com.lucasmarujo.gitwallpaper.data.settings.SettingsRepository
 import com.lucasmarujo.gitwallpaper.data.settings.UpdateStatusRepository
 import com.lucasmarujo.gitwallpaper.domain.UpdateInterval
+import com.lucasmarujo.gitwallpaper.testing.FakeAvatarSource
 import com.lucasmarujo.gitwallpaper.testing.FakeContributionsSource
 import com.lucasmarujo.gitwallpaper.testing.FakeSecretCipher
 import com.lucasmarujo.gitwallpaper.testing.FakeWallpaperScheduler
@@ -62,6 +63,7 @@ class HomeViewModelTest {
     private val source = FakeContributionsSource()
     private val applier = RecordingWallpaperApplier()
     private val scheduler = FakeWallpaperScheduler()
+    private val avatarSource = FakeAvatarSource()
     private lateinit var sessionRepository: SessionRepository
     private lateinit var settingsRepository: SettingsRepository
     private lateinit var updateStatusRepository: UpdateStatusRepository
@@ -203,6 +205,7 @@ class HomeViewModelTest {
                 contributionRepository = contributionRepository,
                 settingsRepository = settingsRepository,
                 updateStatusRepository = updateStatusRepository,
+                avatarSource = avatarSource,
                 renderer = renderer,
                 applier = applier,
                 screenSizeProvider = { ScreenSize(270, 600) },
@@ -218,6 +221,7 @@ class HomeViewModelTest {
                 updateStatusRepository = updateStatusRepository,
                 wallpaperScheduler = scheduler,
             ),
+            avatarSource = avatarSource,
             renderer = renderer,
             previewSize = ScreenSize(108, 240),
             clock = clock,

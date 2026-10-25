@@ -35,7 +35,6 @@
     <string name="home_section_theme">Tema</string>
     <string name="home_section_period">Período</string>
     <string name="home_section_shape">Formato</string>
-    <string name="home_section_position">Posição vertical</string>
     <string name="home_show_stats">Mostrar estatísticas no wallpaper</string>
     <string name="home_section_auto_update">Atualização automática</string>
     <string name="home_auto_update">Atualizar o wallpaper automaticamente</string>
@@ -44,9 +43,9 @@
     <string name="home_never_applied">Ainda não aplicado</string>
     <string name="home_apply">Aplicar wallpaper</string>
     <string name="home_applying">Aplicando…</string>
-    <string name="home_battery_title">Mantenha as atualizações em dia</string>
-    <string name="home_battery_body">O Android pode atrasar atualizações em segundo plano. Permita que o Git Wallpaper rode sem restrições de bateria.</string>
-    <string name="home_battery_action">Abrir configurações de bateria</string>
+    <string name="home_battery_title">Atualização automática garantida</string>
+    <string name="home_battery_body">O Android pode pausar apps em segundo plano. Permita que o Git Wallpaper rode sem restrições de bateria para o wallpaper continuar se atualizando sozinho.</string>
+    <string name="home_battery_action">Permitir atualização em segundo plano</string>
 
     <string name="target_lock_screen">Bloqueio</string>
     <string name="target_home_screen">Início</string>
@@ -58,9 +57,6 @@
     <string name="theme_ocean">Oceano</string>
     <string name="theme_sunset">Pôr do sol</string>
 
-    <string name="period_three_months">3 meses</string>
-    <string name="period_six_months">6 meses</string>
-    <string name="period_twelve_months">12 meses</string>
 
     <string name="shape_rounded_square">Quadrado</string>
     <string name="shape_circle">Círculo</string>
@@ -78,10 +74,11 @@
     <string name="message_wallpaper_error">Este aparelho não permitiu trocar o wallpaper.</string>
     <string name="message_session_expired">Sua sessão expirou. Entre de novo.</string>
 
-    <string name="wallpaper_period_three_months">nos últimos 3 meses</string>
-    <string name="wallpaper_period_six_months">nos últimos 6 meses</string>
-    <string name="wallpaper_period_twelve_months">nos últimos 12 meses</string>
-    <string name="wallpaper_total_contributions">{count, plural, =0 {Nenhuma contribuição} one {# contribuição} other {# contribuições}} {period}</string>
     <string name="wallpaper_days">{count, plural, =0 {0 dias} one {# dia} other {# dias}}</string>
     <string name="wallpaper_streaks">Sequência atual %1$s · Recorde %2$s</string>
+    <string name="period_current_year">Este ano</string>
+    <string name="period_last_12_months">Últimos 12 meses</string>
+    <string name="wallpaper_total_highlight">{count, plural, =0 {Nenhuma contribuição} one {# contribuição} other {# contribuições}}</string>
+    <string name="wallpaper_total_suffix_year">em %1$d</string>
+    <string name="wallpaper_total_suffix_last_12_months">nos últimos 12 meses</string>
 </resources>

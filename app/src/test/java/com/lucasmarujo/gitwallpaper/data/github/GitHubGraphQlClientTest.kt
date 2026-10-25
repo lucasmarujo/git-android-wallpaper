@@ -45,9 +45,11 @@ class GitHubGraphQlClientTest {
         assertEquals("/graphql", request.url.encodedPath)
         assertEquals("Bearer secret-token", request.headers["Authorization"])
         assertTrue(request.body!!.utf8().contains("contributionCalendar"))
+        assertTrue(request.body!!.utf8().contains("avatarUrl"))
         assertEquals("octocat", calendar.login)
         assertEquals(7, calendar.totalContributions)
         assertEquals(3, calendar.days.size)
+        assertEquals("https://avatars.githubusercontent.com/u/583231?s=160&v=4", calendar.avatarUrl)
     }
 
     @Test
@@ -111,6 +113,7 @@ class GitHubGraphQlClientTest {
               "data": {
                 "viewer": {
                   "login": "octocat",
+                  "avatarUrl": "https://avatars.githubusercontent.com/u/583231?s=160&v=4",
                   "contributionsCollection": {
                     "contributionCalendar": {
                       "totalContributions": 7,

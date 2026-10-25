@@ -2,6 +2,7 @@ package com.lucasmarujo.gitwallpaper.testing
 
 import android.graphics.Bitmap
 import com.lucasmarujo.gitwallpaper.data.auth.SecretCipher
+import com.lucasmarujo.gitwallpaper.data.github.AvatarSource
 import com.lucasmarujo.gitwallpaper.data.github.ContributionsSource
 import com.lucasmarujo.gitwallpaper.domain.ContributionCalendar
 import com.lucasmarujo.gitwallpaper.domain.UpdateInterval
@@ -11,6 +12,10 @@ import com.lucasmarujo.gitwallpaper.wallpaper.WallpaperApplier
 import com.lucasmarujo.gitwallpaper.wallpaper.WallpaperUpdater
 import com.lucasmarujo.gitwallpaper.work.WallpaperScheduler
 import java.security.GeneralSecurityException
+import java.time.Clock
+import java.time.Instant
+import java.time.ZoneId
+import java.time.ZoneOffset
 import java.util.Base64
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.atomic.AtomicInteger
@@ -68,6 +73,23 @@ class RecordingWallpaperApplier : WallpaperApplier {
         failure?.let { throw it }
         applied += Applied(bitmap.width, bitmap.height, target)
     }
+}
+
+class FakeAvatarSource(var avatar: Bitmap? = null) : AvatarSource {
+    val requestedUrls: MutableList<String?> = CopyOnWriteArrayList()
+
+    override suspend fun load(url: String?): Bitmap? {
+        requestedUrls += url
+        return avatar
+    }
+}
+
+class MutableClock(var instant: Instant, private val zone: ZoneId = ZoneOffset.UTC) : Clock() {
+    override fun getZone(): ZoneId = zone
+
+    override fun withZone(zone: ZoneId): Clock = MutableClock(instant, zone)
+
+    override fun instant(): Instant = instant
 }
 
 class FakeWallpaperUpdater(var result: UpdateResult = UpdateResult.Applied) : WallpaperUpdater {

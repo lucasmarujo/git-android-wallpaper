@@ -1,9 +1,12 @@
 package com.lucasmarujo.gitwallpaper.wallpaper
 
+import com.lucasmarujo.gitwallpaper.domain.CellShape
+import com.lucasmarujo.gitwallpaper.domain.ContributionPeriod
 import com.lucasmarujo.gitwallpaper.domain.WallpaperSettings
 import com.lucasmarujo.gitwallpaper.domain.WallpaperTarget
 import com.lucasmarujo.gitwallpaper.domain.WallpaperTheme
 import com.lucasmarujo.gitwallpaper.testing.TestCalendars
+import com.lucasmarujo.gitwallpaper.testing.TestCalendars.TODAY
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertTrue
@@ -19,8 +22,8 @@ class WallpaperFingerprintTest {
 
     @Test
     fun `same inputs produce the same sha256 fingerprint`() {
-        val first = WallpaperFingerprint.of(calendar, settings, size, locale)
-        val second = WallpaperFingerprint.of(calendar.copy(), settings.copy(), size.copy(), locale)
+        val first = fingerprint()
+        val second = WallpaperFingerprint.of(calendar.copy(), settings.copy(), size.copy(), locale, TODAY)
 
         assertEquals(first, second)
         assertTrue(first.matches(Regex("[0-9a-f]{64}")))
@@ -32,39 +35,48 @@ class WallpaperFingerprintTest {
             this[lastIndex] = last().copy(count = last().count + 1)
         }
 
-        assertNotEquals(
-            WallpaperFingerprint.of(calendar, settings, size, locale),
-            WallpaperFingerprint.of(calendar.copy(days = changedDays), settings, size, locale),
-        )
+        assertNotEquals(fingerprint(), WallpaperFingerprint.of(calendar.copy(days = changedDays), settings, size, locale, TODAY))
+    }
+
+    @Test
+    fun `a new day changes the fingerprint even without new contributions`() {
+        assertNotEquals(fingerprint(), WallpaperFingerprint.of(calendar, settings, size, locale, TODAY.plusDays(1)))
+    }
+
+    @Test
+    fun `a new avatar changes the fingerprint`() {
+        val withAvatar = calendar.copy(avatarUrl = "https://avatars.githubusercontent.com/u/1?v=4")
+
+        assertNotEquals(fingerprint(), WallpaperFingerprint.of(withAvatar, settings, size, locale, TODAY))
     }
 
     @Test
     fun `appearance and target settings change the fingerprint`() {
-        val base = WallpaperFingerprint.of(calendar, settings, size, locale)
+        val base = fingerprint()
 
         listOf(
             settings.copy(theme = WallpaperTheme.OCEAN),
             settings.copy(target = WallpaperTarget.BOTH),
             settings.copy(showStats = false),
-            settings.copy(verticalPosition = 0.3f),
+            settings.copy(period = ContributionPeriod.LAST_12_MONTHS),
+            settings.copy(cellShape = CellShape.CIRCLE),
         ).forEach { changed ->
-            assertNotEquals(base, WallpaperFingerprint.of(calendar, changed, size, locale))
+            assertNotEquals(changed.toString(), base, WallpaperFingerprint.of(calendar, changed, size, locale, TODAY))
         }
     }
 
     @Test
     fun `scheduling settings do not change the fingerprint`() {
-        assertEquals(
-            WallpaperFingerprint.of(calendar, settings, size, locale),
-            WallpaperFingerprint.of(calendar, settings.copy(autoUpdate = false), size, locale),
-        )
+        assertEquals(fingerprint(), WallpaperFingerprint.of(calendar, settings.copy(autoUpdate = false), size, locale, TODAY))
     }
 
     @Test
     fun `screen size and locale change the fingerprint`() {
-        val base = WallpaperFingerprint.of(calendar, settings, size, locale)
+        val base = fingerprint()
 
-        assertNotEquals(base, WallpaperFingerprint.of(calendar, settings, ScreenSize(1440, 3200), locale))
-        assertNotEquals(base, WallpaperFingerprint.of(calendar, settings, size, Locale.forLanguageTag("pt-BR")))
+        assertNotEquals(base, WallpaperFingerprint.of(calendar, settings, ScreenSize(1440, 3200), locale, TODAY))
+        assertNotEquals(base, WallpaperFingerprint.of(calendar, settings, size, Locale.forLanguageTag("pt-BR"), TODAY))
     }
+
+    private fun fingerprint() = WallpaperFingerprint.of(calendar, settings, size, locale, TODAY)
 }

@@ -38,7 +38,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
-import androidx.compose.material3.Slider
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
@@ -48,7 +47,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -189,12 +187,6 @@ fun HomeScreen(
                     selected = uiState.settings.cellShape,
                     labelRes = { it.labelRes() },
                     onSelect = { shape -> onSettingsChange { it.copy(cellShape = shape) } },
-                )
-            }
-            SettingsSection(R.string.home_section_position) {
-                PositionSlider(
-                    value = uiState.settings.verticalPosition,
-                    onValueChangeFinished = { position -> onSettingsChange { it.copy(verticalPosition = position) } },
                 )
             }
             SwitchRow(
@@ -451,17 +443,6 @@ private fun ThemeSelector(selected: WallpaperTheme, onSelect: (WallpaperTheme) -
             }
         }
     }
-}
-
-@Composable
-private fun PositionSlider(value: Float, onValueChangeFinished: (Float) -> Unit) {
-    var sliderValue by remember(value) { mutableFloatStateOf(value) }
-    Slider(
-        value = sliderValue,
-        onValueChange = { sliderValue = it },
-        onValueChangeFinished = { onValueChangeFinished(sliderValue) },
-        valueRange = WallpaperSettings.MIN_VERTICAL_POSITION..WallpaperSettings.MAX_VERTICAL_POSITION,
-    )
 }
 
 @Composable
