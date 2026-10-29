@@ -42,6 +42,7 @@ Git Wallpaper is a native Android app that draws your GitHub contribution graph 
 - [Features](#features)
 - [How it works](#how-it-works)
 - [Installation](#installation)
+- [iPhone app](#iphone-app)
 - [Privacy and security](#privacy-and-security)
 - [Troubleshooting](#troubleshooting)
 - [Tech stack](#tech-stack)
@@ -129,6 +130,41 @@ Under the hood, each update reads your contribution calendar through the GitHub 
 - **From source:** see [Building from source](#building-from-source).
 
 **Requirements:** Android 8.0 (API 26) or later, and a GitHub account.
+
+## iPhone app
+
+A native iPhone version lives in [`ios/`](ios), written in Swift and SwiftUI. The Android app is not affected by it. It uses the same rendering rules, themes, colors, framing, stats and settings, and it is available in English and Brazilian Portuguese.
+
+**What changes on iOS.** iOS has no public API that lets an app change the wallpaper by itself, so the iPhone app sets it through the Shortcuts app:
+
+1. The app provides a **Get Git Wallpaper** action. It refreshes your contributions and returns the wallpaper image, drawn at the screen's native resolution with your framing.
+2. You create a shortcut named **Git Wallpaper** once: **Get Git Wallpaper**, then **Set Wallpaper Photo** with Lock Screen, Home Screen or both. After that, **Apply wallpaper** in the app runs it for you, through `x-callback-url`.
+3. A **Time of Day** automation set to **Run Immediately** keeps the wallpaper up to date without opening the app. The app shows these steps the first time you apply.
+
+You can also save the image to Photos and choose it in **Settings > Wallpaper**.
+
+**Widgets.** The Home Screen widget comes in small, medium and large sizes, and there is a rectangular Lock Screen widget. They use the same layout rules as the Android widget: the Lock Screen widget shows GitHub's week columns, and the larger ones show the wallpaper's day grid. WidgetKit refreshes them on the interval chosen in the app and moves the "today" ring at midnight.
+
+**Security.** The token is stored in the iOS Keychain (this device only) and shared only with the widget through the `group.dev.marujo.gitwallpaper` App Group. Caches are excluded from backups.
+
+| Area | Choice |
+| --- | --- |
+| Language and UI | Swift 5 language mode, SwiftUI, iOS 17 or later, iPhone |
+| Shared code | `GitWallpaperKit` local Swift package: domain, GitHub, storage, Core Graphics renderer |
+| Widgets and automation | WidgetKit, App Intents (Shortcuts) |
+| Project | [XcodeGen](https://github.com/yonaskolb/XcodeGen) spec in [`ios/project.yml`](ios/project.yml) |
+| Tests | XCTest, with `URLProtocol` stubs for GitHub and pixel checks for the renderer |
+
+**Building on a Mac** (Xcode 26 or later):
+
+```bash
+brew install xcodegen
+cd ios
+xcodegen generate
+open GitWallpaper.xcodeproj
+```
+
+Tests: `xcodebuild test -scheme GitWallpaperKit -destination 'platform=iOS Simulator,name=iPhone 17'` inside `ios/GitWallpaperKit`, and `xcodebuild test -project GitWallpaper.xcodeproj -scheme GitWallpaper -destination 'platform=iOS Simulator,name=iPhone 17'` inside `ios`.
 
 ## Privacy and security
 
@@ -322,6 +358,8 @@ The tests cover:
 
 1. Unit tests, lint and a debug build on JDK 21.
 2. Uploads the test and lint reports and the debug APK as artifacts.
+
+[iOS CI](.github/workflows/ios.yml) runs the iOS package and app tests on macOS 26 with Xcode 26.6 whenever `ios/` changes. Pushing a tag that matches `ios-v*` (for example `ios-v1.0.0`) archives the app and uploads it to TestFlight. That job needs the `ASC_KEY_ID`, `ASC_ISSUER_ID` and `ASC_KEY_P8_BASE64` secrets of an App Store Connect API key.
 
 Pushing a tag that matches `v*` also builds a signed release APK and publishes it as a GitHub Release with generated notes. That job needs the `SIGNING_KEYSTORE_BASE64`, `SIGNING_STORE_PASSWORD`, `SIGNING_KEY_ALIAS` and `SIGNING_KEY_PASSWORD` repository secrets.
 

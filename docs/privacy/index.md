@@ -5,9 +5,9 @@ permalink: /privacy/
 
 # Política de Privacidade do Git Wallpaper
 
-Vigente desde 25 de outubro de 2026.
+Vigente desde 29 de outubro de 2026.
 
-O Git Wallpaper é um app Android publicado pela Alt Software que transforma o seu gráfico de contribuições do GitHub no wallpaper da tela de bloqueio e/ou da tela inicial. Esta política explica quais dados o app acessa e como eles são tratados.
+O Git Wallpaper é um app para Android e iPhone publicado pela Alt Software que transforma o seu gráfico de contribuições do GitHub no wallpaper da tela de bloqueio e/ou da tela inicial, e em widgets. Esta política explica quais dados o app acessa e como eles são tratados, nas duas plataformas.
 
 ## Resumo
 
@@ -23,12 +23,13 @@ Depois que você autoriza o app no GitHub (permissão `read:user`), ele lê da A
 - a URL e a imagem do seu avatar;
 - o seu calendário de contribuições (quantidade de contribuições por dia).
 
-Esses dados são usados apenas para desenhar o wallpaper e a prévia dentro do app.
+Esses dados são usados apenas para desenhar o wallpaper, os widgets e a prévia dentro do app.
 
 ## Onde os dados ficam
 
-- O token de acesso do GitHub é guardado **criptografado** (AES-256-GCM com chave do Android Keystore) no armazenamento privado do app.
-- O calendário de contribuições, o avatar e as suas preferências ficam em cache no armazenamento privado do app, para funcionar sem internet.
+- **Android:** o token de acesso do GitHub é guardado **criptografado** (AES-256-GCM com chave do Android Keystore) no armazenamento privado do app.
+- **iPhone:** o token de acesso do GitHub é guardado no **Keychain do iOS**, disponível só neste aparelho e compartilhado apenas com o widget do próprio app.
+- O calendário de contribuições, o avatar, a imagem do wallpaper gerada e as suas preferências ficam em cache no armazenamento privado do app (no iPhone, no contêiner compartilhado entre o app e o widget), para funcionar sem internet.
 - Esses dados **não entram em backup na nuvem** nem em transferência entre aparelhos.
 
 ## Comunicação de rede
@@ -41,15 +42,22 @@ O app se comunica somente com os serviços do GitHub, sempre por HTTPS:
 
 O uso desses serviços também está sujeito à [Declaração de Privacidade do GitHub](https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement).
 
-## Permissões do Android
+## Permissões
+
+No Android:
 
 - **Internet**: para falar com o GitHub.
 - **Definir wallpaper**: para aplicar a imagem gerada na tela de bloqueio e/ou inicial.
 
+No iPhone:
+
+- O iOS não permite que apps troquem o wallpaper sozinhos. O app oferece a ação **Gerar Git Wallpaper** no app Atalhos, que entrega a imagem gerada ao próprio iOS, no aparelho, para a ação de definir o papel de parede.
+- **Adicionar a Fotos**: pedida só se você escolher salvar a imagem do wallpaper em Fotos. O app não lê a sua biblioteca de fotos.
+
 ## Como apagar seus dados
 
-- Toque em **Sair** no app: o token e o cache de contribuições são apagados do aparelho e as atualizações automáticas param.
-- A imagem do avatar em cache e as preferências visuais (tema, formato etc.) ficam no aparelho até você desinstalar o app ou limpar os dados dele nas configurações do Android, o que remove todos os dados.
+- Toque em **Sair** no app: o token e o cache de contribuições são apagados do aparelho e as atualizações automáticas param. No iPhone, a imagem do wallpaper gerada também é apagada.
+- A imagem do avatar em cache e as preferências visuais (tema, formato etc.) ficam no aparelho até você desinstalar o app ou, no Android, limpar os dados dele nas configurações, o que remove todos os dados.
 - Você pode revogar o acesso do app a qualquer momento em [github.com/settings/applications](https://github.com/settings/applications).
 
 ## Crianças
@@ -68,9 +76,9 @@ Alt Software: [lucas.m.amadeu@gmail.com](mailto:lucas.m.amadeu@gmail.com)
 
 # Git Wallpaper Privacy Policy
 
-Effective October 25, 2026.
+Effective October 29, 2026.
 
-Git Wallpaper is an Android app published by Alt Software that turns your GitHub contribution graph into your lock screen and/or home screen wallpaper. This policy explains which data the app accesses and how it is handled.
+Git Wallpaper is an Android and iPhone app published by Alt Software that turns your GitHub contribution graph into your lock screen and/or home screen wallpaper, and into widgets. This policy explains which data the app accesses and how it is handled on both platforms.
 
 ## Summary
 
@@ -86,12 +94,13 @@ After you authorize the app on GitHub (`read:user` scope), it reads from the Git
 - your avatar URL and image;
 - your contribution calendar (number of contributions per day).
 
-This data is used only to draw the wallpaper and the in-app preview.
+This data is used only to draw the wallpaper, the widgets and the in-app preview.
 
 ## Where the data is stored
 
-- The GitHub access token is stored **encrypted** (AES-256-GCM with an Android Keystore key) in the app's private storage.
-- The contribution calendar, the avatar and your preferences are cached in the app's private storage so the app works offline.
+- **Android:** the GitHub access token is stored **encrypted** (AES-256-GCM with an Android Keystore key) in the app's private storage.
+- **iPhone:** the GitHub access token is stored in the **iOS Keychain**, available only on this device and shared only with the app's own widget.
+- The contribution calendar, the avatar, the generated wallpaper image and your preferences are cached in the app's private storage (on iPhone, in the container shared by the app and its widget) so the app works offline.
 - This data is **excluded from cloud backups** and device-to-device transfers.
 
 ## Network communication
@@ -104,15 +113,22 @@ The app only talks to GitHub services, always over HTTPS:
 
 Use of these services is also subject to the [GitHub General Privacy Statement](https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement).
 
-## Android permissions
+## Permissions
+
+On Android:
 
 - **Internet**: to talk to GitHub.
 - **Set wallpaper**: to apply the generated image to the lock and/or home screen.
 
+On iPhone:
+
+- iOS does not let apps change the wallpaper by themselves. The app provides the **Get Git Wallpaper** action in the Shortcuts app, which hands the generated image to iOS itself, on the device, for the action that sets the wallpaper.
+- **Add to Photos**: requested only if you choose to save the wallpaper image to Photos. The app never reads your photo library.
+
 ## Deleting your data
 
-- Tap **Sign out** in the app: the token and the contributions cache are deleted from the device and automatic updates stop.
-- The cached avatar image and your visual preferences (theme, shape, etc.) stay on the device until you uninstall the app or clear its data in the Android settings, which removes all of its data.
+- Tap **Sign out** in the app: the token and the contributions cache are deleted from the device and automatic updates stop. On iPhone, the generated wallpaper image is deleted too.
+- The cached avatar image and your visual preferences (theme, shape, etc.) stay on the device until you uninstall the app or, on Android, clear its data in the settings, which removes all of its data.
 - You can revoke the app's access at any time at [github.com/settings/applications](https://github.com/settings/applications).
 
 ## Children

@@ -42,10 +42,12 @@ jobs:
         run: xcodebuild -quiet test -scheme GitWallpaperKit -destination "$SIMULATOR" -resultBundlePath "$RUNNER_TEMP/GitWallpaperKit.xcresult"
 
       - name: Generate Xcode project
+        if: ${{ !cancelled() }}
         working-directory: ios
         run: xcodegen generate
 
       - name: App tests and build
+        if: ${{ !cancelled() }}
         working-directory: ios
         run: >
           xcodebuild -quiet test

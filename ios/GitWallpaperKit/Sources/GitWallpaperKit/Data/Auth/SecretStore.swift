@@ -9,6 +9,10 @@ public protocol SecretStore: Sendable {
 
 public struct KeychainError: Error, Equatable {
     public let status: OSStatus
+
+    public init(status: OSStatus) {
+        self.status = status
+    }
 }
 
 public final class KeychainSecretStore: SecretStore {

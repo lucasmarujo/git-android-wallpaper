@@ -16,7 +16,7 @@ public actor CachedAvatarRepository: AvatarSource {
     public init(
         session: URLSession,
         cacheDirectory: URL,
-        isAllowedURL: @escaping @Sendable (URL) -> Bool = isGitHubAvatarURL
+        isAllowedURL: @escaping @Sendable (URL) -> Bool = { isGitHubAvatarURL($0) }
     ) {
         self.session = session
         self.cacheDirectory = cacheDirectory
