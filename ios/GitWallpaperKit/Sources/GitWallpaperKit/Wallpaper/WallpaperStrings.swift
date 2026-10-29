@@ -38,7 +38,7 @@ public struct WallpaperStrings: Sendable {
 
     public func totalSuffix(period: ContributionPeriod, year: Int) -> String {
         switch period {
-        case .currentYear: String(format: string("wallpaper_total_suffix_year"), locale: locale, year)
+        case .currentYear: String(format: string("wallpaper_total_suffix_year"), String(year))
         case .last12Months: string("wallpaper_total_suffix_last_12_months")
         }
     }

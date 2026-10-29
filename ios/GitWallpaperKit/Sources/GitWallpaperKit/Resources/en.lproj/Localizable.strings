@@ -1,5 +1,5 @@
 "wallpaper_days_zero" = "0 days";
 "wallpaper_streaks" = "Current streak %1$@ · Longest %2$@";
 "wallpaper_total_highlight_zero" = "No contributions";
-"wallpaper_total_suffix_year" = "in %ld";
+"wallpaper_total_suffix_year" = "in %@";
 "wallpaper_total_suffix_last_12_months" = "in the last 12 months";
