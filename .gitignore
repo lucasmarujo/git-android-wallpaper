@@ -14,3 +14,12 @@
 *.jks
 *.keystore
 /keystore.properties
+/ios/GitWallpaper.xcodeproj/
+/ios/build/
+/ios/GitWallpaperKit/.build/
+/ios/GitWallpaperKit/.swiftpm/
+DerivedData/
+xcuserdata/
+*.xcarchive
+*.ipa
+*.p8

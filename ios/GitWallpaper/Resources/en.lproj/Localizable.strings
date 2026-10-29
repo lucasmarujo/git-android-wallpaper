@@ -1,0 +1,114 @@
+"login_tagline" = "Your GitHub contribution graph as your wallpaper, always up to date.";
+"login_sign_in_github" = "Sign in with GitHub";
+"login_requesting_code" = "Contacting GitHub…";
+"login_enter_code" = "Open this link and enter the code below:";
+"login_open_link" = "Open link";
+"login_copy_link" = "Copy link";
+"login_link_copied" = "Link copied";
+"login_copy_and_open" = "Copy code and open GitHub";
+"login_waiting" = "Waiting for authorization…";
+"login_signing_in" = "Signing in…";
+"login_cancel" = "Cancel";
+"login_use_token" = "Use a personal access token";
+"login_token_label" = "Personal access token";
+"login_token_hint" = "Create one at github.com/settings/tokens with the read:user scope.";
+"login_sign_in_token" = "Sign in with token";
+"login_privacy" = "Everything runs on your iPhone. Your token is kept in the iOS Keychain and is only sent to GitHub.";
+"login_error_network" = "Could not reach GitHub. Check your connection and try again.";
+"login_error_expired" = "The code expired. Start again.";
+"login_error_access_denied" = "Authorization was denied on GitHub.";
+"login_error_device_flow_unavailable" = "GitHub sign-in is unavailable right now. Use a personal access token.";
+"login_error_invalid_token" = "GitHub rejected this token.";
+"login_error_unknown" = "Something went wrong. Try again.";
+
+"home_refresh" = "Refresh contributions";
+"home_sign_out" = "Sign out";
+"home_sign_out_title" = "Sign out?";
+"home_sign_out_body" = "Your current wallpaper stays, but it will stop updating.";
+"home_preview_description" = "Wallpaper preview";
+"home_no_contributions" = "Your contributions could not be loaded yet.";
+"home_retry" = "Try again";
+"home_stat_contributions" = "Contributions";
+"home_stat_current_streak" = "Current streak";
+"home_stat_longest_streak" = "Longest streak";
+"home_section_target" = "Apply to";
+"home_section_theme" = "Theme";
+"home_section_commit_color" = "Commit color";
+"commit_color_theme" = "Theme colors";
+"commit_color_custom" = "Custom";
+"commit_color_red" = "Red";
+"commit_color_green" = "Green";
+"commit_color_blue" = "Blue";
+"commit_color_confirm" = "Use color";
+"home_section_period" = "Period";
+"home_section_shape" = "Cell shape";
+"home_show_stats" = "Show stats on the wallpaper";
+"home_section_auto_update" = "Automatic update";
+"home_auto_update" = "Update automatically";
+"home_auto_update_every" = "Check GitHub every";
+"home_auto_update_hint" = "Widgets refresh on their own. The wallpaper refreshes every time your Shortcuts automation runs.";
+"home_last_applied" = "Last applied: %@";
+"home_never_applied" = "Not applied yet";
+"home_apply" = "Apply wallpaper";
+"home_applying" = "Applying…";
+"home_automation_title" = "Keep the wallpaper updating on its own";
+"home_automation_body" = "iOS only lets apps change the wallpaper through Shortcuts. Create the Git Wallpaper shortcut and a daily automation once, and the wallpaper keeps up with your commits.";
+"home_automation_action" = "Set up with Shortcuts";
+"home_section_widget" = "Widgets";
+"home_widget_body" = "Show your contribution graph on the Home Screen or on the Lock Screen. The widgets follow the theme, color and period chosen here.";
+"home_widget_system_hint" = "Touch and hold an empty area of the Home Screen, tap Edit, then Add Widget, and choose Git Wallpaper. On the Lock Screen, touch and hold it, tap Customize and add the widget below the clock.";
+"privacy_policy" = "Privacy policy";
+
+"adjust_hint" = "Pinch to zoom and drag to move your graph";
+"adjust_reset" = "Reset";
+"adjust_apply" = "Apply";
+
+"target_lock_screen" = "Lock";
+"target_home_screen" = "Home";
+"target_both" = "Both";
+
+"theme_github_dark" = "Dark";
+"theme_github_light" = "Light";
+"theme_amoled" = "AMOLED";
+"theme_ocean" = "Ocean";
+"theme_sunset" = "Sunset";
+
+"period_current_year" = "This year";
+"period_last_12_months" = "Last 12 months";
+
+"shape_rounded_square" = "Square";
+"shape_circle" = "Circle";
+
+"interval_thirty_minutes" = "30 min";
+"interval_one_hour" = "1 h";
+"interval_three_hours" = "3 h";
+"interval_six_hours" = "6 h";
+"interval_twelve_hours" = "12 h";
+
+"message_applied" = "Wallpaper applied";
+"message_refreshed" = "Contributions updated";
+"message_network_error" = "Could not reach GitHub. Try again.";
+"message_github_error" = "GitHub returned an error. Try again later.";
+"message_wallpaper_error" = "Could not prepare the wallpaper image. Try again.";
+"message_session_expired" = "Your session expired. Sign in again.";
+"message_shortcut_failed" = "The “Git Wallpaper” shortcut could not run. Check that it exists with this exact name.";
+
+"shortcut_setup_title" = "Apply with Shortcuts";
+"shortcut_setup_body" = "iOS doesn't let apps change the wallpaper by themselves. Create this shortcut once and Git Wallpaper applies and updates your wallpaper through it.";
+"shortcut_setup_step_create" = "Open Shortcuts, tap + and name the new shortcut “%@”.";
+"shortcut_setup_step_get" = "Add the “Get Git Wallpaper” action.";
+"shortcut_setup_step_set" = "Add the “Set Wallpaper Photo” action, choose %@ and turn off Show Preview.";
+"shortcut_setup_step_automation" = "To keep it updating on its own, open Automation, create a Time of Day automation (for example, every day at 00:05), choose Run Immediately and pick the Git Wallpaper shortcut.";
+"shortcut_location_lock_screen" = "Lock Screen";
+"shortcut_location_home_screen" = "Home Screen";
+"shortcut_location_both" = "Lock Screen and Home Screen";
+"shortcut_open_shortcuts" = "Open Shortcuts";
+"shortcut_run" = "Apply with the shortcut";
+"shortcut_manual_hint" = "Prefer to set it by hand? Save the image to Photos and pick it in Settings, Wallpaper.";
+"shortcut_share_image" = "Save or share image";
+
+"Get Git Wallpaper" = "Get Git Wallpaper";
+"Draws your latest GitHub contribution graph as a wallpaper image for the Set Wallpaper Photo action." = "Draws your latest GitHub contribution graph as a wallpaper image for the Set Wallpaper Photo action.";
+"Open Git Wallpaper and sign in with GitHub." = "Open Git Wallpaper and sign in with GitHub.";
+"Could not reach GitHub. Try again." = "Could not reach GitHub. Try again.";
+"Open Git Wallpaper and apply your wallpaper once." = "Open Git Wallpaper and apply your wallpaper once.";

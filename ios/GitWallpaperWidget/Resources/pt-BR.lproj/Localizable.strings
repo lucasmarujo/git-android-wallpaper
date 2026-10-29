@@ -1,0 +1,4 @@
+"widget_name" = "Git Wallpaper";
+"widget_description" = "Seu gráfico de contribuições do GitHub, sempre atualizado.";
+"widget_content_description" = "Gráfico de contribuições do GitHub";
+"widget_empty" = "Abra o Git Wallpaper para carregar suas contribuições";
