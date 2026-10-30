@@ -112,9 +112,11 @@ final class HomeViewModelTests: XCTestCase {
         let viewModel = makeViewModel()
         await viewModel.start()
 
+        viewModel.handleShortcutCallback(.error(message: "Not found"))
         viewModel.handleShortcutCallback(.success)
 
         XCTAssertEqual(.applied, viewModel.messageEvent?.message)
+        XCTAssertNil(viewModel.shortcutFailure)
         XCTAssertTrue(viewModel.uiState.isShortcutReady)
         XCTAssertTrue(WallpaperShortcut(defaults: stores.defaults).isReady)
     }
@@ -124,11 +126,13 @@ final class HomeViewModelTests: XCTestCase {
         let viewModel = makeViewModel()
         await viewModel.start()
 
-        viewModel.handleShortcutCallback(.error)
+        viewModel.handleShortcutCallback(.error(message: "Shortcut not found"))
 
-        XCTAssertEqual(.shortcutFailed, viewModel.messageEvent?.message)
+        XCTAssertEqual(ShortcutFailure(reason: "Shortcut not found"), viewModel.shortcutFailure)
+        XCTAssertNil(viewModel.messageEvent)
         XCTAssertTrue(viewModel.isShortcutSetupPresented)
         XCTAssertFalse(viewModel.uiState.isShortcutReady)
+        XCTAssertFalse(WallpaperShortcut(defaults: stores.defaults).isReady)
     }
 
     func testACancelledShortcutRunChangesNothing() async {

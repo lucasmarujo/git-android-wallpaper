@@ -9,14 +9,6 @@ extension WallpaperTarget {
         case .both: "target_both"
         }
     }
-
-    var shortcutLocationKey: String.LocalizationValue {
-        switch self {
-        case .lockScreen: "shortcut_location_lock_screen"
-        case .homeScreen: "shortcut_location_home_screen"
-        case .both: "shortcut_location_both"
-        }
-    }
 }
 
 extension WallpaperTheme {
@@ -70,7 +62,6 @@ extension HomeMessage {
         case .gitHubError: "message_github_error"
         case .wallpaperError: "message_wallpaper_error"
         case .sessionExpired: "message_session_expired"
-        case .shortcutFailed: "message_shortcut_failed"
         }
     }
 }

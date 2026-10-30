@@ -7,6 +7,7 @@ final class HomeViewModel: ObservableObject {
     @Published private(set) var uiState: HomeUiState
     @Published private(set) var messageEvent: HomeMessageEvent?
     @Published var isShortcutSetupPresented = false
+    @Published private(set) var shortcutFailure: ShortcutFailure?
 
     private let contributionRepository: ContributionRepository
     private let settingsRepository: SettingsRepository
@@ -154,12 +155,13 @@ final class HomeViewModel: ObservableObject {
         case .success:
             wallpaperShortcut.isReady = true
             uiState.isShortcutReady = true
+            shortcutFailure = nil
             show(.applied)
-        case .error:
+        case .error(let message):
             wallpaperShortcut.isReady = false
             uiState.isShortcutReady = false
+            shortcutFailure = ShortcutFailure(reason: message)
             isShortcutSetupPresented = true
-            show(.shortcutFailed)
         case .cancel:
             break
         }

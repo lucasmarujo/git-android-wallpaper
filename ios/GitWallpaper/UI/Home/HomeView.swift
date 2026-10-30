@@ -125,9 +125,9 @@ struct HomeView: View {
         }
         .sheet(isPresented: $viewModel.isShortcutSetupPresented) {
             ShortcutSetupSheet(
-                target: uiState.settings.target,
                 imageURL: viewModel.stagedWallpaperURL,
-                onOpenShortcuts: { openURL(WallpaperShortcut.shortcutsAppURL) },
+                failure: viewModel.shortcutFailure,
+                onAddShortcut: { openURL(WallpaperShortcut.installURL) },
                 onRunShortcut: viewModel.runShortcut
             )
         }

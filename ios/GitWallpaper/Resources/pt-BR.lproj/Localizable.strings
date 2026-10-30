@@ -91,19 +91,16 @@
 "message_github_error" = "O GitHub retornou um erro. Tente mais tarde.";
 "message_wallpaper_error" = "Não foi possível preparar a imagem do wallpaper. Tente de novo.";
 "message_session_expired" = "Sua sessão expirou. Entre de novo.";
-"message_shortcut_failed" = "O atalho “Git Wallpaper” não rodou. Confira se ele existe com esse nome exato.";
+"message_shortcut_failed" = "O atalho Git Wallpaper não está instalado ou não terminou. Adicione de novo em Adicionar atalho.";
 
-"shortcut_setup_title" = "Aplicar com o Atalhos";
-"shortcut_setup_body" = "O iOS não deixa apps trocarem o wallpaper sozinhos. Crie este atalho uma vez e o Git Wallpaper aplica e atualiza seu wallpaper por ele.";
-"shortcut_setup_step_create" = "Abra o Atalhos, toque em + e dê ao novo atalho o nome “%@”.";
-"shortcut_setup_step_get" = "Adicione a ação “Gerar Git Wallpaper”.";
-"shortcut_setup_step_set" = "Adicione a ação que define a foto do papel de parede (busque por “papel de parede”), escolha %@ e desative a pré-visualização.";
-"shortcut_setup_step_automation" = "Para atualizar sozinho, abra Automação, crie uma automação por horário (por exemplo, todo dia às 00:05), escolha executar imediatamente e selecione o atalho Git Wallpaper.";
-"shortcut_location_lock_screen" = "Tela Bloqueada";
-"shortcut_location_home_screen" = "Tela de Início";
-"shortcut_location_both" = "Tela Bloqueada e Tela de Início";
-"shortcut_open_shortcuts" = "Abrir o Atalhos";
-"shortcut_run" = "Aplicar com o atalho";
+"shortcut_setup_title" = "Configurar o atalho";
+"shortcut_setup_body" = "O iOS só deixa o app Atalhos trocar o papel de parede. Adicione uma vez o atalho pronto do Git Wallpaper e o app aplica seu wallpaper por ele.";
+"shortcut_setup_step_automation" = "Para atualizar sozinho todo dia: no Atalhos, abra Automação, toque em +, escolha Horário do Dia, defina um horário e Diariamente, escolha Executar Imediatamente e selecione Git Wallpaper.";
+"shortcut_failure_reason" = "O Atalhos respondeu: %@";
+"shortcut_setup_step_add" = "Toque em Adicionar atalho. O Atalhos abre o atalho Git Wallpaper: toque em Adicionar Atalho lá.";
+"shortcut_add" = "Adicionar atalho";
+"shortcut_setup_step_apply" = "Volte para cá e toque em Aplicar agora. Na primeira vez, permita que o atalho troque o papel de parede (Sempre Permitir).";
+"shortcut_run" = "Aplicar agora";
 "shortcut_manual_hint" = "Prefere definir à mão? Salve a imagem em Fotos e escolha em Ajustes, Papel de Parede.";
 "shortcut_share_image" = "Salvar ou compartilhar imagem";
 
