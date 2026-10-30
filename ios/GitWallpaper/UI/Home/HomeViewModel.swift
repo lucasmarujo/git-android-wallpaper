@@ -66,6 +66,8 @@ final class HomeViewModel: ObservableObject {
         initialState.settings = settingsRepository.current()
         initialState.previewAspectRatio = previewSize.aspectRatio
         initialState.isShortcutReady = wallpaperShortcut.isReady
+        initialState.isAutomationAdded = wallpaperShortcut.isAutomationAdded
+        initialState.canInstallAutomation = wallpaperShortcut.canInstallAutomation
         uiState = initialState
     }
 
@@ -88,6 +90,7 @@ final class HomeViewModel: ObservableObject {
         uiState.lastAppliedAt = updateStatusRepository.current().lastAppliedAt
         uiState.hasCalendar = calendar != nil
         uiState.isShortcutReady = wallpaperShortcut.isReady
+        uiState.isAutomationAdded = wallpaperShortcut.isAutomationAdded
         updateLoadingState()
         await renderPreview()
     }
@@ -144,6 +147,12 @@ final class HomeViewModel: ObservableObject {
     func runShortcut() {
         isShortcutSetupPresented = false
         urlOpener.open(wallpaperShortcut.runURL)
+    }
+
+    func addAutomation() {
+        wallpaperShortcut.isAutomationAdded = true
+        uiState.isAutomationAdded = true
+        urlOpener.open(WallpaperShortcut.automationInstallURL)
     }
 
     func presentShortcutSetup() {

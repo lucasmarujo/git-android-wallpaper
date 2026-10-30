@@ -94,11 +94,13 @@
 "message_shortcut_failed" = "O atalho Git Wallpaper não está instalado ou não terminou. Adicione de novo em Adicionar atalho.";
 
 "shortcut_setup_title" = "Configurar o atalho";
-"shortcut_setup_body" = "O iOS só deixa o app Atalhos trocar o papel de parede. Adicione uma vez o atalho pronto do Git Wallpaper e o app aplica seu wallpaper por ele.";
+"shortcut_setup_body" = "O iOS só deixa o app Atalhos trocar o papel de parede. Configure uma vez o atalho pronto do Git Wallpaper e a automação diária: o app aplica seu wallpaper por eles, e ele continua se atualizando sozinho.";
 "shortcut_setup_step_automation" = "Para atualizar sozinho todo dia: no Atalhos, abra Automação, toque em +, escolha Horário do Dia, defina um horário e Diariamente, escolha Executar Imediatamente e selecione Git Wallpaper.";
 "shortcut_failure_reason" = "O Atalhos respondeu: %@";
 "shortcut_setup_step_add" = "Toque em Adicionar atalho. O Atalhos abre o atalho Git Wallpaper: toque em Adicionar Atalho lá.";
 "shortcut_add" = "Adicionar atalho";
+"shortcut_add_automation" = "Adicionar atualização automática";
+"shortcut_setup_step_add_automation" = "Toque em Adicionar atualização automática. O Atalhos abre uma automação que aplica o wallpaper todo dia às 8h, 12h e 18h: toque em Adicionar lá. Se o Atalhos perguntar como executar, escolha Executar Imediatamente. Dá para mudar os horários depois em Atalhos, Automação.";
 "shortcut_setup_step_apply" = "Volte para cá e toque em Aplicar agora. Na primeira vez, permita que o atalho troque o papel de parede (Sempre Permitir).";
 "shortcut_run" = "Aplicar agora";
 "shortcut_manual_hint" = "Prefere definir à mão? Salve a imagem em Fotos e escolha em Ajustes, Papel de Parede.";

@@ -30,7 +30,7 @@ struct HomeView: View {
                     if let stats = uiState.stats {
                         StatsRow(stats: stats)
                     }
-                    if uiState.settings.autoUpdate && !uiState.isShortcutReady {
+                    if uiState.settings.autoUpdate && uiState.needsShortcutSetup {
                         AutomationHintCard { viewModel.presentShortcutSetup() }
                     }
                     SettingsSection(title: "home_section_target") {
@@ -127,7 +127,9 @@ struct HomeView: View {
             ShortcutSetupSheet(
                 imageURL: viewModel.stagedWallpaperURL,
                 failure: viewModel.shortcutFailure,
+                canInstallAutomation: uiState.canInstallAutomation,
                 onAddShortcut: { openURL(WallpaperShortcut.installURL) },
+                onAddAutomation: viewModel.addAutomation,
                 onRunShortcut: viewModel.runShortcut
             )
         }

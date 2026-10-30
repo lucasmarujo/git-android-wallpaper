@@ -10,16 +10,28 @@ final class WallpaperShortcut: @unchecked Sendable {
     static let name = "Git Wallpaper"
     static let callbackScheme = "gitwallpaper"
     static let installURL = URL(string: "https://www.icloud.com/shortcuts/eadb2565efde4dc69dd126bb60bbcc68")!
+    static let automationInstallURL = URL(string: "https://www.icloud.com/shortcuts/67ecf3a0f21a4ce49243079a1bbefc6f")!
 
     private let defaults: UserDefaults
+    private let operatingSystemVersion: OperatingSystemVersion
 
-    init(defaults: UserDefaults) {
+    init(defaults: UserDefaults, operatingSystemVersion: OperatingSystemVersion = ProcessInfo.processInfo.operatingSystemVersion) {
         self.defaults = defaults
+        self.operatingSystemVersion = operatingSystemVersion
     }
 
     var isReady: Bool {
         get { defaults.bool(forKey: Self.readyKey) }
         set { defaults.set(newValue, forKey: Self.readyKey) }
+    }
+
+    var isAutomationAdded: Bool {
+        get { defaults.bool(forKey: Self.automationAddedKey) }
+        set { defaults.set(newValue, forKey: Self.automationAddedKey) }
+    }
+
+    var canInstallAutomation: Bool {
+        operatingSystemVersion.majorVersion >= Self.automationLinksMajorVersion
     }
 
     var runURL: URL {
@@ -61,6 +73,8 @@ final class WallpaperShortcut: @unchecked Sendable {
     }
 
     private static let readyKey = "shortcut_ready"
+    private static let automationAddedKey = "shortcut_automation_added"
+    private static let automationLinksMajorVersion = 27
     private static let runShortcutBase = "shortcuts://x-callback-url/run-shortcut"
     private static let nameParameter = "name"
     private static let successParameter = "x-success"

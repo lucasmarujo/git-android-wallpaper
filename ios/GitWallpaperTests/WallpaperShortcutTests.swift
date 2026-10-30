@@ -41,6 +41,30 @@ final class WallpaperShortcutTests: XCTestCase {
         XCTAssertTrue(WallpaperShortcut.installURL.path.hasPrefix("/shortcuts/"))
     }
 
+    func testAutomationUrlPointsToTheSharedICloudAutomation() {
+        XCTAssertEqual("https", WallpaperShortcut.automationInstallURL.scheme)
+        XCTAssertEqual("www.icloud.com", WallpaperShortcut.automationInstallURL.host)
+        XCTAssertTrue(WallpaperShortcut.automationInstallURL.path.hasPrefix("/shortcuts/"))
+        XCTAssertNotEqual(WallpaperShortcut.installURL, WallpaperShortcut.automationInstallURL)
+    }
+
+    func testAutomationLinksNeedIOS27() {
+        let iOS26 = WallpaperShortcut(defaults: stores.defaults, operatingSystemVersion: OperatingSystemVersion(majorVersion: 26, minorVersion: 5, patchVersion: 0))
+        let iOS27 = WallpaperShortcut(defaults: stores.defaults, operatingSystemVersion: OperatingSystemVersion(majorVersion: 27, minorVersion: 0, patchVersion: 0))
+
+        XCTAssertFalse(iOS26.canInstallAutomation)
+        XCTAssertTrue(iOS27.canInstallAutomation)
+    }
+
+    func testAddedAutomationIsPersisted() {
+        let shortcut = WallpaperShortcut(defaults: stores.defaults)
+        XCTAssertFalse(shortcut.isAutomationAdded)
+
+        shortcut.isAutomationAdded = true
+
+        XCTAssertTrue(WallpaperShortcut(defaults: stores.defaults).isAutomationAdded)
+    }
+
     func testUnrelatedUrlsAreIgnored() {
         XCTAssertNil(WallpaperShortcut.callback(from: URL(string: "gitwallpaper://shortcut/other")!))
         XCTAssertNil(WallpaperShortcut.callback(from: URL(string: "gitwallpaper://elsewhere/success")!))

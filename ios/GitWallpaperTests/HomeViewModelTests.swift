@@ -36,7 +36,7 @@ final class HomeViewModelTests: XCTestCase {
             sessionRepository: sessionRepository
         )
         stagedWallpaper = StagedWallpaperStore(fileURL: stores.file("wallpaper.png"))
-        wallpaperShortcut = WallpaperShortcut(defaults: stores.defaults)
+        wallpaperShortcut = WallpaperShortcut(defaults: stores.defaults, operatingSystemVersion: Self.iOS27)
     }
 
     override func tearDown() async throws {
@@ -155,6 +155,51 @@ final class HomeViewModelTests: XCTestCase {
 
         XCTAssertFalse(viewModel.isShortcutSetupPresented)
         XCTAssertEqual([wallpaperShortcut.runURL], urlOpener.openedURLs)
+    }
+
+    func testAddingTheAutomationOpensTheSharedAutomationAndIsRemembered() async {
+        let viewModel = makeViewModel()
+
+        viewModel.addAutomation()
+
+        XCTAssertEqual([WallpaperShortcut.automationInstallURL], urlOpener.openedURLs)
+        XCTAssertTrue(viewModel.uiState.isAutomationAdded)
+        XCTAssertTrue(WallpaperShortcut(defaults: stores.defaults).isAutomationAdded)
+    }
+
+    func testTheSetupIsNeededUntilTheShortcutWorksAndTheAutomationIsAdded() async {
+        let viewModel = makeViewModel()
+        await viewModel.start()
+        XCTAssertTrue(viewModel.uiState.canInstallAutomation)
+        XCTAssertTrue(viewModel.uiState.needsShortcutSetup)
+
+        viewModel.handleShortcutCallback(.success)
+        XCTAssertTrue(viewModel.uiState.needsShortcutSetup)
+
+        viewModel.addAutomation()
+        XCTAssertFalse(viewModel.uiState.needsShortcutSetup)
+    }
+
+    func testOlderIOSVersionsOnlyNeedTheShortcut() async {
+        wallpaperShortcut = WallpaperShortcut(defaults: stores.defaults, operatingSystemVersion: Self.iOS26)
+        wallpaperShortcut.isReady = true
+        let viewModel = makeViewModel()
+
+        await viewModel.start()
+
+        XCTAssertFalse(viewModel.uiState.canInstallAutomation)
+        XCTAssertFalse(viewModel.uiState.needsShortcutSetup)
+    }
+
+    func testAnAutomationAddedEarlierIsRestored() async {
+        wallpaperShortcut.isReady = true
+        wallpaperShortcut.isAutomationAdded = true
+        let viewModel = makeViewModel()
+
+        await viewModel.start()
+
+        XCTAssertTrue(viewModel.uiState.isAutomationAdded)
+        XCTAssertFalse(viewModel.uiState.needsShortcutSetup)
     }
 
     func testCancellingTheAdjustmentKeepsTheWallpaperAndTheFraming() async {
@@ -294,4 +339,7 @@ final class HomeViewModelTests: XCTestCase {
         )!
         return context.makeImage()!
     }
+
+    private static let iOS26 = OperatingSystemVersion(majorVersion: 26, minorVersion: 5, patchVersion: 0)
+    private static let iOS27 = OperatingSystemVersion(majorVersion: 27, minorVersion: 0, patchVersion: 0)
 }
