@@ -1,0 +1,15 @@
+{
+  "expo": {
+    "name": "Git Wallpaper",
+    "slug": "git-wallpaper",
+    "version": "1.0.0",
+    "ios": {
+      "bundleIdentifier": "dev.marujo.gitwallpaper"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "7a187bb6-5e28-4352-a8a4-fc870aa58c3a"
+      }
+    }
+  }
+}

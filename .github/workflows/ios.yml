@@ -1,0 +1,83 @@
+name: iOS CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'ios/**'
+      - '.github/workflows/ios.yml'
+  pull_request:
+    paths:
+      - 'ios/**'
+      - '.github/workflows/ios.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  XCODE_PATH: /Applications/Xcode_26.6.app
+  SIMULATOR: platform=iOS Simulator,name=iPhone 17
+
+jobs:
+  test:
+    runs-on: macos-26
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Select Xcode
+        run: sudo xcode-select -s "$XCODE_PATH"
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Package tests (GitWallpaperKit)
+        working-directory: ios/GitWallpaperKit
+        run: xcodebuild -quiet test -scheme GitWallpaperKit -destination "$SIMULATOR" -resultBundlePath "$RUNNER_TEMP/GitWallpaperKit.xcresult"
+
+      - name: Generate Xcode project
+        if: ${{ !cancelled() }}
+        working-directory: ios
+        run: xcodegen generate
+
+      - name: Check that the committed Xcode project is up to date
+        if: ${{ !cancelled() }}
+        working-directory: ios
+        run: |
+          if [ -n "$(git status --porcelain -- GitWallpaper.xcodeproj)" ]; then
+            git status --porcelain -- GitWallpaper.xcodeproj
+            echo "::error::ios/GitWallpaper.xcodeproj is out of date. Run 'xcodegen generate' in ios/ and commit the result."
+            exit 1
+          fi
+
+      - name: App tests and build
+        if: ${{ !cancelled() }}
+        working-directory: ios
+        run: >
+          xcodebuild -quiet test
+          -project GitWallpaper.xcodeproj
+          -scheme GitWallpaper
+          -destination "$SIMULATOR"
+          -resultBundlePath "$RUNNER_TEMP/GitWallpaper.xcresult"
+          CODE_SIGNING_ALLOWED=NO
+
+      - name: Upload generated Xcode project
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: ios-xcodeproj
+          path: ios/GitWallpaper.xcodeproj
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: ios-test-results
+          path: |
+            ${{ runner.temp }}/GitWallpaperKit.xcresult
+            ${{ runner.temp }}/GitWallpaper.xcresult

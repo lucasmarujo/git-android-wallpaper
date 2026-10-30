@@ -1,0 +1,114 @@
+"login_tagline" = "Seu gráfico de contribuições do GitHub como papel de parede, sempre atualizado.";
+"login_sign_in_github" = "Entrar com GitHub";
+"login_requesting_code" = "Conectando ao GitHub…";
+"login_enter_code" = "Abra este link e digite o código abaixo:";
+"login_open_link" = "Abrir link";
+"login_copy_link" = "Copiar link";
+"login_link_copied" = "Link copiado";
+"login_copy_and_open" = "Copiar código e abrir o GitHub";
+"login_waiting" = "Aguardando autorização…";
+"login_signing_in" = "Entrando…";
+"login_cancel" = "Cancelar";
+"login_use_token" = "Usar um token de acesso pessoal";
+"login_token_label" = "Token de acesso pessoal";
+"login_token_hint" = "Crie em github.com/settings/tokens com o escopo read:user.";
+"login_sign_in_token" = "Entrar com token";
+"login_privacy" = "Tudo roda no seu iPhone. Seu token fica no Keychain do iOS e só é enviado ao GitHub.";
+"login_error_network" = "Não foi possível falar com o GitHub. Verifique sua conexão e tente de novo.";
+"login_error_expired" = "O código expirou. Comece de novo.";
+"login_error_access_denied" = "A autorização foi negada no GitHub.";
+"login_error_device_flow_unavailable" = "O login com GitHub está indisponível agora. Use um token de acesso pessoal.";
+"login_error_invalid_token" = "O GitHub recusou este token.";
+"login_error_unknown" = "Algo deu errado. Tente de novo.";
+
+"home_refresh" = "Atualizar contribuições";
+"home_sign_out" = "Sair";
+"home_sign_out_title" = "Sair da conta?";
+"home_sign_out_body" = "O wallpaper atual continua, mas deixa de ser atualizado.";
+"home_preview_description" = "Pré-visualização do wallpaper";
+"home_no_contributions" = "Ainda não foi possível carregar suas contribuições.";
+"home_retry" = "Tentar de novo";
+"home_stat_contributions" = "Contribuições";
+"home_stat_current_streak" = "Sequência atual";
+"home_stat_longest_streak" = "Maior sequência";
+"home_section_target" = "Aplicar em";
+"home_section_theme" = "Tema";
+"home_section_commit_color" = "Cor dos commits";
+"commit_color_theme" = "Cores do tema";
+"commit_color_custom" = "Personalizada";
+"commit_color_red" = "Vermelho";
+"commit_color_green" = "Verde";
+"commit_color_blue" = "Azul";
+"commit_color_confirm" = "Usar cor";
+"home_section_period" = "Período";
+"home_section_shape" = "Formato";
+"home_show_stats" = "Mostrar estatísticas no wallpaper";
+"home_section_auto_update" = "Atualização automática";
+"home_auto_update" = "Atualizar automaticamente";
+"home_auto_update_every" = "Verificar o GitHub a cada";
+"home_auto_update_hint" = "Os widgets se atualizam sozinhos. O wallpaper é atualizado sempre que a sua automação do Atalhos roda.";
+"home_last_applied" = "Última aplicação: %@";
+"home_never_applied" = "Ainda não aplicado";
+"home_apply" = "Aplicar wallpaper";
+"home_applying" = "Aplicando…";
+"home_automation_title" = "Atualização automática garantida";
+"home_automation_body" = "O iOS só deixa apps trocarem o wallpaper pelo app Atalhos. Crie uma vez o atalho Git Wallpaper e uma automação diária, e o wallpaper acompanha seus commits.";
+"home_automation_action" = "Configurar no Atalhos";
+"home_section_widget" = "Widgets";
+"home_widget_body" = "Mostre seu gráfico de contribuições na Tela de Início ou na Tela Bloqueada. Os widgets seguem o tema, a cor e o período escolhidos aqui.";
+"home_widget_system_hint" = "Toque e segure um espaço vazio da Tela de Início, toque em Editar, depois em Adicionar Widget, e escolha o Git Wallpaper. Na Tela Bloqueada, toque e segure, toque em Personalizar e adicione o widget abaixo do relógio.";
+"privacy_policy" = "Política de privacidade";
+
+"adjust_hint" = "Faça pinça para dar zoom e arraste para mover o gráfico";
+"adjust_reset" = "Restaurar";
+"adjust_apply" = "Aplicar";
+
+"target_lock_screen" = "Bloqueio";
+"target_home_screen" = "Início";
+"target_both" = "Ambas";
+
+"theme_github_dark" = "Escuro";
+"theme_github_light" = "Claro";
+"theme_amoled" = "AMOLED";
+"theme_ocean" = "Oceano";
+"theme_sunset" = "Pôr do sol";
+
+"period_current_year" = "Este ano";
+"period_last_12_months" = "Últimos 12 meses";
+
+"shape_rounded_square" = "Quadrado";
+"shape_circle" = "Círculo";
+
+"interval_thirty_minutes" = "30 min";
+"interval_one_hour" = "1 h";
+"interval_three_hours" = "3 h";
+"interval_six_hours" = "6 h";
+"interval_twelve_hours" = "12 h";
+
+"message_applied" = "Wallpaper aplicado!";
+"message_refreshed" = "Contribuições atualizadas";
+"message_network_error" = "Não foi possível falar com o GitHub. Tente de novo.";
+"message_github_error" = "O GitHub retornou um erro. Tente mais tarde.";
+"message_wallpaper_error" = "Não foi possível preparar a imagem do wallpaper. Tente de novo.";
+"message_session_expired" = "Sua sessão expirou. Entre de novo.";
+"message_shortcut_failed" = "O atalho “Git Wallpaper” não rodou. Confira se ele existe com esse nome exato.";
+
+"shortcut_setup_title" = "Aplicar com o Atalhos";
+"shortcut_setup_body" = "O iOS não deixa apps trocarem o wallpaper sozinhos. Crie este atalho uma vez e o Git Wallpaper aplica e atualiza seu wallpaper por ele.";
+"shortcut_setup_step_create" = "Abra o Atalhos, toque em + e dê ao novo atalho o nome “%@”.";
+"shortcut_setup_step_get" = "Adicione a ação “Gerar Git Wallpaper”.";
+"shortcut_setup_step_set" = "Adicione a ação que define a foto do papel de parede (busque por “papel de parede”), escolha %@ e desative a pré-visualização.";
+"shortcut_setup_step_automation" = "Para atualizar sozinho, abra Automação, crie uma automação por horário (por exemplo, todo dia às 00:05), escolha executar imediatamente e selecione o atalho Git Wallpaper.";
+"shortcut_location_lock_screen" = "Tela Bloqueada";
+"shortcut_location_home_screen" = "Tela de Início";
+"shortcut_location_both" = "Tela Bloqueada e Tela de Início";
+"shortcut_open_shortcuts" = "Abrir o Atalhos";
+"shortcut_run" = "Aplicar com o atalho";
+"shortcut_manual_hint" = "Prefere definir à mão? Salve a imagem em Fotos e escolha em Ajustes, Papel de Parede.";
+"shortcut_share_image" = "Salvar ou compartilhar imagem";
+
+"Get Git Wallpaper" = "Gerar Git Wallpaper";
+"Draws your latest GitHub contribution graph as a wallpaper image for the Set Wallpaper Photo action." = "Desenha seu gráfico de contribuições do GitHub mais recente como imagem de wallpaper para a ação que define a foto do papel de parede.";
+"Open Git Wallpaper and sign in with GitHub." = "Abra o Git Wallpaper e entre com o GitHub.";
+"Could not reach GitHub. Try again." = "Não foi possível falar com o GitHub. Tente de novo.";
+"Open Git Wallpaper and apply your wallpaper once." = "Abra o Git Wallpaper e aplique seu wallpaper uma vez.";

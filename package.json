@@ -1,0 +1,6 @@
+{
+  "name": "git-wallpaper",
+  "version": "1.0.0",
+  "private": true,
+  "description": "EAS Build entry point for the native iOS app in ios/. The Android app builds with Gradle."
+}
