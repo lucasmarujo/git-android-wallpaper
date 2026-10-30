@@ -90,6 +90,8 @@ final class HomeViewModelTests: XCTestCase {
 
         await viewModel.applyWallpaper(WallpaperFraming())
 
+        XCTAssertFalse(viewModel.isShortcutSetupPresented)
+        viewModel.adjustmentDismissed()
         XCTAssertTrue(viewModel.isShortcutSetupPresented)
         XCTAssertTrue(urlOpener.openedURLs.isEmpty)
     }
@@ -100,6 +102,7 @@ final class HomeViewModelTests: XCTestCase {
         await viewModel.start()
 
         await viewModel.applyWallpaper(WallpaperFraming())
+        viewModel.adjustmentDismissed()
 
         XCTAssertFalse(viewModel.isShortcutSetupPresented)
         XCTAssertEqual([wallpaperShortcut.runURL], urlOpener.openedURLs)
@@ -183,6 +186,8 @@ final class HomeViewModelTests: XCTestCase {
         await viewModel.start()
 
         await viewModel.applyWallpaper(WallpaperFraming())
+
+        viewModel.adjustmentDismissed()
 
         XCTAssertEqual(.wallpaperError, viewModel.messageEvent?.message)
         XCTAssertFalse(viewModel.isShortcutSetupPresented)

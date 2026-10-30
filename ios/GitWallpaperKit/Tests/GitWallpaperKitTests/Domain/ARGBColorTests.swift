@@ -35,9 +35,4 @@ final class ARGBColorTests: XCTestCase {
         XCTAssertEqual(ARGBColor(argb: 0xFF11_AA33), color.withGreen(0xAA))
         XCTAssertEqual(ARGBColor(argb: 0xFF11_22AA), color.withBlue(0xAA))
     }
-
-    func testLuminanceSeparatesLightAndDarkColors() {
-        XCTAssertGreaterThan(ARGBColor(argb: 0xFFFF_FFFF).luminance, 0.5)
-        XCTAssertLessThan(ARGBColor(argb: 0xFF0D_1117).luminance, 0.5)
-    }
 }

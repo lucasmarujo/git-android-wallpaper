@@ -3,7 +3,6 @@ name: iOS CI
 on:
   push:
     branches: [main]
-    tags: ['ios-v*']
     paths:
       - 'ios/**'
       - '.github/workflows/ios.yml'
@@ -46,6 +45,16 @@ jobs:
         working-directory: ios
         run: xcodegen generate
 
+      - name: Check that the committed Xcode project is up to date
+        if: ${{ !cancelled() }}
+        working-directory: ios
+        run: |
+          if [ -n "$(git status --porcelain -- GitWallpaper.xcodeproj)" ]; then
+            git status --porcelain -- GitWallpaper.xcodeproj
+            echo "::error::ios/GitWallpaper.xcodeproj is out of date. Run 'xcodegen generate' in ios/ and commit the result."
+            exit 1
+          fi
+
       - name: App tests and build
         if: ${{ !cancelled() }}
         working-directory: ios
@@ -57,6 +66,13 @@ jobs:
           -resultBundlePath "$RUNNER_TEMP/GitWallpaper.xcresult"
           CODE_SIGNING_ALLOWED=NO
 
+      - name: Upload generated Xcode project
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: ios-xcodeproj
+          path: ios/GitWallpaper.xcodeproj
+
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v7
@@ -65,61 +81,3 @@ jobs:
           path: |
             ${{ runner.temp }}/GitWallpaperKit.xcresult
             ${{ runner.temp }}/GitWallpaper.xcresult
-
-  testflight:
-    if: startsWith(github.ref, 'refs/tags/ios-v')
-    needs: test
-    runs-on: macos-26
-    timeout-minutes: 45
-    env:
-      ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
-      ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
-    steps:
-      - uses: actions/checkout@v7
-
-      - name: Select Xcode
-        run: sudo xcode-select -s "$XCODE_PATH"
-
-      - name: Install XcodeGen
-        run: brew install xcodegen
-
-      - name: Generate Xcode project
-        working-directory: ios
-        run: xcodegen generate
-
-      - name: Decode App Store Connect API key
-        env:
-          ASC_KEY_P8_BASE64: ${{ secrets.ASC_KEY_P8_BASE64 }}
-        run: echo "$ASC_KEY_P8_BASE64" | base64 --decode > "$RUNNER_TEMP/AuthKey.p8"
-
-      - name: Archive
-        working-directory: ios
-        run: >
-          xcodebuild -quiet archive
-          -project GitWallpaper.xcodeproj
-          -scheme GitWallpaper
-          -configuration Release
-          -destination "generic/platform=iOS"
-          -archivePath "$RUNNER_TEMP/GitWallpaper.xcarchive"
-          -allowProvisioningUpdates
-          -authenticationKeyPath "$RUNNER_TEMP/AuthKey.p8"
-          -authenticationKeyID "$ASC_KEY_ID"
-          -authenticationKeyIssuerID "$ASC_ISSUER_ID"
-          MARKETING_VERSION="${GITHUB_REF_NAME#ios-v}"
-          CURRENT_PROJECT_VERSION="${{ github.run_number }}"
-
-      - name: Upload to TestFlight
-        working-directory: ios
-        run: >
-          xcodebuild -exportArchive
-          -archivePath "$RUNNER_TEMP/GitWallpaper.xcarchive"
-          -exportOptionsPlist ExportOptions.plist
-          -exportPath "$RUNNER_TEMP/export"
-          -allowProvisioningUpdates
-          -authenticationKeyPath "$RUNNER_TEMP/AuthKey.p8"
-          -authenticationKeyID "$ASC_KEY_ID"
-          -authenticationKeyIssuerID "$ASC_ISSUER_ID"
-
-      - name: Remove API key
-        if: always()
-        run: rm -f "$RUNNER_TEMP/AuthKey.p8"

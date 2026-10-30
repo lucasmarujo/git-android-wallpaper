@@ -33,10 +33,6 @@ public struct ARGBColor: Hashable, Sendable {
         String(format: "#%06X", argb & Self.rgbMask)
     }
 
-    public var luminance: Double {
-        0.2126 * Self.linear(red) + 0.7152 * Self.linear(green) + 0.0722 * Self.linear(blue)
-    }
-
     public var cgColor: CGColor {
         CGColor(
             srgbRed: CGFloat(red) / CGFloat(Self.maxChannel),
@@ -76,10 +72,5 @@ public struct ARGBColor: Hashable, Sendable {
 
     private static func channel(_ value: Int) -> Int {
         min(max(value, 0), maxChannel)
-    }
-
-    private static func linear(_ channel: Int) -> Double {
-        let value = Double(channel) / Double(maxChannel)
-        return value <= 0.03928 ? value / 12.92 : pow((value + 0.055) / 1.055, 2.4)
     }
 }

@@ -1,0 +1,12 @@
+build:
+  name: Git Wallpaper iOS for the App Store
+  steps:
+    - eas/checkout
+    - eas/configure_ios_credentials
+    - eas/generate_gymfile_from_template:
+        inputs:
+          credentials: ${ eas.job.secrets.buildCredentials }
+          scheme: GitWallpaper
+          build_configuration: Release
+    - eas/run_fastlane
+    - eas/find_and_upload_build_artifacts

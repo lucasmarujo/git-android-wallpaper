@@ -152,15 +152,14 @@ You can also save the image to Photos and choose it in **Settings > Wallpaper**.
 | Language and UI | Swift 5 language mode, SwiftUI, iOS 17 or later, iPhone |
 | Shared code | `GitWallpaperKit` local Swift package: domain, GitHub, storage, Core Graphics renderer |
 | Widgets and automation | WidgetKit, App Intents (Shortcuts) |
-| Project | [XcodeGen](https://github.com/yonaskolb/XcodeGen) spec in [`ios/project.yml`](ios/project.yml) |
+| Project | [XcodeGen](https://github.com/yonaskolb/XcodeGen) spec in [`ios/project.yml`](ios/project.yml), with the generated `ios/GitWallpaper.xcodeproj` committed |
+| Store builds | EAS Build and EAS Submit (TestFlight) |
 | Tests | XCTest, with `URLProtocol` stubs for GitHub and pixel checks for the renderer |
 
-**Building on a Mac** (Xcode 26 or later):
+**Building on a Mac** (Xcode 26 or later). After changing `ios/project.yml` or adding files, run `brew install xcodegen && xcodegen generate` in `ios/`:
 
 ```bash
-brew install xcodegen
 cd ios
-xcodegen generate
 open GitWallpaper.xcodeproj
 ```
 
@@ -359,7 +358,15 @@ The tests cover:
 1. Unit tests, lint and a debug build on JDK 21.
 2. Uploads the test and lint reports and the debug APK as artifacts.
 
-[iOS CI](.github/workflows/ios.yml) runs the iOS package and app tests on macOS 26 with Xcode 26.6 whenever `ios/` changes. Pushing a tag that matches `ios-v*` (for example `ios-v1.0.0`) archives the app and uploads it to TestFlight. That job needs the `ASC_KEY_ID`, `ASC_ISSUER_ID` and `ASC_KEY_P8_BASE64` secrets of an App Store Connect API key.
+[iOS CI](.github/workflows/ios.yml) runs the iOS package and app tests on macOS 26 with Xcode 26.6 whenever `ios/` changes. It also fails when the committed `ios/GitWallpaper.xcodeproj` no longer matches `ios/project.yml`.
+
+iOS store builds go through [EAS Build](https://docs.expo.dev/build/introduction/), which works from any OS, including Windows. The root `package.json`, `app.json` and `eas.json` only exist for EAS, and [`.eas/build/ios-app-store.yml`](.eas/build/ios-app-store.yml) builds the native Xcode project without React Native. EAS manages the distribution certificate and the provisioning profiles of the app and the widget, and EAS Submit uploads the build to TestFlight:
+
+```bash
+eas build --platform ios --profile production --auto-submit
+```
+
+Raise `MARKETING_VERSION` or `CURRENT_PROJECT_VERSION` in `ios/project.yml` before each upload, then regenerate the Xcode project on a Mac (or take it from the CI artifact).
 
 Pushing a tag that matches `v*` also builds a signed release APK and publishes it as a GitHub Release with generated notes. That job needs the `SIGNING_KEYSTORE_BASE64`, `SIGNING_STORE_PASSWORD`, `SIGNING_KEY_ALIAS` and `SIGNING_KEY_PASSWORD` repository secrets.
 

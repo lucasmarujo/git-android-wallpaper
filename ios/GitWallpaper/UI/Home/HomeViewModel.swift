@@ -25,6 +25,7 @@ final class HomeViewModel: ObservableObject {
 
     private var calendar: ContributionCalendar?
     private var hasStarted = false
+    private var isShortcutSetupPending = false
     private var initialRefreshFinished = false
     private var previewGeneration = 0
     private var adjustmentGeneration = 0
@@ -126,11 +127,17 @@ final class HomeViewModel: ObservableObject {
             if wallpaperShortcut.isReady {
                 urlOpener.open(wallpaperShortcut.runURL)
             } else {
-                isShortcutSetupPresented = true
+                isShortcutSetupPending = true
             }
         case .failure(let error):
             if let message = Self.message(for: error) { show(message) }
         }
+    }
+
+    func adjustmentDismissed() {
+        guard isShortcutSetupPending else { return }
+        isShortcutSetupPending = false
+        isShortcutSetupPresented = true
     }
 
     func runShortcut() {

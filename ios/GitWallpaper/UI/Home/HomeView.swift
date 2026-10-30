@@ -116,7 +116,7 @@ struct HomeView: View {
             }
         }
         .animation(.default, value: viewModel.messageEvent)
-        .fullScreenCover(isPresented: adjustingBinding) {
+        .fullScreenCover(isPresented: adjustingBinding, onDismiss: viewModel.adjustmentDismissed) {
             WallpaperAdjustView(
                 uiState: uiState,
                 onApply: { framing in Task { await viewModel.applyWallpaper(framing) } },

@@ -14,7 +14,6 @@
 *.jks
 *.keystore
 /keystore.properties
-/ios/GitWallpaper.xcodeproj/
 /ios/build/
 /ios/GitWallpaperKit/.build/
 /ios/GitWallpaperKit/.swiftpm/
@@ -23,3 +22,5 @@ xcuserdata/
 *.xcarchive
 *.ipa
 *.p8
+build-*.tar.gz
+node_modules/

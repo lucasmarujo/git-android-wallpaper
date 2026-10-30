@@ -44,7 +44,6 @@ struct WallpaperAdjustView: View {
             }
         }
         .statusBarHidden()
-        .preferredColorScheme(palette.background.luminance > Self.lightBackgroundLuminance ? .light : .dark)
     }
 
     private var editorFrame: some View {
@@ -103,8 +102,6 @@ struct WallpaperAdjustView: View {
                     .onEnded { _ in lastTranslation = .zero }
             )
     }
-
-    private static let lightBackgroundLuminance = 0.5
 }
 
 private struct LockScreenClock: View {
