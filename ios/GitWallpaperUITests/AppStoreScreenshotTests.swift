@@ -29,12 +29,11 @@ final class AppStoreScreenshotTests: XCTestCase {
         settle()
         attach(app.screenshot(), name: "\(language)-1-home")
 
-        app.swipeUp()
-        settle()
-        attach(app.screenshot(), name: "\(language)-2-settings")
-
         let customColor = app.buttons[Self.customColorButton]
         XCTAssertTrue(customColor.waitForExistence(timeout: Self.timeout))
+        scrollToSettings(app, anchor: customColor)
+        attach(app.screenshot(), name: "\(language)-2-settings")
+
         customColor.tap()
         let redSlider = app.sliders.element(boundBy: 0)
         XCTAssertTrue(redSlider.waitForExistence(timeout: Self.timeout))
@@ -78,6 +77,17 @@ final class AppStoreScreenshotTests: XCTestCase {
         }
     }
 
+    private func scrollToSettings(_ app: XCUIApplication, anchor: XCUIElement) {
+        let scrollView = app.scrollViews.firstMatch
+        var attempts = 0
+        while anchor.frame.minY > app.frame.height * Self.settingsAnchorRatio, attempts < Self.maxScrollAttempts {
+            scrollView.swipeUp()
+            settle()
+            attempts += 1
+        }
+        XCTAssertLessThanOrEqual(anchor.frame.minY, app.frame.height * Self.settingsAnchorRatio, "The settings did not scroll into view")
+    }
+
     private func attach(_ screenshot: XCUIScreenshot, name: String) {
         let attachment = XCTAttachment(screenshot: screenshot)
         attachment.name = name
@@ -106,6 +116,8 @@ final class AppStoreScreenshotTests: XCTestCase {
     private static let timeout: TimeInterval = 30
     private static let settleSeconds: TimeInterval = 1.5
     private static let renderSeconds: TimeInterval = 3
+    private static let settingsAnchorRatio: CGFloat = 0.7
+    private static let maxScrollAttempts = 4
     private static let purpleRed: CGFloat = 0.54
     private static let purpleGreen: CGFloat = 0.17
     private static let purpleBlue: CGFloat = 0.89
