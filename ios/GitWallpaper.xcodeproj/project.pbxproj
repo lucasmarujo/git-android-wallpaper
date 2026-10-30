@@ -1,0 +1,858 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		06B6A3D168C22DE9A3784865 /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38DEE6390CF0AD05919EFCB2 /* LoginViewModel.swift */; };
+		09459B53E34FD34F1B6FCB12 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = E22C5EC83303C41AFD9E5EAC /* Localizable.strings */; };
+		0CC913D951515EED8B42EB65 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5C3AE8DE74D4F413C62A13C0 /* Localizable.strings */; };
+		12630E9CB5691857CE62EB33 /* DisplayScreenSizeProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D551FE2292507E2D3A652CD /* DisplayScreenSizeProvider.swift */; };
+		20F2CE79018ECDDD894CE811 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6BA7427DF630571794C0C5FD /* Assets.xcassets */; };
+		2AC47F4CA5DF41A4EE857011 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CC85E48B02A78720ADC26D3 /* RootView.swift */; };
+		2E2EFCF16D33147BF4FD298F /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C0C02329EF788D5E14DBB51 /* WidgetKit.framework */; };
+		352D9D984E8731BA065858CE /* ContributionTimelineProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = D29689269012E217F5A7D916 /* ContributionTimelineProvider.swift */; };
+		3B9FE143029DFAB528B595CB /* CommitColorSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06EA040EF226F43011A1BAB5 /* CommitColorSheet.swift */; };
+		444109494582C77FDA296A9A /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 089C389E50109A4731DF0DA4 /* PrivacyInfo.xcprivacy */; };
+		4F089E4E5348D5C2DE7E538B /* LoginViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67EBE93BE1A0F11CC00E5A2B /* LoginViewModelTests.swift */; };
+		5534AEFA5811175701C3ADC4 /* AppContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB810555AF189B86A7515D2E /* AppContainer.swift */; };
+		590675ACDC267F49294FA544 /* TestDoubles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57BCDC20F9BE307382FB2BA0 /* TestDoubles.swift */; };
+		5DA72D5ABCE5281D2D79C0D7 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FB7E2E4E79BE6CA121B6A61 /* HomeViewModel.swift */; };
+		6119F630A537102AA996B41B /* GitWallpaperWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 75D247583C95F875E591F027 /* GitWallpaperWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		6406A386DD1B71EF7D4DFCBB /* WallpaperAdjustView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB1727FEF80FC7EAFB026E6F /* WallpaperAdjustView.swift */; };
+		649A385B43692A710E9B97F9 /* URLOpener.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB128F51DB6F37E327EBD0EE /* URLOpener.swift */; };
+		698F9D8455F9E035918FEA8E /* ShortcutSetupSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6531469426B3A16B2BFD691E /* ShortcutSetupSheet.swift */; };
+		6DDAAAEABB55E7745FAEC930 /* ContributionWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1E4C62F55512258778F4C36 /* ContributionWidget.swift */; };
+		73EDA48E9F2827F20BC3282B /* WallpaperShortcutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3A9108D04927E6BE0560C4 /* WallpaperShortcutTests.swift */; };
+		75FF3A378F52E226E9EC53E9 /* GitWallpaperWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ED2067057182235483573DB /* GitWallpaperWidgetBundle.swift */; };
+		7A8DD717767E4B98412BDCDA /* AppLinks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47B2ACD17698F9F4407BDD84 /* AppLinks.swift */; };
+		7AD0F83194A440C83B10ADEA /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1041205B6A5BC3E7FE516C9 /* HomeView.swift */; };
+		7D204A01AB2894A6DBCA0BEA /* HomeUiState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F0A65CA920CEAD7B4A9047B /* HomeUiState.swift */; };
+		826617F311BB5DA5EDC73147 /* WallpaperShortcut.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4713E366AB144F7E1D021F9 /* WallpaperShortcut.swift */; };
+		95892719C14BC3C30C5B99DB /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 1C0DCEA6814A38B0BF02D9C1 /* PrivacyInfo.xcprivacy */; };
+		9B47380F5F6C292254279718 /* WidgetCenterWidgetUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DBFC21988423C42287AE591 /* WidgetCenterWidgetUpdater.swift */; };
+		AF736E48328A41F38CB19B4E /* GitWallpaperShortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 321CD1DD32D8E0A24FCA0A4B /* GitWallpaperShortcuts.swift */; };
+		AFC399AD5311F98A44E6E748 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2ED49CA50C3C0CAD20677391 /* SwiftUI.framework */; };
+		B5B4C661044C78E09E007D3C /* HomeLabels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C42C246ACDAB01D20815503 /* HomeLabels.swift */; };
+		B84AE7D621619434282CC6B8 /* ContributionPattern.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8BA180F1645FA1F05A237C3 /* ContributionPattern.swift */; };
+		BCFAB4D838DC160C47151E33 /* GitWallpaperKit in Frameworks */ = {isa = PBXBuildFile; productRef = 9C8371B5D0412F13E02F25C4 /* GitWallpaperKit */; };
+		BF3D23C0DCC2C7ED201698C0 /* RootViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9165D55E1FBF1E1440308E50 /* RootViewModelTests.swift */; };
+		C23D7FC24F5F2B2742FB3381 /* GitWallpaperKit in Frameworks */ = {isa = PBXBuildFile; productRef = D0DF3E6EF5573DDA0FDD1F33 /* GitWallpaperKit */; };
+		C9E6F49BA797012AEE55524B /* GetWallpaperIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 733F1F638D12E48A3779B206 /* GetWallpaperIntent.swift */; };
+		CC281D2ACB902CDF5852E327 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0194B78A797ED24946E13017 /* LoginView.swift */; };
+		D4D10951E9604F24C65B6AA4 /* MessageBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025E7F40F3AAB335F289AA01 /* MessageBanner.swift */; };
+		D71B1D4E4AA8E081F166702F /* HomeViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A75098A6DEEDC06DF1B29AB /* HomeViewModelTests.swift */; };
+		DD958CD37C57AE49CB69597E /* WallpaperIntentErrorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77A49A897BE5A155FE6A7589 /* WallpaperIntentErrorTests.swift */; };
+		F5BCB9D877DB680132B63059 /* GitWallpaperApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E85BDC56DCAB92FC7621EBFB /* GitWallpaperApp.swift */; };
+		FCA2E9E4E5A1FDE5010968D1 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 05AAC2E52F5A3024A84F4940 /* InfoPlist.strings */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		464FD08EB8EB52408433F7F0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 90A1FD461D9A0B65A02AE454 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1B96576C54616DADE490828B;
+			remoteInfo = GitWallpaper;
+		};
+		68DF5612042496A0E65EA01C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 90A1FD461D9A0B65A02AE454 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B26EB74B0A7E7278D9AE64EB;
+			remoteInfo = GitWallpaperWidget;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		ECA47FF6AF0C7A6D07E96268 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				6119F630A537102AA996B41B /* GitWallpaperWidget.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		0194B78A797ED24946E13017 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		025E7F40F3AAB335F289AA01 /* MessageBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageBanner.swift; sourceTree = "<group>"; };
+		06EA040EF226F43011A1BAB5 /* CommitColorSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommitColorSheet.swift; sourceTree = "<group>"; };
+		089C389E50109A4731DF0DA4 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		0A75098A6DEEDC06DF1B29AB /* HomeViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModelTests.swift; sourceTree = "<group>"; };
+		12F4D299EEE6D4EA712168C1 /* GitWallpaperKit */ = {isa = PBXFileReference; lastKnownFileType = folder; name = GitWallpaperKit; path = GitWallpaperKit; sourceTree = SOURCE_ROOT; };
+		1C0DCEA6814A38B0BF02D9C1 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		1F0A65CA920CEAD7B4A9047B /* HomeUiState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeUiState.swift; sourceTree = "<group>"; };
+		2C0C02329EF788D5E14DBB51 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		2DBFC21988423C42287AE591 /* WidgetCenterWidgetUpdater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetCenterWidgetUpdater.swift; sourceTree = "<group>"; };
+		2ED2067057182235483573DB /* GitWallpaperWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitWallpaperWidgetBundle.swift; sourceTree = "<group>"; };
+		2ED49CA50C3C0CAD20677391 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		321CD1DD32D8E0A24FCA0A4B /* GitWallpaperShortcuts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitWallpaperShortcuts.swift; sourceTree = "<group>"; };
+		38DEE6390CF0AD05919EFCB2 /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
+		3C8429A71FDA036D77E920AF /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		47B2ACD17698F9F4407BDD84 /* AppLinks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLinks.swift; sourceTree = "<group>"; };
+		57BCDC20F9BE307382FB2BA0 /* TestDoubles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestDoubles.swift; sourceTree = "<group>"; };
+		61E14789E6365D77A0C7C848 /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		6531469426B3A16B2BFD691E /* ShortcutSetupSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutSetupSheet.swift; sourceTree = "<group>"; };
+		67EBE93BE1A0F11CC00E5A2B /* LoginViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModelTests.swift; sourceTree = "<group>"; };
+		6BA7427DF630571794C0C5FD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		6D551FE2292507E2D3A652CD /* DisplayScreenSizeProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayScreenSizeProvider.swift; sourceTree = "<group>"; };
+		6FB7E2E4E79BE6CA121B6A61 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
+		733F1F638D12E48A3779B206 /* GetWallpaperIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetWallpaperIntent.swift; sourceTree = "<group>"; };
+		750AB1801498321B5FEE4556 /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		75D247583C95F875E591F027 /* GitWallpaperWidget.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = GitWallpaperWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		77A49A897BE5A155FE6A7589 /* WallpaperIntentErrorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WallpaperIntentErrorTests.swift; sourceTree = "<group>"; };
+		7A26528C1F60864F30CC989D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		8C42C246ACDAB01D20815503 /* HomeLabels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeLabels.swift; sourceTree = "<group>"; };
+		8CC85E48B02A78720ADC26D3 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		9165D55E1FBF1E1440308E50 /* RootViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewModelTests.swift; sourceTree = "<group>"; };
+		920E76625CD51841366268E1 /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		9F1D9BB20E68EFC16AE1C402 /* GitWallpaper.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = GitWallpaper.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A1041205B6A5BC3E7FE516C9 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		AAF47F28E680CC32A5BF64B2 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		AB128F51DB6F37E327EBD0EE /* URLOpener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLOpener.swift; sourceTree = "<group>"; };
+		B4713E366AB144F7E1D021F9 /* WallpaperShortcut.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WallpaperShortcut.swift; sourceTree = "<group>"; };
+		BB810555AF189B86A7515D2E /* AppContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppContainer.swift; sourceTree = "<group>"; };
+		C8BA180F1645FA1F05A237C3 /* ContributionPattern.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContributionPattern.swift; sourceTree = "<group>"; };
+		CC90329901E2E21233219C3E /* GitWallpaperTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = GitWallpaperTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		D29689269012E217F5A7D916 /* ContributionTimelineProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContributionTimelineProvider.swift; sourceTree = "<group>"; };
+		DC3A9108D04927E6BE0560C4 /* WallpaperShortcutTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WallpaperShortcutTests.swift; sourceTree = "<group>"; };
+		E85BDC56DCAB92FC7621EBFB /* GitWallpaperApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitWallpaperApp.swift; sourceTree = "<group>"; };
+		EB1727FEF80FC7EAFB026E6F /* WallpaperAdjustView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WallpaperAdjustView.swift; sourceTree = "<group>"; };
+		F1E4C62F55512258778F4C36 /* ContributionWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContributionWidget.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		3C961AA47377CB351044B986 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C23D7FC24F5F2B2742FB3381 /* GitWallpaperKit in Frameworks */,
+				2E2EFCF16D33147BF4FD298F /* WidgetKit.framework in Frameworks */,
+				AFC399AD5311F98A44E6E748 /* SwiftUI.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5C97DC31EA3DD684F5A44951 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BCFAB4D838DC160C47151E33 /* GitWallpaperKit in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		0DC86268B61BCE1FC8B8ABB8 /* GitWallpaperWidget */ = {
+			isa = PBXGroup;
+			children = (
+				D29689269012E217F5A7D916 /* ContributionTimelineProvider.swift */,
+				F1E4C62F55512258778F4C36 /* ContributionWidget.swift */,
+				2ED2067057182235483573DB /* GitWallpaperWidgetBundle.swift */,
+				3F51582AFDFCD031DAFBB916 /* Resources */,
+			);
+			path = GitWallpaperWidget;
+			sourceTree = "<group>";
+		};
+		10CC485A08816BC42001DD6B /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				6BA7427DF630571794C0C5FD /* Assets.xcassets */,
+				089C389E50109A4731DF0DA4 /* PrivacyInfo.xcprivacy */,
+				05AAC2E52F5A3024A84F4940 /* InfoPlist.strings */,
+				5C3AE8DE74D4F413C62A13C0 /* Localizable.strings */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		172598F3E0C11C97661C25E8 /* GitWallpaperTests */ = {
+			isa = PBXGroup;
+			children = (
+				0A75098A6DEEDC06DF1B29AB /* HomeViewModelTests.swift */,
+				67EBE93BE1A0F11CC00E5A2B /* LoginViewModelTests.swift */,
+				9165D55E1FBF1E1440308E50 /* RootViewModelTests.swift */,
+				77A49A897BE5A155FE6A7589 /* WallpaperIntentErrorTests.swift */,
+				DC3A9108D04927E6BE0560C4 /* WallpaperShortcutTests.swift */,
+				459C1D6B17B9C6F72E5E5CB6 /* Testing */,
+			);
+			path = GitWallpaperTests;
+			sourceTree = "<group>";
+		};
+		3F51582AFDFCD031DAFBB916 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				1C0DCEA6814A38B0BF02D9C1 /* PrivacyInfo.xcprivacy */,
+				E22C5EC83303C41AFD9E5EAC /* Localizable.strings */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		459C1D6B17B9C6F72E5E5CB6 /* Testing */ = {
+			isa = PBXGroup;
+			children = (
+				57BCDC20F9BE307382FB2BA0 /* TestDoubles.swift */,
+			);
+			path = Testing;
+			sourceTree = "<group>";
+		};
+		504BCC84D593D03EBA5FFA37 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				47B2ACD17698F9F4407BDD84 /* AppLinks.swift */,
+				8CC85E48B02A78720ADC26D3 /* RootView.swift */,
+				EBF2A1E0CFFBC2722624A902 /* Components */,
+				FA33C67B47822720F3671929 /* Home */,
+				D66A458FEE58CF11BA78CF01 /* Login */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		8DED0974F017A94B18675E67 /* Intents */ = {
+			isa = PBXGroup;
+			children = (
+				733F1F638D12E48A3779B206 /* GetWallpaperIntent.swift */,
+				321CD1DD32D8E0A24FCA0A4B /* GitWallpaperShortcuts.swift */,
+			);
+			path = Intents;
+			sourceTree = "<group>";
+		};
+		99B321A76BCC3AE1799DDBF2 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				2ED49CA50C3C0CAD20677391 /* SwiftUI.framework */,
+				2C0C02329EF788D5E14DBB51 /* WidgetKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		A78DA815A3280372F952D0C7 /* Platform */ = {
+			isa = PBXGroup;
+			children = (
+				6D551FE2292507E2D3A652CD /* DisplayScreenSizeProvider.swift */,
+				AB128F51DB6F37E327EBD0EE /* URLOpener.swift */,
+				B4713E366AB144F7E1D021F9 /* WallpaperShortcut.swift */,
+				2DBFC21988423C42287AE591 /* WidgetCenterWidgetUpdater.swift */,
+			);
+			path = Platform;
+			sourceTree = "<group>";
+		};
+		ADFC4F1C07A6AA12C4439C33 /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				12F4D299EEE6D4EA712168C1 /* GitWallpaperKit */,
+			);
+			name = Packages;
+			sourceTree = "<group>";
+		};
+		BA15B532E721E61ED1E99BB5 /* GitWallpaper */ = {
+			isa = PBXGroup;
+			children = (
+				BB810555AF189B86A7515D2E /* AppContainer.swift */,
+				E85BDC56DCAB92FC7621EBFB /* GitWallpaperApp.swift */,
+				8DED0974F017A94B18675E67 /* Intents */,
+				A78DA815A3280372F952D0C7 /* Platform */,
+				10CC485A08816BC42001DD6B /* Resources */,
+				504BCC84D593D03EBA5FFA37 /* UI */,
+			);
+			path = GitWallpaper;
+			sourceTree = "<group>";
+		};
+		BFF5335D3F8E85CD49ECE747 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				9F1D9BB20E68EFC16AE1C402 /* GitWallpaper.app */,
+				CC90329901E2E21233219C3E /* GitWallpaperTests.xctest */,
+				75D247583C95F875E591F027 /* GitWallpaperWidget.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		D66A458FEE58CF11BA78CF01 /* Login */ = {
+			isa = PBXGroup;
+			children = (
+				0194B78A797ED24946E13017 /* LoginView.swift */,
+				38DEE6390CF0AD05919EFCB2 /* LoginViewModel.swift */,
+			);
+			path = Login;
+			sourceTree = "<group>";
+		};
+		D7DD83DCE20F3E1E05673198 = {
+			isa = PBXGroup;
+			children = (
+				BA15B532E721E61ED1E99BB5 /* GitWallpaper */,
+				172598F3E0C11C97661C25E8 /* GitWallpaperTests */,
+				0DC86268B61BCE1FC8B8ABB8 /* GitWallpaperWidget */,
+				ADFC4F1C07A6AA12C4439C33 /* Packages */,
+				99B321A76BCC3AE1799DDBF2 /* Frameworks */,
+				BFF5335D3F8E85CD49ECE747 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		EBF2A1E0CFFBC2722624A902 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				C8BA180F1645FA1F05A237C3 /* ContributionPattern.swift */,
+				025E7F40F3AAB335F289AA01 /* MessageBanner.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		FA33C67B47822720F3671929 /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				06EA040EF226F43011A1BAB5 /* CommitColorSheet.swift */,
+				8C42C246ACDAB01D20815503 /* HomeLabels.swift */,
+				1F0A65CA920CEAD7B4A9047B /* HomeUiState.swift */,
+				A1041205B6A5BC3E7FE516C9 /* HomeView.swift */,
+				6FB7E2E4E79BE6CA121B6A61 /* HomeViewModel.swift */,
+				6531469426B3A16B2BFD691E /* ShortcutSetupSheet.swift */,
+				EB1727FEF80FC7EAFB026E6F /* WallpaperAdjustView.swift */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		1B96576C54616DADE490828B /* GitWallpaper */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C2553B0281CA572A8352C74B /* Build configuration list for PBXNativeTarget "GitWallpaper" */;
+			buildPhases = (
+				2E05A538BF7B7E73EFDE071E /* Sources */,
+				E018D05BFD98F6D872F985F4 /* Resources */,
+				5C97DC31EA3DD684F5A44951 /* Frameworks */,
+				ECA47FF6AF0C7A6D07E96268 /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A23D2B7E8E3B7DC6EACF74A3 /* PBXTargetDependency */,
+			);
+			name = GitWallpaper;
+			packageProductDependencies = (
+				9C8371B5D0412F13E02F25C4 /* GitWallpaperKit */,
+			);
+			productName = GitWallpaper;
+			productReference = 9F1D9BB20E68EFC16AE1C402 /* GitWallpaper.app */;
+			productType = "com.apple.product-type.application";
+		};
+		4826351FA2E87EFADE1F4608 /* GitWallpaperTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2C46CB8626D72083A600E585 /* Build configuration list for PBXNativeTarget "GitWallpaperTests" */;
+			buildPhases = (
+				D6F93A020A62DA675FA045C7 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				2BEF8B77CCC5FFF556EDA2D2 /* PBXTargetDependency */,
+			);
+			name = GitWallpaperTests;
+			packageProductDependencies = (
+			);
+			productName = GitWallpaperTests;
+			productReference = CC90329901E2E21233219C3E /* GitWallpaperTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		B26EB74B0A7E7278D9AE64EB /* GitWallpaperWidget */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = ED5B92C9436FBB5F11FE6715 /* Build configuration list for PBXNativeTarget "GitWallpaperWidget" */;
+			buildPhases = (
+				49DB86C5679B65D0F522B9FF /* Sources */,
+				B533C4844D7426D1D9B5E76F /* Resources */,
+				3C961AA47377CB351044B986 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = GitWallpaperWidget;
+			packageProductDependencies = (
+				D0DF3E6EF5573DDA0FDD1F33 /* GitWallpaperKit */,
+			);
+			productName = GitWallpaperWidget;
+			productReference = 75D247583C95F875E591F027 /* GitWallpaperWidget.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		90A1FD461D9A0B65A02AE454 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					1B96576C54616DADE490828B = {
+						DevelopmentTeam = 8VRVBA2X7C;
+						ProvisioningStyle = Automatic;
+					};
+					4826351FA2E87EFADE1F4608 = {
+						DevelopmentTeam = 8VRVBA2X7C;
+						ProvisioningStyle = Automatic;
+					};
+					B26EB74B0A7E7278D9AE64EB = {
+						DevelopmentTeam = 8VRVBA2X7C;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 84DC88C223BD0946BF49C690 /* Build configuration list for PBXProject "GitWallpaper" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+				"pt-BR",
+			);
+			mainGroup = D7DD83DCE20F3E1E05673198;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				28B2D453B9214362FED315DE /* XCLocalSwiftPackageReference "GitWallpaperKit" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = BFF5335D3F8E85CD49ECE747 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				1B96576C54616DADE490828B /* GitWallpaper */,
+				B26EB74B0A7E7278D9AE64EB /* GitWallpaperWidget */,
+				4826351FA2E87EFADE1F4608 /* GitWallpaperTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		B533C4844D7426D1D9B5E76F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				09459B53E34FD34F1B6FCB12 /* Localizable.strings in Resources */,
+				95892719C14BC3C30C5B99DB /* PrivacyInfo.xcprivacy in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E018D05BFD98F6D872F985F4 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				20F2CE79018ECDDD894CE811 /* Assets.xcassets in Resources */,
+				FCA2E9E4E5A1FDE5010968D1 /* InfoPlist.strings in Resources */,
+				0CC913D951515EED8B42EB65 /* Localizable.strings in Resources */,
+				444109494582C77FDA296A9A /* PrivacyInfo.xcprivacy in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		2E05A538BF7B7E73EFDE071E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5534AEFA5811175701C3ADC4 /* AppContainer.swift in Sources */,
+				7A8DD717767E4B98412BDCDA /* AppLinks.swift in Sources */,
+				3B9FE143029DFAB528B595CB /* CommitColorSheet.swift in Sources */,
+				B84AE7D621619434282CC6B8 /* ContributionPattern.swift in Sources */,
+				12630E9CB5691857CE62EB33 /* DisplayScreenSizeProvider.swift in Sources */,
+				C9E6F49BA797012AEE55524B /* GetWallpaperIntent.swift in Sources */,
+				F5BCB9D877DB680132B63059 /* GitWallpaperApp.swift in Sources */,
+				AF736E48328A41F38CB19B4E /* GitWallpaperShortcuts.swift in Sources */,
+				B5B4C661044C78E09E007D3C /* HomeLabels.swift in Sources */,
+				7D204A01AB2894A6DBCA0BEA /* HomeUiState.swift in Sources */,
+				7AD0F83194A440C83B10ADEA /* HomeView.swift in Sources */,
+				5DA72D5ABCE5281D2D79C0D7 /* HomeViewModel.swift in Sources */,
+				CC281D2ACB902CDF5852E327 /* LoginView.swift in Sources */,
+				06B6A3D168C22DE9A3784865 /* LoginViewModel.swift in Sources */,
+				D4D10951E9604F24C65B6AA4 /* MessageBanner.swift in Sources */,
+				2AC47F4CA5DF41A4EE857011 /* RootView.swift in Sources */,
+				698F9D8455F9E035918FEA8E /* ShortcutSetupSheet.swift in Sources */,
+				649A385B43692A710E9B97F9 /* URLOpener.swift in Sources */,
+				6406A386DD1B71EF7D4DFCBB /* WallpaperAdjustView.swift in Sources */,
+				826617F311BB5DA5EDC73147 /* WallpaperShortcut.swift in Sources */,
+				9B47380F5F6C292254279718 /* WidgetCenterWidgetUpdater.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		49DB86C5679B65D0F522B9FF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				352D9D984E8731BA065858CE /* ContributionTimelineProvider.swift in Sources */,
+				6DDAAAEABB55E7745FAEC930 /* ContributionWidget.swift in Sources */,
+				75FF3A378F52E226E9EC53E9 /* GitWallpaperWidgetBundle.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D6F93A020A62DA675FA045C7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D71B1D4E4AA8E081F166702F /* HomeViewModelTests.swift in Sources */,
+				4F089E4E5348D5C2DE7E538B /* LoginViewModelTests.swift in Sources */,
+				BF3D23C0DCC2C7ED201698C0 /* RootViewModelTests.swift in Sources */,
+				590675ACDC267F49294FA544 /* TestDoubles.swift in Sources */,
+				DD958CD37C57AE49CB69597E /* WallpaperIntentErrorTests.swift in Sources */,
+				73EDA48E9F2827F20BC3282B /* WallpaperShortcutTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		2BEF8B77CCC5FFF556EDA2D2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1B96576C54616DADE490828B /* GitWallpaper */;
+			targetProxy = 464FD08EB8EB52408433F7F0 /* PBXContainerItemProxy */;
+		};
+		A23D2B7E8E3B7DC6EACF74A3 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B26EB74B0A7E7278D9AE64EB /* GitWallpaperWidget */;
+			targetProxy = 68DF5612042496A0E65EA01C /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		05AAC2E52F5A3024A84F4940 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AAF47F28E680CC32A5BF64B2 /* en */,
+				61E14789E6365D77A0C7C848 /* pt-BR */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		5C3AE8DE74D4F413C62A13C0 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				7A26528C1F60864F30CC989D /* en */,
+				920E76625CD51841366268E1 /* pt-BR */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		E22C5EC83303C41AFD9E5EAC /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				3C8429A71FDA036D77E920AF /* en */,
+				750AB1801498321B5FEE4556 /* pt-BR */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		5CE6B27057610FEC24B7E06D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = GitWallpaperWidget/GitWallpaperWidget.entitlements;
+				INFOPLIST_FILE = GitWallpaperWidget/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = dev.marujo.gitwallpaper.widget;
+				PRODUCT_NAME = GitWallpaperWidget;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		842F5A9881C73A1E134F31FC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = GitWallpaperWidget/GitWallpaperWidget.entitlements;
+				INFOPLIST_FILE = GitWallpaperWidget/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = dev.marujo.gitwallpaper.widget;
+				PRODUCT_NAME = GitWallpaperWidget;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		85A018EED27889D71341805D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = dev.marujo.gitwallpaper.tests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/GitWallpaper.app/GitWallpaper";
+			};
+			name = Release;
+		};
+		A34B0A475BA510217060FAD7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 8VRVBA2X7C;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				GITHUB_CLIENT_ID = Ov23liTIhSFDBloUNkci;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = NO;
+				MARKETING_VERSION = 1.0.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		A55FC3D91F26F919F8606081 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = dev.marujo.gitwallpaper.tests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/GitWallpaper.app/GitWallpaper";
+			};
+			name = Debug;
+		};
+		D70347036FEC800F66ADD847 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = GitWallpaper/GitWallpaper.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEAD_CODE_STRIPPING = NO;
+				INFOPLIST_FILE = GitWallpaper/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = dev.marujo.gitwallpaper;
+				PRODUCT_NAME = GitWallpaper;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		EAD3BFEB31EBCF5220877920 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 8VRVBA2X7C;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				GITHUB_CLIENT_ID = Ov23liTIhSFDBloUNkci;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = NO;
+				MARKETING_VERSION = 1.0.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		FD25DED34245C7C1BD5B3D80 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = GitWallpaper/GitWallpaper.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_FILE = GitWallpaper/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = dev.marujo.gitwallpaper;
+				PRODUCT_NAME = GitWallpaper;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		2C46CB8626D72083A600E585 /* Build configuration list for PBXNativeTarget "GitWallpaperTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A55FC3D91F26F919F8606081 /* Debug */,
+				85A018EED27889D71341805D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		84DC88C223BD0946BF49C690 /* Build configuration list for PBXProject "GitWallpaper" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A34B0A475BA510217060FAD7 /* Debug */,
+				EAD3BFEB31EBCF5220877920 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		C2553B0281CA572A8352C74B /* Build configuration list for PBXNativeTarget "GitWallpaper" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D70347036FEC800F66ADD847 /* Debug */,
+				FD25DED34245C7C1BD5B3D80 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		ED5B92C9436FBB5F11FE6715 /* Build configuration list for PBXNativeTarget "GitWallpaperWidget" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				842F5A9881C73A1E134F31FC /* Debug */,
+				5CE6B27057610FEC24B7E06D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		28B2D453B9214362FED315DE /* XCLocalSwiftPackageReference "GitWallpaperKit" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = GitWallpaperKit;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		9C8371B5D0412F13E02F25C4 /* GitWallpaperKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = GitWallpaperKit;
+		};
+		D0DF3E6EF5573DDA0FDD1F33 /* GitWallpaperKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = GitWallpaperKit;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 90A1FD461D9A0B65A02AE454 /* Project object */;
+}
