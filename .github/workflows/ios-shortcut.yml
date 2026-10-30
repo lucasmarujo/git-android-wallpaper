@@ -1,0 +1,40 @@
+name: iOS shortcut
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'ios/Shortcut/**'
+      - '.github/workflows/ios-shortcut.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  sign:
+    runs-on: macos-26
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Generate the unsigned shortcut
+        run: python3 ios/Shortcut/generate_shortcut.py "$RUNNER_TEMP/Git Wallpaper-unsigned.shortcut"
+
+      - name: Sign for anyone
+        continue-on-error: true
+        run: shortcuts sign --mode anyone --input "$RUNNER_TEMP/Git Wallpaper-unsigned.shortcut" --output "$RUNNER_TEMP/Git Wallpaper.shortcut"
+
+      - name: Sign for people who know me
+        continue-on-error: true
+        run: shortcuts sign --mode people-who-know-me --input "$RUNNER_TEMP/Git Wallpaper-unsigned.shortcut" --output "$RUNNER_TEMP/Git Wallpaper-contacts.shortcut"
+
+      - name: List outputs
+        if: always()
+        run: ls -la "$RUNNER_TEMP"/*.shortcut || true
+
+      - name: Upload shortcuts
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: ios-shortcut
+          path: ${{ runner.temp }}/*.shortcut
