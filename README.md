@@ -139,7 +139,7 @@ A native iPhone version lives in [`ios/`](ios), written in Swift and SwiftUI. Th
 
 1. The app provides a **Get Git Wallpaper** action. It refreshes your contributions and returns the wallpaper image, drawn at the screen's native resolution with your framing.
 2. The app offers a ready-made **Git Wallpaper** shortcut ([iCloud link](https://www.icloud.com/shortcuts/eadb2565efde4dc69dd126bb60bbcc68)): **Get Git Wallpaper**, then **Set Wallpaper Photo** on the Lock Screen. Tap **Add shortcut** in the app and **Add Shortcut** in Shortcuts. After that, **Apply wallpaper** runs it for you, through `x-callback-url`.
-3. A **Time of Day** automation set to **Run Immediately** keeps the wallpaper up to date without opening the app. The app shows these steps the first time you apply.
+3. A **Time of Day** automation keeps the wallpaper up to date without opening the app. On iOS 27 and later, iCloud links carry automation triggers, so **Add automatic update** in the app installs a ready-made automation ([iCloud link](https://www.icloud.com/shortcuts/67ecf3a0f21a4ce49243079a1bbefc6f)) that runs **Git Wallpaper** every day at 8:00, 12:00 and 18:00. On earlier versions, the app shows how to create it by hand, set to **Run Immediately**. The app shows these steps the first time you apply.
 
 You can also save the image to Photos and choose it in **Settings > Wallpaper**.
 

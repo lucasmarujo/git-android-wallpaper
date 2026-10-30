@@ -94,11 +94,13 @@
 "message_shortcut_failed" = "The Git Wallpaper shortcut is missing or did not finish. Add it again with Add shortcut.";
 
 "shortcut_setup_title" = "Set up the shortcut";
-"shortcut_setup_body" = "iOS only lets the Shortcuts app change the wallpaper. Add the ready-made Git Wallpaper shortcut once and the app applies your wallpaper through it.";
+"shortcut_setup_body" = "iOS only lets the Shortcuts app change the wallpaper. Set up the ready-made Git Wallpaper shortcut and its daily automation once: the app applies your wallpaper through them, and it keeps updating on its own.";
 "shortcut_setup_step_automation" = "To update it every day on its own: in Shortcuts, open Automation, tap +, choose Time of Day, pick a time and Daily, choose Run Immediately and select Git Wallpaper.";
 "shortcut_failure_reason" = "Shortcuts said: %@";
 "shortcut_setup_step_add" = "Tap Add shortcut. Shortcuts opens the Git Wallpaper shortcut: tap Add Shortcut there.";
 "shortcut_add" = "Add shortcut";
+"shortcut_add_automation" = "Add automatic update";
+"shortcut_setup_step_add_automation" = "Tap Add automatic update. Shortcuts opens an automation that applies the wallpaper every day at 8:00, 12:00 and 18:00: tap Add there. If Shortcuts asks how to run it, choose Run Immediately. You can change the times later in Shortcuts, Automation.";
 "shortcut_setup_step_apply" = "Come back here and tap Apply now. The first time, allow the shortcut to change the wallpaper (Always Allow).";
 "shortcut_run" = "Apply now";
 "shortcut_manual_hint" = "Prefer to set it by hand? Save the image to Photos and pick it in Settings, Wallpaper.";

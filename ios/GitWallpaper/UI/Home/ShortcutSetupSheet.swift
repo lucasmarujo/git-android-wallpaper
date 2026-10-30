@@ -3,6 +3,7 @@ import SwiftUI
 
 enum ShortcutSetupAccessibility {
     static let addButton = "shortcut_add_button"
+    static let addAutomationButton = "shortcut_add_automation_button"
     static let runButton = "shortcut_run_button"
     static let shareButton = "shortcut_share_button"
     static let failure = "shortcut_failure"
@@ -11,7 +12,9 @@ enum ShortcutSetupAccessibility {
 struct ShortcutSetupSheet: View {
     let imageURL: URL?
     let failure: ShortcutFailure?
+    let canInstallAutomation: Bool
     let onAddShortcut: () -> Void
+    let onAddAutomation: () -> Void
     let onRunShortcut: () -> Void
 
     var body: some View {
@@ -31,16 +34,25 @@ struct ShortcutSetupSheet: View {
                     .buttonStyle(.borderedProminent)
                     .controlSize(.large)
                     .accessibilityIdentifier(ShortcutSetupAccessibility.addButton)
-                    SetupStep(number: 2, text: "shortcut_setup_step_apply")
+                    if canInstallAutomation {
+                        SetupStep(number: 2, text: "shortcut_setup_step_add_automation")
+                        Button(action: onAddAutomation) {
+                            Label("shortcut_add_automation", systemImage: "clock.arrow.circlepath")
+                                .frame(maxWidth: .infinity, minHeight: 36)
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .controlSize(.large)
+                        .accessibilityIdentifier(ShortcutSetupAccessibility.addAutomationButton)
+                    } else {
+                        SetupStep(number: 2, text: "shortcut_setup_step_automation")
+                    }
+                    SetupStep(number: 3, text: "shortcut_setup_step_apply")
                     Button(action: onRunShortcut) {
                         Text("shortcut_run").frame(maxWidth: .infinity, minHeight: 36)
                     }
                     .buttonStyle(.bordered)
                     .controlSize(.large)
                     .accessibilityIdentifier(ShortcutSetupAccessibility.runButton)
-                    Text("shortcut_setup_step_automation")
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
                     if let imageURL {
                         Text("shortcut_manual_hint")
                             .font(.footnote)

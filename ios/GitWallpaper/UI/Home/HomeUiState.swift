@@ -18,6 +18,12 @@ struct HomeUiState {
     var isApplying = false
     var isRefreshing = false
     var isShortcutReady = false
+    var isAutomationAdded = false
+    var canInstallAutomation = false
+
+    var needsShortcutSetup: Bool {
+        !isShortcutReady || (canInstallAutomation && !isAutomationAdded)
+    }
 }
 
 enum HomeMessage: Equatable {

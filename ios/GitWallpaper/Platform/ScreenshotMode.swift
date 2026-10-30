@@ -27,6 +27,7 @@ enum ScreenshotMode {
         container.updateStatusRepository.markApplied(fingerprint: token, at: clock.now.addingTimeInterval(-lastAppliedSecondsAgo))
         let shortcut = WallpaperShortcut(defaults: defaults)
         shortcut.isReady = true
+        shortcut.isAutomationAdded = true
         return (container, shortcut)
     }
 
