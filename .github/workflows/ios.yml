@@ -54,6 +54,10 @@ jobs:
             echo "::error::ios/GitWallpaper.xcodeproj is out of date. Run 'xcodegen generate' in ios/ and commit the result."
             exit 1
           fi
+          if grep -q 'TARGETED_DEVICE_FAMILY = "1,2"' GitWallpaper.xcodeproj/project.pbxproj; then
+            echo "::error::Every target must be iPhone-only (TARGETED_DEVICE_FAMILY = 1), or App Store Connect rejects the upload."
+            exit 1
+          fi
 
       - name: App tests and build
         if: ${{ !cancelled() }}

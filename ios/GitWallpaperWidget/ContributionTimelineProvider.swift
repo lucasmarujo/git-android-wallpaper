@@ -18,7 +18,7 @@ struct ContributionTimelineProvider: TimelineProvider {
 
     func placeholder(in context: Context) -> ContributionEntry {
         let today = container.clock.today()
-        return ContributionEntry(date: Date(), today: today, calendar: Self.sampleCalendar(endingAt: today), settings: WallpaperSettings())
+        return ContributionEntry(date: Date(), today: today, calendar: .sample(login: Self.sampleLogin, endingAt: today), settings: WallpaperSettings())
     }
 
     func getSnapshot(in context: Context, completion: @escaping (ContributionEntry) -> Void) {
@@ -29,7 +29,7 @@ struct ContributionTimelineProvider: TimelineProvider {
                 ContributionEntry(
                     date: Date(),
                     today: today,
-                    calendar: calendar ?? (context.isPreview ? Self.sampleCalendar(endingAt: today) : nil),
+                    calendar: calendar ?? (context.isPreview ? .sample(login: Self.sampleLogin, endingAt: today) : nil),
                     settings: container.settingsRepository.current()
                 )
             )
@@ -58,20 +58,8 @@ struct ContributionTimelineProvider: TimelineProvider {
         }
     }
 
-    static func sampleCalendar(endingAt today: LocalDate) -> ContributionCalendar {
-        let dayCount = 371
-        let days = (0..<dayCount).map { index in
-            let count = (index * 7 + index / 3) % 5
-            return ContributionDay(
-                date: today.minusDays(dayCount - 1 - index),
-                count: count,
-                level: ContributionLevel.allCases[count]
-            )
-        }
-        return ContributionCalendar(login: "octocat", totalContributions: days.reduce(0) { $0 + $1.count }, days: days)
-    }
-
     private static let secondsPerMinute = 60
+    private static let sampleLogin = "octocat"
 }
 
 enum WidgetEnvironment {

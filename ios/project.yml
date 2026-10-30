@@ -8,11 +8,10 @@ options:
 settings:
   base:
     MARKETING_VERSION: "1.0.0"
-    CURRENT_PROJECT_VERSION: "1"
+    CURRENT_PROJECT_VERSION: "2"
     DEVELOPMENT_TEAM: 8VRVBA2X7C
     CODE_SIGN_STYLE: Automatic
     SWIFT_VERSION: "5.0"
-    TARGETED_DEVICE_FAMILY: "1"
     ENABLE_USER_SCRIPT_SANDBOXING: YES
     LOCALIZATION_PREFERS_STRING_CATALOGS: NO
     GITHUB_CLIENT_ID: Ov23liTIhSFDBloUNkci
@@ -32,6 +31,7 @@ targets:
       base:
         PRODUCT_NAME: GitWallpaper
         PRODUCT_BUNDLE_IDENTIFIER: dev.marujo.gitwallpaper
+        TARGETED_DEVICE_FAMILY: "1"
         INFOPLIST_FILE: GitWallpaper/Info.plist
         CODE_SIGN_ENTITLEMENTS: GitWallpaper/GitWallpaper.entitlements
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
@@ -54,6 +54,7 @@ targets:
       base:
         PRODUCT_NAME: GitWallpaperWidget
         PRODUCT_BUNDLE_IDENTIFIER: dev.marujo.gitwallpaper.widget
+        TARGETED_DEVICE_FAMILY: "1"
         INFOPLIST_FILE: GitWallpaperWidget/Info.plist
         CODE_SIGN_ENTITLEMENTS: GitWallpaperWidget/GitWallpaperWidget.entitlements
         SKIP_INSTALL: YES
@@ -69,9 +70,23 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: dev.marujo.gitwallpaper.tests
+        TARGETED_DEVICE_FAMILY: "1"
         GENERATE_INFOPLIST_FILE: YES
     dependencies:
       - target: GitWallpaper
+  GitWallpaperUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - path: GitWallpaperUITests
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: dev.marujo.gitwallpaper.uitests
+        TARGETED_DEVICE_FAMILY: "1"
+        GENERATE_INFOPLIST_FILE: YES
+    dependencies:
+      - target: GitWallpaper
+      - package: GitWallpaperKit
 schemes:
   GitWallpaper:
     build:
@@ -87,3 +102,12 @@ schemes:
         - GitWallpaperTests
     archive:
       config: Release
+  GitWallpaperScreenshots:
+    build:
+      targets:
+        GitWallpaper: all
+        GitWallpaperUITests: [test]
+    test:
+      config: Debug
+      targets:
+        - GitWallpaperUITests

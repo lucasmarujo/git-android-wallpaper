@@ -12,13 +12,13 @@ final class AppContainer: @unchecked Sendable {
     let authRepository: AuthRepository
 
     private init() {
-        let core = SharedContainer(userAgent: "\(Self.userAgentProduct)/\(Self.appVersion)")
+        let (core, wallpaperShortcut) = Self.makeEnvironment(userAgent: "\(Self.userAgentProduct)/\(Self.appVersion)")
         let widgetUpdater = WidgetCenterWidgetUpdater()
         let screenSizeProvider = DisplayScreenSizeProvider()
         self.core = core
         self.widgetUpdater = widgetUpdater
         self.screenSizeProvider = screenSizeProvider
-        wallpaperShortcut = WallpaperShortcut(defaults: .standard)
+        self.wallpaperShortcut = wallpaperShortcut
         wallpaperUpdater = DefaultWallpaperUpdater(
             contributionRepository: core.contributionRepository,
             settingsRepository: core.settingsRepository,
@@ -31,7 +31,7 @@ final class AppContainer: @unchecked Sendable {
         )
         authRepository = AuthRepository(
             deviceFlowClient: DeviceFlowClient(session: core.urlSession, clientId: Self.gitHubClientId),
-            contributionsSource: core.gitHubClient,
+            contributionsSource: core.contributionsSource,
             sessionRepository: core.sessionRepository,
             contributionRepository: core.contributionRepository,
             updateStatusRepository: core.updateStatusRepository,
@@ -65,6 +65,15 @@ final class AppContainer: @unchecked Sendable {
     @MainActor
     func makeLoginViewModel() -> LoginViewModel {
         LoginViewModel(authRepository: authRepository)
+    }
+
+    private static func makeEnvironment(userAgent: String) -> (SharedContainer, WallpaperShortcut) {
+        #if DEBUG
+        if ScreenshotMode.isEnabled {
+            return ScreenshotMode.makeEnvironment()
+        }
+        #endif
+        return (SharedContainer(userAgent: userAgent), WallpaperShortcut(defaults: .standard))
     }
 
     private static let previewScale = 0.4

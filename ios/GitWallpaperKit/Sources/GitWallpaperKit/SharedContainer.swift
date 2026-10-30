@@ -5,7 +5,7 @@ public final class SharedContainer: @unchecked Sendable {
     public static let appGroupIdentifier = "group.dev.marujo.gitwallpaper"
 
     public let urlSession: URLSession
-    public let gitHubClient: GitHubGraphQLClient
+    public let contributionsSource: ContributionsSource
     public let sessionRepository: SessionRepository
     public let settingsRepository: SettingsRepository
     public let updateStatusRepository: UpdateStatusRepository
@@ -15,36 +15,48 @@ public final class SharedContainer: @unchecked Sendable {
     public let renderer: ContributionWallpaperRenderer
     public let clock: WallClock
 
-    public init(userAgent: String, clock: WallClock = .system) {
+    public convenience init(userAgent: String, clock: WallClock = .system) {
         let configuration = URLSessionConfiguration.ephemeral
         configuration.timeoutIntervalForRequest = Self.requestTimeoutSeconds
         configuration.timeoutIntervalForResource = Self.resourceTimeoutSeconds
         configuration.httpAdditionalHeaders = [Self.userAgentHeader: userAgent]
         configuration.urlCache = nil
         let session = URLSession(configuration: configuration)
-        let directory = Self.sharedDirectory()
-        let defaults = UserDefaults(suiteName: Self.appGroupIdentifier) ?? .standard
-        let sessionRepository = SessionRepository(
-            defaults: defaults,
+        self.init(
+            urlSession: session,
+            contributionsSource: GitHubGraphQLClient(session: session),
             secretStore: KeychainSecretStore(
                 service: Self.keychainService,
                 account: Self.keychainAccount,
                 accessGroup: Self.appGroupIdentifier
-            )
+            ),
+            defaults: UserDefaults(suiteName: Self.appGroupIdentifier) ?? .standard,
+            directory: Self.sharedDirectory(),
+            clock: clock
         )
-        let gitHubClient = GitHubGraphQLClient(session: session)
-        urlSession = session
-        self.gitHubClient = gitHubClient
+    }
+
+    public init(
+        urlSession: URLSession,
+        contributionsSource: ContributionsSource,
+        secretStore: SecretStore,
+        defaults: UserDefaults,
+        directory: URL,
+        clock: WallClock
+    ) {
+        let sessionRepository = SessionRepository(defaults: defaults, secretStore: secretStore)
+        self.urlSession = urlSession
+        self.contributionsSource = contributionsSource
         self.sessionRepository = sessionRepository
         settingsRepository = SettingsRepository(defaults: defaults)
         updateStatusRepository = UpdateStatusRepository(defaults: defaults)
         contributionRepository = ContributionRepository(
             fileURL: directory.appendingPathComponent(Self.contributionsFileName),
-            contributionsSource: gitHubClient,
+            contributionsSource: contributionsSource,
             sessionRepository: sessionRepository
         )
         avatarSource = CachedAvatarRepository(
-            session: session,
+            session: urlSession,
             cacheDirectory: directory.appendingPathComponent(Self.avatarDirectoryName, isDirectory: true)
         )
         stagedWallpaper = StagedWallpaperStore(fileURL: directory.appendingPathComponent(Self.stagedWallpaperFileName))

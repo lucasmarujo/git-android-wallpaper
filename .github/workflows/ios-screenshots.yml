@@ -1,0 +1,70 @@
+name: iOS screenshots
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'ios/GitWallpaperUITests/**'
+      - '.github/workflows/ios-screenshots.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  XCODE_PATH: /Applications/Xcode_26.6.app
+  DEVICE_NAME: iPhone 17 Pro Max
+
+jobs:
+  screenshots:
+    runs-on: macos-26
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Select Xcode
+        run: sudo xcode-select -s "$XCODE_PATH"
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode project
+        working-directory: ios
+        run: xcodegen generate
+
+      - name: Prepare the simulator
+        run: |
+          DEVICE_ID=$(xcrun simctl list devices available -j | python3 -c '
+          import json, os, sys
+          devices = json.load(sys.stdin)["devices"]
+          matches = [(runtime, device["udid"]) for runtime, items in devices.items() if "iOS" in runtime for device in items if device["name"] == os.environ["DEVICE_NAME"]]
+          print(sorted(matches)[-1][1])
+          ')
+          echo "DEVICE_ID=$DEVICE_ID" >> "$GITHUB_ENV"
+          xcrun simctl boot "$DEVICE_ID"
+          xcrun simctl bootstatus "$DEVICE_ID" -b
+          xcrun simctl status_bar "$DEVICE_ID" override --time "9:41" --dataNetwork wifi --wifiMode active --wifiBars 3 --cellularMode active --cellularBars 4 --batteryState charged --batteryLevel 100
+
+      - name: Capture screenshots
+        working-directory: ios
+        run: >
+          xcodebuild -quiet test
+          -project GitWallpaper.xcodeproj
+          -scheme GitWallpaperScreenshots
+          -destination "id=$DEVICE_ID"
+          -resultBundlePath "$RUNNER_TEMP/Screenshots.xcresult"
+          CODE_SIGNING_ALLOWED=NO
+
+      - name: Export screenshots
+        if: ${{ !cancelled() }}
+        run: xcrun xcresulttool export attachments --path "$RUNNER_TEMP/Screenshots.xcresult" --output-path "$RUNNER_TEMP/screenshots"
+
+      - name: Upload screenshots
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: ios-screenshots
+          path: ${{ runner.temp }}/screenshots
