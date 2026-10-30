@@ -28,7 +28,15 @@ final class WallpaperShortcutTests: XCTestCase {
     func testCallbacksAreParsedFromTheAppScheme() {
         XCTAssertEqual(.success, WallpaperShortcut.callback(from: URL(string: "gitwallpaper://shortcut/success")!))
         XCTAssertEqual(.cancel, WallpaperShortcut.callback(from: URL(string: "gitwallpaper://shortcut/cancel")!))
-        XCTAssertEqual(.error, WallpaperShortcut.callback(from: URL(string: "gitwallpaper://shortcut/error?errorMessage=Not%20found")!))
+        XCTAssertEqual(
+            .error(message: "Not found"),
+            WallpaperShortcut.callback(from: URL(string: "gitwallpaper://shortcut/error?errorMessage=Not%20found")!)
+        )
+        XCTAssertEqual(.error(message: nil), WallpaperShortcut.callback(from: URL(string: "gitwallpaper://shortcut/error")!))
+    }
+
+    func testCreateShortcutUrlOpensANewShortcutInShortcuts() {
+        XCTAssertEqual("shortcuts://create-shortcut", WallpaperShortcut.createShortcutURL.absoluteString)
     }
 
     func testUnrelatedUrlsAreIgnored() {

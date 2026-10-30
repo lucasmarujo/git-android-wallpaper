@@ -1,5 +1,6 @@
 import GitWallpaperKit
 import SwiftUI
+import UIKit
 
 enum HomeAccessibility {
     static let applyButton = "home_apply_button"
@@ -127,7 +128,11 @@ struct HomeView: View {
             ShortcutSetupSheet(
                 target: uiState.settings.target,
                 imageURL: viewModel.stagedWallpaperURL,
-                onOpenShortcuts: { openURL(WallpaperShortcut.shortcutsAppURL) },
+                failure: viewModel.shortcutFailure,
+                onCreateShortcut: {
+                    UIPasteboard.general.string = WallpaperShortcut.name
+                    openURL(WallpaperShortcut.createShortcutURL)
+                },
                 onRunShortcut: viewModel.runShortcut
             )
         }

@@ -27,7 +27,10 @@ enum HomeMessage: Equatable {
     case gitHubError
     case wallpaperError
     case sessionExpired
-    case shortcutFailed
+}
+
+struct ShortcutFailure: Equatable {
+    let reason: String?
 }
 
 struct HomeMessageEvent: Identifiable, Equatable {

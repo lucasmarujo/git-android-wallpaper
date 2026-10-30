@@ -70,7 +70,6 @@ extension HomeMessage {
         case .gitHubError: "message_github_error"
         case .wallpaperError: "message_wallpaper_error"
         case .sessionExpired: "message_session_expired"
-        case .shortcutFailed: "message_shortcut_failed"
         }
     }
 }

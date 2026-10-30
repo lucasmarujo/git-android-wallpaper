@@ -91,19 +91,22 @@
 "message_github_error" = "O GitHub retornou um erro. Tente mais tarde.";
 "message_wallpaper_error" = "Não foi possível preparar a imagem do wallpaper. Tente de novo.";
 "message_session_expired" = "Sua sessão expirou. Entre de novo.";
-"message_shortcut_failed" = "O atalho “Git Wallpaper” não rodou. Confira se ele existe com esse nome exato.";
+"message_shortcut_failed" = "O atalho “Git Wallpaper” não foi encontrado ou não terminou. Crie com os passos abaixo, usando esse nome exato.";
 
 "shortcut_setup_title" = "Aplicar com o Atalhos";
 "shortcut_setup_body" = "O iOS não deixa apps trocarem o wallpaper sozinhos. Crie este atalho uma vez e o Git Wallpaper aplica e atualiza seu wallpaper por ele.";
-"shortcut_setup_step_create" = "Abra o Atalhos, toque em + e dê ao novo atalho o nome “%@”.";
-"shortcut_setup_step_get" = "Adicione a ação “Gerar Git Wallpaper”.";
+"shortcut_setup_step_create" = "Toque em Criar o atalho, aqui embaixo. O Atalhos abre um atalho novo e vazio: renomeie para “%@”.";
+"shortcut_setup_step_get" = "Toque em Adicionar Ação, busque “Git Wallpaper” e escolha “Gerar Git Wallpaper”.";
 "shortcut_setup_step_set" = "Adicione a ação que define a foto do papel de parede (busque por “papel de parede”), escolha %@ e desative a pré-visualização.";
 "shortcut_setup_step_automation" = "Para atualizar sozinho, abra Automação, crie uma automação por horário (por exemplo, todo dia às 00:05), escolha executar imediatamente e selecione o atalho Git Wallpaper.";
+"shortcut_setup_step_return" = "Volte para cá e toque em Já criei: aplicar agora.";
+"shortcut_create" = "Criar o atalho";
+"shortcut_create_hint" = "O nome “%@” já fica copiado. É só colar quando renomear o atalho novo.";
+"shortcut_failure_reason" = "O Atalhos respondeu: %@";
 "shortcut_location_lock_screen" = "Tela Bloqueada";
 "shortcut_location_home_screen" = "Tela de Início";
 "shortcut_location_both" = "Tela Bloqueada e Tela de Início";
-"shortcut_open_shortcuts" = "Abrir o Atalhos";
-"shortcut_run" = "Aplicar com o atalho";
+"shortcut_run" = "Já criei: aplicar agora";
 "shortcut_manual_hint" = "Prefere definir à mão? Salve a imagem em Fotos e escolha em Ajustes, Papel de Parede.";
 "shortcut_share_image" = "Salvar ou compartilhar imagem";
 

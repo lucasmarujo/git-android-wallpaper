@@ -4,12 +4,12 @@ final class WallpaperShortcut: @unchecked Sendable {
     enum Callback: Equatable {
         case success
         case cancel
-        case error
+        case error(message: String?)
     }
 
     static let name = "Git Wallpaper"
     static let callbackScheme = "gitwallpaper"
-    static let shortcutsAppURL = URL(string: "shortcuts://")!
+    static let createShortcutURL = URL(string: "shortcuts://create-shortcut")!
 
     private let defaults: UserDefaults
 
@@ -40,9 +40,16 @@ final class WallpaperShortcut: @unchecked Sendable {
         switch url.path {
         case "/\(successPath)": return .success
         case "/\(cancelPath)": return .cancel
-        case "/\(errorPath)": return .error
+        case "/\(errorPath)": return .error(message: errorMessage(in: url))
         default: return nil
         }
+    }
+
+    private static func errorMessage(in url: URL) -> String? {
+        URLComponents(url: url, resolvingAgainstBaseURL: false)?
+            .queryItems?
+            .first { $0.name == errorMessageParameter }?
+            .value
     }
 
     private static func callbackURL(_ path: String) -> String {
@@ -59,6 +66,7 @@ final class WallpaperShortcut: @unchecked Sendable {
     private static let successParameter = "x-success"
     private static let cancelParameter = "x-cancel"
     private static let errorParameter = "x-error"
+    private static let errorMessageParameter = "errorMessage"
     private static let callbackHost = "shortcut"
     private static let successPath = "success"
     private static let cancelPath = "cancel"
