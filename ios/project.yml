@@ -72,6 +72,18 @@ targets:
         GENERATE_INFOPLIST_FILE: YES
     dependencies:
       - target: GitWallpaper
+  GitWallpaperUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - path: GitWallpaperUITests
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: dev.marujo.gitwallpaper.uitests
+        GENERATE_INFOPLIST_FILE: YES
+    dependencies:
+      - target: GitWallpaper
+      - package: GitWallpaperKit
 schemes:
   GitWallpaper:
     build:
@@ -87,3 +99,12 @@ schemes:
         - GitWallpaperTests
     archive:
       config: Release
+  GitWallpaperScreenshots:
+    build:
+      targets:
+        GitWallpaper: all
+        GitWallpaperUITests: [test]
+    test:
+      config: Debug
+      targets:
+        - GitWallpaperUITests

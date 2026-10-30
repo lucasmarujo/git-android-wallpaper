@@ -6,6 +6,7 @@ enum CommitColorAccessibility {
     static let greenSlider = "commit_color_green"
     static let blueSlider = "commit_color_blue"
     static let hex = "commit_color_hex"
+    static let cancel = "commit_color_cancel"
 }
 
 struct CommitColorSheet: View {
@@ -51,6 +52,7 @@ struct CommitColorSheet: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("login_cancel", action: onCancel)
+                        .accessibilityIdentifier(CommitColorAccessibility.cancel)
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("commit_color_confirm") { onConfirm(color) }
