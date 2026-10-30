@@ -91,22 +91,16 @@
 "message_github_error" = "GitHub returned an error. Try again later.";
 "message_wallpaper_error" = "Could not prepare the wallpaper image. Try again.";
 "message_session_expired" = "Your session expired. Sign in again.";
-"message_shortcut_failed" = "The “Git Wallpaper” shortcut was not found or did not finish. Create it with the steps below, using this exact name.";
+"message_shortcut_failed" = "The Git Wallpaper shortcut is missing or did not finish. Add it again with Add shortcut.";
 
-"shortcut_setup_title" = "Apply with Shortcuts";
-"shortcut_setup_body" = "iOS doesn't let apps change the wallpaper by themselves. Create this shortcut once and Git Wallpaper applies and updates your wallpaper through it.";
-"shortcut_setup_step_create" = "Tap Create the shortcut below. Shortcuts opens a new, empty shortcut: rename it to “%@”.";
-"shortcut_setup_step_get" = "Tap Add Action, search for “Git Wallpaper” and choose “Get Git Wallpaper”.";
-"shortcut_setup_step_set" = "Add the “Set Wallpaper Photo” action, choose %@ and turn off Show Preview.";
-"shortcut_setup_step_automation" = "To keep it updating on its own, open Automation, create a Time of Day automation (for example, every day at 00:05), choose Run Immediately and pick the Git Wallpaper shortcut.";
-"shortcut_setup_step_return" = "Come back here and tap I created it: apply now.";
-"shortcut_create" = "Create the shortcut";
-"shortcut_create_hint" = "The name “%@” is copied for you. Paste it when you rename the new shortcut.";
+"shortcut_setup_title" = "Set up the shortcut";
+"shortcut_setup_body" = "iOS only lets the Shortcuts app change the wallpaper. Add the ready-made Git Wallpaper shortcut once and the app applies your wallpaper through it.";
+"shortcut_setup_step_automation" = "To update it every day on its own: in Shortcuts, open Automation, tap +, choose Time of Day, pick a time and Daily, choose Run Immediately and select Git Wallpaper.";
 "shortcut_failure_reason" = "Shortcuts said: %@";
-"shortcut_location_lock_screen" = "Lock Screen";
-"shortcut_location_home_screen" = "Home Screen";
-"shortcut_location_both" = "Lock Screen and Home Screen";
-"shortcut_run" = "I created it: apply now";
+"shortcut_setup_step_add" = "Tap Add shortcut. Shortcuts opens the Git Wallpaper shortcut: tap Add Shortcut there.";
+"shortcut_add" = "Add shortcut";
+"shortcut_setup_step_apply" = "Come back here and tap Apply now. The first time, allow the shortcut to change the wallpaper (Always Allow).";
+"shortcut_run" = "Apply now";
 "shortcut_manual_hint" = "Prefer to set it by hand? Save the image to Photos and pick it in Settings, Wallpaper.";
 "shortcut_share_image" = "Save or share image";
 

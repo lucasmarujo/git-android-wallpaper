@@ -35,8 +35,10 @@ final class WallpaperShortcutTests: XCTestCase {
         XCTAssertEqual(.error(message: nil), WallpaperShortcut.callback(from: URL(string: "gitwallpaper://shortcut/error")!))
     }
 
-    func testCreateShortcutUrlOpensANewShortcutInShortcuts() {
-        XCTAssertEqual("shortcuts://create-shortcut", WallpaperShortcut.createShortcutURL.absoluteString)
+    func testInstallUrlPointsToTheSharedICloudShortcut() {
+        XCTAssertEqual("https", WallpaperShortcut.installURL.scheme)
+        XCTAssertEqual("www.icloud.com", WallpaperShortcut.installURL.host)
+        XCTAssertTrue(WallpaperShortcut.installURL.path.hasPrefix("/shortcuts/"))
     }
 
     func testUnrelatedUrlsAreIgnored() {

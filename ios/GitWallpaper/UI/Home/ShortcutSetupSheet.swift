@@ -2,17 +2,16 @@ import GitWallpaperKit
 import SwiftUI
 
 enum ShortcutSetupAccessibility {
-    static let createButton = "shortcut_create_button"
+    static let addButton = "shortcut_add_button"
     static let runButton = "shortcut_run_button"
     static let shareButton = "shortcut_share_button"
     static let failure = "shortcut_failure"
 }
 
 struct ShortcutSetupSheet: View {
-    let target: WallpaperTarget
     let imageURL: URL?
     let failure: ShortcutFailure?
-    let onCreateShortcut: () -> Void
+    let onAddShortcut: () -> Void
     let onRunShortcut: () -> Void
 
     var body: some View {
@@ -24,22 +23,15 @@ struct ShortcutSetupSheet: View {
                     }
                     Text("shortcut_setup_body")
                         .font(.callout)
-                    VStack(alignment: .leading, spacing: 12) {
-                        SetupStep(number: 1, text: String(format: String(localized: "shortcut_setup_step_create"), WallpaperShortcut.name))
-                        SetupStep(number: 2, text: String(localized: "shortcut_setup_step_get"))
-                        SetupStep(number: 3, text: String(format: String(localized: "shortcut_setup_step_set"), String(localized: target.shortcutLocationKey)))
-                        SetupStep(number: 4, text: String(localized: "shortcut_setup_step_return"))
-                    }
-                    Button(action: onCreateShortcut) {
-                        Label("shortcut_create", systemImage: "plus.square.on.square")
+                    SetupStep(number: 1, text: "shortcut_setup_step_add")
+                    Button(action: onAddShortcut) {
+                        Label("shortcut_add", systemImage: "plus.square.on.square")
                             .frame(maxWidth: .infinity, minHeight: 36)
                     }
                     .buttonStyle(.borderedProminent)
                     .controlSize(.large)
-                    .accessibilityIdentifier(ShortcutSetupAccessibility.createButton)
-                    Text(String(format: String(localized: "shortcut_create_hint"), WallpaperShortcut.name))
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
+                    .accessibilityIdentifier(ShortcutSetupAccessibility.addButton)
+                    SetupStep(number: 2, text: "shortcut_setup_step_apply")
                     Button(action: onRunShortcut) {
                         Text("shortcut_run").frame(maxWidth: .infinity, minHeight: 36)
                     }
@@ -95,7 +87,7 @@ private struct FailureCallout: View {
 
 private struct SetupStep: View {
     let number: Int
-    let text: String
+    let text: LocalizedStringKey
 
     var body: some View {
         HStack(alignment: .firstTextBaseline, spacing: 12) {
@@ -104,7 +96,7 @@ private struct SetupStep: View {
                 .foregroundStyle(.white)
                 .frame(width: 24, height: 24)
                 .background(Circle().fill(Color.accentColor))
-            Text(verbatim: text)
+            Text(text)
                 .font(.callout)
                 .fixedSize(horizontal: false, vertical: true)
         }

@@ -9,7 +9,7 @@ final class WallpaperShortcut: @unchecked Sendable {
 
     static let name = "Git Wallpaper"
     static let callbackScheme = "gitwallpaper"
-    static let createShortcutURL = URL(string: "shortcuts://create-shortcut")!
+    static let installURL = URL(string: "https://www.icloud.com/shortcuts/eadb2565efde4dc69dd126bb60bbcc68")!
 
     private let defaults: UserDefaults
 

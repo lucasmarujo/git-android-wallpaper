@@ -138,7 +138,7 @@ A native iPhone version lives in [`ios/`](ios), written in Swift and SwiftUI. Th
 **What changes on iOS.** iOS has no public API that lets an app change the wallpaper by itself, so the iPhone app sets it through the Shortcuts app:
 
 1. The app provides a **Get Git Wallpaper** action. It refreshes your contributions and returns the wallpaper image, drawn at the screen's native resolution with your framing.
-2. You create a shortcut named **Git Wallpaper** once: **Get Git Wallpaper**, then **Set Wallpaper Photo** with Lock Screen, Home Screen or both. After that, **Apply wallpaper** in the app runs it for you, through `x-callback-url`.
+2. The app offers a ready-made **Git Wallpaper** shortcut ([iCloud link](https://www.icloud.com/shortcuts/eadb2565efde4dc69dd126bb60bbcc68)): **Get Git Wallpaper**, then **Set Wallpaper Photo** on the Lock Screen. Tap **Add shortcut** in the app and **Add Shortcut** in Shortcuts. After that, **Apply wallpaper** runs it for you, through `x-callback-url`.
 3. A **Time of Day** automation set to **Run Immediately** keeps the wallpaper up to date without opening the app. The app shows these steps the first time you apply.
 
 You can also save the image to Photos and choose it in **Settings > Wallpaper**.
