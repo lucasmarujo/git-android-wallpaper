@@ -20,6 +20,9 @@ The app CI (`testDebugUnitTest`) runs before any build. If it fails, nothing is 
 - **versionCode (Android)**: `1000 + run number` of this workflow, applied at build time by
   `android-version-code.gradle`. No manual edits. Do not rename the workflow: the run number restarts.
 - **buildNumber (iOS)**: CI writes `1000 + run number` to `CURRENT_PROJECT_VERSION` in the Xcode project before `eas build`.
+- **App Store Connect check**: before the iOS build, the job fails if the version is not above the
+  latest one approved on the App Store (TestFlight would reject it). After the upload, it waits up to
+  45 min for the build to become `VALID` on App Store Connect and fails if it does not.
 - **Notes**: the message of an annotated tag (`git tag -a v1.2.0 -m "..."`); without one, the
   commits since the previous tag (up to 500 characters). Listing language: `en-US`.
 
