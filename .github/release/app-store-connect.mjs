@@ -1,3 +1,4 @@
+import { Buffer } from 'node:buffer';
 import { createSign } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
