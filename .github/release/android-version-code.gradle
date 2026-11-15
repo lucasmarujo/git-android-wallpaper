@@ -1,0 +1,13 @@
+def ciVersionCode = System.getenv('ANDROID_VERSION_CODE')
+
+if (ciVersionCode) {
+    allprojects {
+        plugins.withId('com.android.application') {
+            androidComponents {
+                onVariants(selector().all()) { variant ->
+                    variant.outputs.each { output -> output.versionCode.set(ciVersionCode as Integer) }
+                }
+            }
+        }
+    }
+}
