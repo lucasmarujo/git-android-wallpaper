@@ -15,5 +15,5 @@ ios=$(jq --arg dir "$files" \
 
 credentials="$app_dir/credentials.json"
 [ -f "$credentials" ] || echo '{}' > "$credentials"
-jq --argjson ios "$ios" '.ios = $ios' "$credentials" > "$destination/credentials.json"
-mv "$destination/credentials.json" "$credentials"
+jq --argjson ios "$ios" '.ios = $ios' "$credentials" > "$destination/credentials.json.tmp"
+mv "$destination/credentials.json.tmp" "$credentials"
