@@ -87,6 +87,7 @@ jobs:
           "$RUNNER_TEMP/actionlint" .github/workflows/release.yml
           shellcheck .github/release/*.sh
           bash .github/release/release.test.sh
+          node --test .github/release/app-store-connect.test.mjs
 
       - id: plan
         env:
@@ -232,10 +233,13 @@ jobs:
       needs.plan.outputs.publish == 'true' &&
       needs.plan.outputs.ios == 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 150
+    timeout-minutes: 180
     env:
       IS_TAG: ${{ github.ref_type == 'tag' }}
-      WAIT_FLAG: ${{ github.ref_type == 'tag' && '--wait' || '--no-wait' }}
+      VERSION: ${{ needs.plan.outputs.version }}
+      BUILD_NUMBER: ${{ needs.plan.outputs.version_code }}
+      APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
+      APP_STORE_CONNECT_API_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_API_ISSUER_ID }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -256,15 +260,23 @@ jobs:
           APP_STORE_CONNECT_API_KEY_BASE64: ${{ secrets.APP_STORE_CONNECT_API_KEY_BASE64 }}
           APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
           APP_STORE_CONNECT_API_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_API_ISSUER_ID }}
-        run: bash .github/release/app-store-connect-key.sh eas.json "$RUNNER_TEMP"
+        run: |
+          bash .github/release/app-store-connect-key.sh eas.json "$RUNNER_TEMP"
+          echo "ASC_KEY_PATH=$RUNNER_TEMP/asc-api-key.p8" >> "$GITHUB_ENV"
+          echo "ASC_APP_ID=$(jq -r '.submit.production.ios.ascAppId' eas.json)" >> "$GITHUB_ENV"
+          echo "IOS_VERSION=$(sed -n 's/.*MARKETING_VERSION: "\(.*\)".*/\1/p' ios/project.yml)" >> "$GITHUB_ENV"
+
+      - name: Version above the latest approved on the App Store
+        run: node .github/release/app-store-connect.mjs check-version "$ASC_APP_ID" "$IOS_VERSION"
 
       - name: iOS build number
-        env:
-          BUILD_NUMBER: ${{ needs.plan.outputs.version_code }}
         run: sed -i -E "s/CURRENT_PROJECT_VERSION = [0-9]+;/CURRENT_PROJECT_VERSION = $BUILD_NUMBER;/" ios/GitWallpaper.xcodeproj/project.pbxproj
 
       - name: Build and submit to TestFlight
-        run: eas build --platform ios --profile production --non-interactive --auto-submit "$WAIT_FLAG"
+        run: eas build --platform ios --profile production --non-interactive --auto-submit --wait --json > "$RUNNER_TEMP/eas-build.json"
+
+      - name: Build processed on App Store Connect
+        run: node .github/release/app-store-connect.mjs wait-for-build "$ASC_APP_ID" "$IOS_VERSION" "$BUILD_NUMBER" 45
 
       - name: Release notes
         if: env.IS_TAG == 'true'
@@ -277,8 +289,6 @@ jobs:
 
       - name: Submit for App Store review
         if: env.IS_TAG == 'true'
-        env:
-          VERSION: ${{ needs.plan.outputs.version }}
         run: |
           sudo gem install fastlane -v "$FASTLANE_VERSION" --no-document
           fastlane run deliver \
