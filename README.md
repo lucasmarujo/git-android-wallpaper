@@ -366,12 +366,10 @@ iOS store builds go through [EAS Build](https://docs.expo.dev/build/introduction
 eas build --platform ios --profile production --auto-submit
 ```
 
-Raise `MARKETING_VERSION` or `CURRENT_PROJECT_VERSION` in `ios/project.yml` before each upload, then regenerate the Xcode project on a Mac (or take it from the CI artifact).
-
-Pushing a tag that matches `v*` also builds a signed release APK and publishes it as a GitHub Release with generated notes. That job needs the `SIGNING_KEYSTORE_BASE64`, `SIGNING_STORE_PASSWORD`, `SIGNING_KEY_ALIAS` and `SIGNING_KEY_PASSWORD` repository secrets.
+Store releases are automated by [Release](.github/workflows/release.yml): a push to `main` sends a signed AAB to Google Play internal testing and an EAS build to TestFlight, and a `vX.Y.Z` tag sends them to Google Play production and App Store review, and publishes the signed APK and AAB as a GitHub Release with generated notes. The version code and the iOS build number come from the run number, so only `versionName` and `MARKETING_VERSION` are raised by hand, and the tag must match them. Secrets and details: [`.github/release/README.md`](.github/release/README.md).
 
 ```bash
-git tag v1.2.0
+git tag -a v1.2.0 -m "What changed in this version"
 git push origin v1.2.0
 ```
 
