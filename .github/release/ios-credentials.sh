@@ -10,7 +10,7 @@ mkdir -p "$files"
 printf '%s' "$IOS_CREDENTIALS_BASE64" | base64 --decode | tar -xz -C "$files"
 
 ios=$(jq --arg dir "$files" \
-  '.ios | walk(if type == "string" and test("\\.(p12|mobileprovision)$") then "\($dir)/\(.)" else . end)' \
+  '.ios | walk(if type == "string" and (endswith(".p12") or endswith(".mobileprovision")) then "\($dir)/\(.)" else . end)' \
   "$files/credentials.json")
 
 credentials="$app_dir/credentials.json"

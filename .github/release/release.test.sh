@@ -4,6 +4,7 @@ set -euo pipefail
 HERE=$(cd "$(dirname "$0")" && pwd)
 TMP=$(mktemp -d)
 trap 'rm -rf "$TMP"' EXIT
+unset TAG_PREFIX
 
 failures=0
 
