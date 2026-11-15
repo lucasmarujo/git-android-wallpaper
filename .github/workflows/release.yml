@@ -25,6 +25,10 @@ on:
         description: Publish to Google Play internal testing and TestFlight
         type: boolean
         default: false
+      force_ios:
+        description: Build and submit iOS even without a change that affects the iOS app
+        type: boolean
+        default: false
 
 concurrency:
   group: release-${{ github.ref }}
@@ -74,7 +78,8 @@ jobs:
       publish: ${{ steps.plan.outputs.publish }}
       ios: ${{ steps.plan.outputs.ios }}
       android_changed: ${{ steps.changes.outputs.android }}
-      ios_changed: ${{ steps.changes.outputs.ios }}
+      ios_changed: ${{ steps.ios_affected.outputs.ios_affected }}
+      ios_reason: ${{ steps.ios_affected.outputs.ios_reason }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -111,14 +116,21 @@ jobs:
         run: |
           if [ "$EVENT" != push ] || [ "$GITHUB_REF_TYPE" = tag ] || [ "$BEFORE" = 0000000000000000000000000000000000000000 ]; then
             echo "android=true" | tee -a "$GITHUB_OUTPUT"
-            echo "ios=true" | tee -a "$GITHUB_OUTPUT"
             exit 0
           fi
           changed=$(git diff --name-only "$BEFORE" "$GITHUB_SHA")
           if grep -qE '^(app/|gradle/|[^/]+\.gradle\.kts$|gradle\.properties$|\.github/)' <<< "$changed"; then android=true; else android=false; fi
-          if grep -qE '^(ios/|\.eas/|eas\.json$|app\.json$|\.github/)' <<< "$changed"; then ios=true; else ios=false; fi
           echo "android=$android" | tee -a "$GITHUB_OUTPUT"
-          echo "ios=$ios" | tee -a "$GITHUB_OUTPUT"
+
+      - name: Does the push affect the iOS app?
+        id: ios_affected
+        env:
+          EVENT: ${{ github.event_name }}
+          REF_TYPE: ${{ github.ref_type }}
+          BEFORE: ${{ github.event.before }}
+          AFTER: ${{ github.sha }}
+          FORCE_IOS: ${{ inputs.force_ios }}
+        run: bash .github/release/decide-ios.sh | tee -a "$GITHUB_OUTPUT"
 
       - name: Summary
         env:
@@ -127,15 +139,25 @@ jobs:
           TRACK: ${{ steps.plan.outputs.track }}
           PUBLISH: ${{ steps.plan.outputs.publish }}
           IOS: ${{ steps.plan.outputs.ios }}
+          IOS_AFFECTED: ${{ steps.ios_affected.outputs.ios_affected }}
+          IOS_REASON: ${{ steps.ios_affected.outputs.ios_reason }}
         run: |
           {
             echo "### $APP_NAME $VERSION (build $VERSION_CODE)"
             echo "- Destination: $TRACK"
             echo "- Publish: $PUBLISH"
             echo "- iOS configured: $IOS"
+            if [ "$IOS_AFFECTED" = true ]; then
+              echo "- iOS: built in this run ($IOS_REASON)"
+            else
+              echo "- iOS skipped: $IOS_REASON"
+            fi
           } >> "$GITHUB_STEP_SUMMARY"
-          if [ "$PUBLISH" = true ] && [ "$IOS" != true ]; then
+          if [ "$PUBLISH" = true ] && [ "$IOS_AFFECTED" = true ] && [ "$IOS" != true ]; then
             echo "::warning::EXPO_TOKEN or APP_STORE_CONNECT_API_KEY_BASE64 is missing: iOS is skipped in this run."
+          fi
+          if [ "$PUBLISH" = true ] && [ "$IOS_AFFECTED" != true ]; then
+            echo "::notice::iOS skipped: $IOS_REASON"
           fi
 
   android:
