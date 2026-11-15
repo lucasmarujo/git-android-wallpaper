@@ -178,6 +178,47 @@ rm "$TMP/app-ios/credentials.json"
 IOS_CREDENTIALS_BASE64=$(tar -czf - -C "$TMP/bundle" . | base64 -w0) bash "$HERE/ios-credentials.sh" "$TMP/app-ios" "$TMP/tmp-ios"
 check "creates credentials.json when missing" "secret" "$(jq -r .ios.App.distributionCertificate.password "$TMP/app-ios/credentials.json")"
 
+echo "decide-ios.sh"
+decide() {
+  env -i PATH="$PATH" HOME="$HOME" EVENT="$1" REF_TYPE="$2" BEFORE="${3:-}" FORCE_IOS="${4:-false}" \
+    IOS_CONF="$HERE/ios.conf" bash "$HERE/decide-ios.sh" | sed -n 1p
+}
+ios_repo=$TMP/ios-repo
+git init -q "$ios_repo"
+cd "$ios_repo"
+git config user.email test@example.com
+git config user.name test
+echo base > base.txt
+git add base.txt
+git commit -q -m base
+
+check "a version tag builds iOS" "ios_affected=true" "$(decide push tag "$(git rev-parse HEAD)")"
+check "a forced manual dispatch builds iOS" "ios_affected=true" "$(decide workflow_dispatch branch '' true)"
+check "a manual dispatch without forcing skips iOS" "ios_affected=false" "$(decide workflow_dispatch branch)"
+check "a pull request skips iOS" "ios_affected=false" "$(decide pull_request branch)"
+check "a push without a previous commit builds iOS" "ios_affected=true" "$(decide push branch 0000000000000000000000000000000000000000)"
+check "a push with an unknown previous commit builds iOS" "ios_affected=true" "$(decide push branch 1111111111111111111111111111111111111111)"
+
+while read -r expected path; do
+  [ -n "$expected" ] || continue
+  mkdir -p "$(dirname "$path")"
+  echo "$path $expected" >> "$path"
+  git add -A
+  git commit -q -m "change $path"
+  if [ "$expected" = true ]; then action=builds; else action=skips; fi
+  check "a push touching only $path $action iOS" "ios_affected=$expected" "$(decide push branch "$(git rev-parse HEAD~1)")"
+done < "$HERE/ios.cases"
+
+outside=$(awk '$1 == "false" { print $2; exit }' "$HERE/ios.cases")
+inside=$(awk '$1 == "true" { print $2; exit }' "$HERE/ios.cases")
+echo mixed >> "$outside"
+echo mixed >> "$inside"
+git add -A
+git commit -q -m "mixed change"
+check "a push with an outside file and an app file builds iOS" "ios_affected=true" "$(decide push branch "$(git rev-parse HEAD~1)")"
+check "the reason names the app file" "ios_reason=$inside changed" \
+  "$(env -i PATH="$PATH" HOME="$HOME" EVENT=push REF_TYPE=branch BEFORE="$(git rev-parse HEAD~1)" IOS_CONF="$HERE/ios.conf" bash "$HERE/decide-ios.sh" | sed -n 2p)"
+
 if [ "$failures" -gt 0 ]; then
   echo "$failures test(s) failed"
   exit 1

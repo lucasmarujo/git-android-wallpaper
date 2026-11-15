@@ -1,0 +1,14 @@
+true ios/GitWallpaper/ContentView.swift
+true ios/GitWallpaperWidget/Widget.swift
+true ios/project.yml
+true ios/GitWallpaper.xcodeproj/project.pbxproj
+true .eas/build/ios-app-store.yml
+true eas.json
+false app/src/main/java/com/lucasmarujo/gitwallpaper/MainActivity.kt
+false app/build.gradle.kts
+false gradle/libs.versions.toml
+false ios/GitWallpaperTests/RenderTests.swift
+false ios/GitWallpaperKit/Tests/GitWallpaperKitTests/StatsTests.swift
+false README.md
+false docs/privacy/index.html
+false .github/workflows/release.yml

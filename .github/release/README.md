@@ -20,6 +20,10 @@ The app CI (`testDebugUnitTest`) runs before any build. If it fails, nothing is 
 - **versionCode (Android)**: `1000 + run number` of this workflow, applied at build time by
   `android-version-code.gradle`. No manual edits. Do not rename the workflow: the run number restarts.
 - **buildNumber (iOS)**: CI writes `1000 + run number` to `CURRENT_PROJECT_VERSION` in the Xcode project before `eas build`.
+- **When iOS runs**: only if the push touches a file that goes into the iOS binary (rule in
+  `decide-ios.sh`, app patterns in `ios.conf`, tested examples in `ios.cases`). Docs, tests,
+  workflows and Android-only files skip iOS: the run stays green and the summary says why.
+  Tags always build; on `workflow_dispatch`, check `force_ios` to force it.
 - **App Store Connect check**: before the iOS build, the job fails if the version is not above the
   latest one approved on the App Store (TestFlight would reject it). After the upload, it waits up to
   45 min for the build to become `VALID` on App Store Connect and fails if it does not.
@@ -51,7 +55,7 @@ git tag -a v1.2.0 -m "What changed in this version"
 git push origin v1.2.0
 ```
 
-A push builds only the platforms it touched. The tag release used to live in `android.yml`; it moved here
+A push builds Android only when it touches the Android app, and iOS only by the rule above. The tag release used to live in `android.yml`; it moved here
 and now ships the signed APK and AAB. The old `SIGNING_*` secrets are no longer used.
 
 Google Play production needs production access first (personal accounts: 12 testers for 14 days in closed
